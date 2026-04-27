@@ -222,7 +222,7 @@
     @forelse($events ?? $dummyEvents ?? [] as $event)
         <a href="{{ route('events.show', $event->id ?? $event['id']) }}" class="event-card">
             <div class="card-thumb">
-                @if(!empty($event->thumbnail ?? $event['thumbnail']))
+                @if(!empty($event->thumbnail ?? $event['thumbnail'] ?? null))
                     <img src="{{ asset('storage/' . ($event->thumbnail ?? $event['thumbnail'])) }}" alt="{{ $event->name ?? $event['name'] }}">
                 @else
                     <div class="card-thumb-bg" style="background:{{ $event->color ?? $event['color'] ?? 'linear-gradient(135deg,#1e1a30,#2a2040)' }};">
@@ -299,8 +299,8 @@
     @endforelse
 </div>
 
-{{-- Pagination --}}
-@if(isset($events) && $events->hasPages())
+{{-- Pagination (only shown when $events is a Paginator instance) --}}
+@if(isset($events) && is_object($events) && method_exists($events, 'hasPages') && $events->hasPages())
 <div style="margin-top:36px; display:flex; justify-content:center;">
     {{ $events->appends(request()->query())->links() }}
 </div>

@@ -266,7 +266,7 @@
             in the heart of the main campus plaza.
         </p>
         <div class="hero-actions">
-            <a href="{{ route('events.show', 1) }}" class="btn-filled">
+            <a href="#" class="btn-filled">
                 Get Tickets Now →
             </a>
             <a href="#" class="btn-ghost">
