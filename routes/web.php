@@ -15,9 +15,9 @@ Route::get('/', function () {
     return view('dashboard');
 })->name('home');
 
-// Alias "dashboard" → home (digunakan di layout navbar)
+// Dashboard alias — renders dashboard view directly (agar routeIs('dashboard') bekerja)
 Route::get('/dashboard', function () {
-    return redirect()->route('home');
+    return view('dashboard');
 })->name('dashboard');
 
 // User Management
@@ -37,13 +37,30 @@ Route::get('/tickets', function () {
     return view('tickets.index');
 })->name('tickets.index');
 
+// Tickets download stub
+Route::get('/tickets/{id}/download', function ($id) {
+    return back()->with('success', 'Download fitur akan segera hadir.');
+})->name('tickets.download');
+
 // Profile stub
 Route::get('/profile', function () {
-    return view('dashboard'); // placeholder
+    return view('profile.show');
 })->name('profile.show');
 
 // Auth stubs (login/logout placeholder)
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::post('/login', function () {
+    return back()->with('error', 'Fitur login akan segera hadir.');
+})->name('login.post');
+
+Route::post('/register', function () {
+    return back()->with('error', 'Fitur register akan segera hadir.');
+})->name('register.post');
 

@@ -2,7 +2,7 @@
 @section('title', 'Register')
 
 @section('auth-content')
-<div style="width:100%; max-width:400px;">
+<div style="width:100%; max-width:420px;">
 
     <div class="auth-card">
 
@@ -15,7 +15,7 @@
         </div>
         <div class="auth-subtitle">Join the Digital Curator Experience</div>
 
-        <form method="POST" action="{{ route('register') }}" style="margin-top:28px;">
+        <form method="POST" action="{{ route('register.post') }}" style="margin-top:28px;">
             @csrf
 
             {{-- Full Name --}}
@@ -79,23 +79,6 @@
                     </button>
                 </div>
                 @error('password')<div class="field-error">{{ $message }}</div>@enderror
-            </div>
-
-            {{-- Password Confirmation --}}
-            <div class="form-group">
-                <label class="form-label">Confirm Password</label>
-                <div class="input-wrap">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                    <input
-                        type="password"
-                        name="password_confirmation"
-                        placeholder="••••••••••••"
-                        autocomplete="new-password"
-                        required
-                    >
-                </div>
             </div>
 
             <button type="submit" class="btn-primary">Create Account</button>

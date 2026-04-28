@@ -4,14 +4,6 @@
 @section('auth-content')
 <div style="width:100%; max-width:400px; text-align:center;">
 
-    {{-- Brand heading --}}
-    <h1 style="font-family:'Syne',sans-serif; font-size:28px; font-weight:800; letter-spacing:0.15em; text-transform:uppercase; color:#f0ecff; margin-bottom:8px;">
-        Ethereal Stage
-    </h1>
-    <p style="font-size:11px; color:#4e4670; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:36px;">
-        A Digital Curator Experience
-    </p>
-
     {{-- Card --}}
     <div class="auth-card" style="text-align:left;">
 
@@ -30,7 +22,7 @@
         <h2 style="font-family:'Syne',sans-serif; font-size:22px; font-weight:700; margin-bottom:6px;">Welcome Back</h2>
         <p style="font-size:13px; color:#9083b5; margin-bottom:28px;">Please enter your credentials to access the gallery.</p>
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login.post') }}">
             @csrf
 
             {{-- Email --}}

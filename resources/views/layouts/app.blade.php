@@ -6,7 +6,7 @@
     <title>@yield('title', 'Ethereal Auditorium') — Manajemen Event Kampus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -16,14 +16,14 @@
             --bg-main:    #100e1a;
             --bg-card:    #1c1829;
             --bg-card-2:  #201c30;
-            --border:     rgba(255,255,255,0.07);
-            --accent:     #a855f7;
-            --accent-2:   #d946ef;
-            --accent-soft:rgba(168,85,247,0.15);
-            --accent-glow:rgba(168,85,247,0.35);
-            --text-1:     #f0ecff;
-            --text-2:     #a89fc4;
-            --text-3:     #5e5878;
+            --border:     rgba(255,255,255,0.10);
+            --accent:     #b366ff;
+            --accent-2:   #e055f5;
+            --accent-soft:rgba(179,102,255,0.18);
+            --accent-glow:rgba(179,102,255,0.40);
+            --text-1:     #ffffff;
+            --text-2:     #d4cef0;
+            --text-3:     #9b92bc;
             --sidebar-w:  200px;
             --topbar-h:   60px;
         }
@@ -56,15 +56,15 @@
             border-bottom: 1px solid var(--border);
         }
         .sidebar-brand .brand-name {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 13px;
             font-weight: 700;
-            color: var(--text-1);
-            letter-spacing: 0.05em;
+            color: #ffffff;
+            letter-spacing: 0.03em;
         }
         .sidebar-brand .brand-sub {
             font-size: 10px;
-            color: var(--text-3);
+            color: #b0a8cc;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             margin-top: 2px;
@@ -82,22 +82,24 @@
             gap: 10px;
             padding: 10px 12px;
             border-radius: 10px;
-            font-size: 13.5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
             font-weight: 500;
-            color: var(--text-2);
+            color: #ccc5e8;
             text-decoration: none;
             transition: all 0.2s;
             position: relative;
         }
-        .nav-item svg { width: 17px; height: 17px; opacity: 0.7; flex-shrink: 0; }
-        .nav-item:hover { background: var(--accent-soft); color: var(--text-1); }
+        .nav-item svg { width: 17px; height: 17px; opacity: 0.85; flex-shrink: 0; }
+        .nav-item:hover { background: var(--accent-soft); color: #ffffff; }
+        .nav-item:hover svg { opacity: 1; }
         .nav-item.active {
             background: var(--accent-soft);
-            color: var(--accent);
+            color: #d89cff;
             border-left: 3px solid var(--accent);
             padding-left: 9px;
         }
-        .nav-item.active svg { opacity: 1; }
+        .nav-item.active svg { opacity: 1; color: #d89cff; }
 
         /* ── Wrapper ── */
         .layout-wrapper {
@@ -123,10 +125,10 @@
             z-index: 90;
         }
         .topbar-brand {
-            font-family: 'Syne', sans-serif;
-            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 17px;
             font-weight: 800;
-            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            background: linear-gradient(90deg, #c47fff, #e870f5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -134,15 +136,16 @@
         }
         .topbar-nav { display: flex; gap: 28px; align-items: center; }
         .topbar-nav a {
+            font-family: 'Poppins', sans-serif;
             font-size: 13px;
             font-weight: 500;
-            color: var(--text-2);
+            color: #ccc5e8;
             text-decoration: none;
             padding-bottom: 2px;
             transition: color 0.2s;
         }
         .topbar-nav a:hover, .topbar-nav a.active {
-            color: var(--text-1);
+            color: #ffffff;
         }
         .topbar-nav a.active { border-bottom: 2px solid var(--accent); }
         .topbar-right { display: flex; align-items: center; gap: 16px; }
@@ -219,7 +222,7 @@
             <div class="brand-sub">Digital Curator</div>
         </div>
         <nav class="sidebar-nav">
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('home') || request()->routeIs('dashboard') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 13a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/>
                 </svg>
@@ -253,7 +256,7 @@
             <div style="display:flex; align-items:center; gap:32px;">
                 <span class="topbar-brand">Ethereal Auditorium</span>
                 <nav class="topbar-nav">
-                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('home') || request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
                     <a href="#">Schedule</a>
                     <a href="#">Venues</a>
                 </nav>

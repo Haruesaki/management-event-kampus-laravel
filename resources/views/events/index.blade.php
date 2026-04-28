@@ -5,14 +5,15 @@
 <style>
     .page-header { margin-bottom: 28px; }
     .page-label {
-        font-size: 11px; color: var(--text-3);
+        font-size: 11px; color: #9b92bc;
         text-transform: uppercase; letter-spacing: 0.15em;
         margin-bottom: 6px;
     }
     .page-title {
-        font-family: 'Syne', sans-serif;
+        font-family: 'Poppins', sans-serif;
         font-size: 36px; font-weight: 800;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01em;
+        color: #ffffff;
     }
 
     /* Search & Filter bar */
@@ -24,8 +25,8 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        flex-wrap: wrap;
         margin-bottom: 32px;
+        overflow-x: auto;
     }
     .filter-search {
         display: flex; align-items: center; gap: 10px;
@@ -67,6 +68,17 @@
         pointer-events: none;
         margin-top: 2px;
     }
+    .btn-search {
+        background: var(--accent);
+        border: none; border-radius: 10px;
+        padding: 10px 20px; color: #fff;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px; font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        white-space: nowrap;
+    }
+    .btn-search:hover { background: #9333ea; transform: translateY(-1px); }
 
     /* Events Grid */
     .events-grid {
@@ -112,24 +124,26 @@
         padding: 8px 12px;
         text-align: center;
         backdrop-filter: blur(10px);
+        z-index: 2;
     }
-    .date-badge .d { font-family: 'Syne',sans-serif; font-size: 22px; font-weight: 800; line-height: 1; }
+    .date-badge .d { font-family: 'Poppins',sans-serif; font-size: 22px; font-weight: 800; line-height: 1; color: var(--text-1); }
     .date-badge .m { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 1px; }
 
     .card-body { padding: 18px; }
     .card-category {
-        font-size: 10px; font-weight: 600;
-        color: var(--accent); text-transform: uppercase;
+        font-size: 10px; font-weight: 700;
+        color: #c47fff; text-transform: uppercase;
         letter-spacing: 0.12em; margin-bottom: 8px;
     }
     .card-title {
-        font-family: 'Syne', sans-serif;
+        font-family: 'Poppins', sans-serif;
         font-size: 17px; font-weight: 700;
         line-height: 1.25; margin-bottom: 8px;
+        color: #ffffff;
     }
     .card-venue {
         display: flex; align-items: center; gap: 4px;
-        font-size: 12px; color: var(--text-3); margin-bottom: 14px;
+        font-size: 12px; color: #b0a8cc; margin-bottom: 14px;
     }
     .card-venue svg { width: 11px; height: 11px; }
     .card-footer {
@@ -137,12 +151,15 @@
     }
     .card-price {
         font-size: 16px; font-weight: 700;
+        color: #ffffff;
     }
-    .card-price.free { color: var(--accent); }
+    .card-price.free { color: #c47fff; }
     .btn-book {
+        font-family: 'Poppins', sans-serif;
         font-size: 13px; font-weight: 600;
-        color: var(--accent); text-decoration: none;
+        color: #c47fff; text-decoration: none;
         transition: opacity 0.2s;
+        background: none; border: none; cursor: pointer;
     }
     .btn-book:hover { opacity: 0.7; }
 
@@ -152,7 +169,9 @@
         text-align: center; padding: 64px 20px;
         color: var(--text-3);
     }
-    .empty-state svg { width: 48px; height: 48px; margin: 0 auto 16px; }
+    .empty-state svg { width: 48px; height: 48px; margin: 0 auto 16px; display: block; }
+    .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-2); margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; }
 </style>
 @endpush
 
@@ -192,6 +211,7 @@
                 <option value="workshop" {{ request('category')=='workshop' ? 'selected' : '' }}>Workshop</option>
                 <option value="sports" {{ request('category')=='sports' ? 'selected' : '' }}>Sports</option>
                 <option value="art" {{ request('category')=='art' ? 'selected' : '' }}>Art</option>
+                <option value="technology" {{ request('category')=='technology' ? 'selected' : '' }}>Technology</option>
             </select>
         </div>
         <div class="filter-select-wrap">
@@ -211,95 +231,77 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" style="background:var(--accent);border:none;border-radius:10px;padding:10px 20px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">
-            Search
-        </button>
+        <button type="submit" class="btn-search">Search</button>
     </div>
 </form>
 
 {{-- Events Grid --}}
 <div class="events-grid">
-    @forelse($events ?? $dummyEvents ?? [] as $event)
-        <a href="{{ route('events.show', $event->id ?? $event['id']) }}" class="event-card">
+    @php
+        $eventList = $events ?? [];
+        // If events is an Eloquent collection or paginator, convert properly
+        if (is_object($eventList) && method_exists($eventList, 'toArray')) {
+            $eventList = $eventList->items ?? $eventList;
+        }
+    @endphp
+
+    @forelse($eventList as $event)
+        @php
+            // Support both array and object
+            $eId       = is_array($event) ? $event['id']       : $event->id;
+            $eName     = is_array($event) ? $event['name']      : $event->name;
+            $eCategory = is_array($event) ? $event['category']  : $event->category;
+            $eVenue    = is_array($event) ? $event['venue']     : $event->venue;
+            $ePrice    = is_array($event) ? ($event['price'] ?? 0) : ($event->price ?? 0);
+            $eDate     = is_array($event) ? $event['date']      : $event->date;
+            $eColor    = is_array($event) ? ($event['color'] ?? 'linear-gradient(135deg,#1e1a30,#2a2040)') : ($event->color ?? 'linear-gradient(135deg,#1e1a30,#2a2040)');
+            $eThumb    = is_array($event) ? ($event['thumbnail'] ?? null) : ($event->thumbnail ?? null);
+        @endphp
+        <a href="{{ route('events.show', $eId) }}" class="event-card">
             <div class="card-thumb">
-                @if(!empty($event->thumbnail ?? $event['thumbnail'] ?? null))
-                    <img src="{{ asset('storage/' . ($event->thumbnail ?? $event['thumbnail'])) }}" alt="{{ $event->name ?? $event['name'] }}">
+                @if($eThumb)
+                    <img src="{{ asset('storage/' . $eThumb) }}" alt="{{ $eName }}">
                 @else
-                    <div class="card-thumb-bg" style="background:{{ $event->color ?? $event['color'] ?? 'linear-gradient(135deg,#1e1a30,#2a2040)' }};">
-                    </div>
+                    <div class="card-thumb-bg" style="background: {{ $eColor }};"></div>
                 @endif
                 <div class="date-badge">
-                    <div class="d">{{ \Carbon\Carbon::parse($event->date ?? $event['date'])->format('d') }}</div>
-                    <div class="m">{{ \Carbon\Carbon::parse($event->date ?? $event['date'])->format('M') }}</div>
+                    <div class="d">{{ \Carbon\Carbon::parse($eDate)->format('d') }}</div>
+                    <div class="m">{{ \Carbon\Carbon::parse($eDate)->format('M') }}</div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="card-category">{{ $event->category ?? $event['category'] }}</div>
-                <div class="card-title">{{ $event->name ?? $event['name'] }}</div>
+                <div class="card-category">{{ $eCategory }}</div>
+                <div class="card-title">{{ $eName }}</div>
                 <div class="card-venue">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    {{ $event->venue ?? $event['venue'] }}
+                    {{ $eVenue }}
                 </div>
                 <div class="card-footer">
-                    @if(($event->price ?? $event['price'] ?? 0) == 0)
+                    @if($ePrice == 0)
                         <span class="card-price free">FREE</span>
-                        <a href="{{ route('events.show', $event->id ?? $event['id']) }}" class="btn-book">Book Now</a>
+                        <span class="btn-book">Book Now</span>
                     @else
-                        <span class="card-price">${{ number_format($event->price ?? $event['price'], 2) }}</span>
-                        <a href="{{ route('events.show', $event->id ?? $event['id']) }}" class="btn-book">Book Now</a>
+                        <span class="card-price">${{ number_format($ePrice, 2) }}</span>
+                        <span class="btn-book">Book Now</span>
                     @endif
                 </div>
             </div>
         </a>
     @empty
-        {{-- Dummy cards for UI preview when no data --}}
-        @php
-        $dummies = [
-            ['id'=>1,'date'=>'2024-10-12','category'=>'Electronic Arts','name'=>'Neon Nocturne: Digital Symphony','venue'=>'Main Plaza Auditorium','price'=>24,'color'=>'linear-gradient(135deg,#1a1030,#2a1060)'],
-            ['id'=>2,'date'=>'2024-10-15','category'=>'Classical Fusion','name'=>'Shadows & Strings Ensemble','venue'=>'The Velvet Chamber','price'=>18.50,'color'=>'linear-gradient(135deg,#0d1f1a,#1a3530)'],
-            ['id'=>3,'date'=>'2024-10-18','category'=>'Dramatic Arts','name'=>"The Alchemist's Monologue",'venue'=>'Drama Theater South','price'=>0,'color'=>'linear-gradient(135deg,#1f1510,#3a2010)'],
-            ['id'=>4,'date'=>'2024-10-20','category'=>'Visual Media','name'=>'Illumination Fest: VR Expo','venue'=>'Innovation Gallery','price'=>12,'color'=>'linear-gradient(135deg,#0d0d2f,#1a1a5f)'],
-            ['id'=>5,'date'=>'2024-10-22','category'=>'Literary Arts','name'=>'Midnight Poetry & Jazz','venue'=>'Founders Library','price'=>15,'color'=>'linear-gradient(135deg,#1f1510,#3a2508)'],
-            ['id'=>6,'date'=>'2024-10-25','category'=>'Modern Sculpture','name'=>'Future Forms: Kinetic Art','venue'=>'Design Atrium','price'=>10,'color'=>'linear-gradient(135deg,#0d1a1f,#0a2a35)'],
-        ];
-        @endphp
-        @foreach($dummies as $d)
-        <a href="{{ route('events.show', $d['id']) }}" class="event-card">
-            <div class="card-thumb">
-                <div class="card-thumb-bg" style="background: {{ $d['color'] }};"></div>
-                <div class="date-badge">
-                    <div class="d">{{ \Carbon\Carbon::parse($d['date'])->format('d') }}</div>
-                    <div class="m">{{ \Carbon\Carbon::parse($d['date'])->format('M') }}</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="card-category">{{ $d['category'] }}</div>
-                <div class="card-title">{{ $d['name'] }}</div>
-                <div class="card-venue">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    {{ $d['venue'] }}
-                </div>
-                <div class="card-footer">
-                    @if($d['price'] == 0)
-                        <span class="card-price free">FREE</span>
-                    @else
-                        <span class="card-price">${{ number_format($d['price'], 2) }}</span>
-                    @endif
-                    <span class="btn-book">Book Now</span>
-                </div>
-            </div>
-        </a>
-        @endforeach
+        <div class="empty-state">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h3>No Events Found</h3>
+            <p>Try adjusting your search or filter criteria.</p>
+        </div>
     @endforelse
 </div>
 
-{{-- Pagination (only shown when $events is a Paginator instance) --}}
+{{-- Pagination --}}
 @if(isset($events) && is_object($events) && method_exists($events, 'hasPages') && $events->hasPages())
 <div style="margin-top:36px; display:flex; justify-content:center;">
     {{ $events->appends(request()->query())->links() }}
