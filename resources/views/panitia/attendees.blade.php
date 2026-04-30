@@ -1,4 +1,4 @@
-@extends('panitia.layouts')
+@extends('panitia.layout')
 
 @section('content')
 

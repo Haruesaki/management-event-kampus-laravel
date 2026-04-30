@@ -57,7 +57,7 @@
 <body class="flex">
 
 <!-- SIDEBAR -->
-<div class="w-64 h-screen p-6 sidebar flex flex-col justify-between border-r border-[#1c1c24]">
+<div class="w-64 h-screen p-6 bg-black sidebar flex flex-col justify-between fixed top-0 left-0">
 
     <!-- TOP -->
     <div>
@@ -140,7 +140,7 @@
 </div>
 
 <!-- CONTENT -->
-<div class="flex-1 p-6">
+<div class="flex-1 p-6 ml-64">
     @yield('content')
 </div>
 
