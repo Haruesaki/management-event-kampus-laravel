@@ -1,36 +1,83 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+@extends('layouts.app')
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+@section('content')
+<head>
+    <title>Event Central</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+    <style>
+        body {
+            background: radial-gradient(circle at top, #1a1333, #0b0719);
+            color: white;
+        }
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            border-radius: 8px;
+            color: #aaa;
+            transition: 0.2s;
+        }
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-    </body>
-</html>
+        .sidebar a:hover {
+            background: #1f163a;
+            color: white;
+        }
+
+        .active {
+            color: #c084fc;
+            font-weight: bold;
+            background: #1f163a;
+        }
+    </style>
+</head>
+
+<body class="flex">
+
+<!-- SIDEBAR -->
+<div class="w-64 h-screen p-6 bg-black sidebar flex flex-col justify-between">
+
+    <div>
+        <h1 class="text-xl font-bold mb-8">Event Central</h1>
+
+        <ul class="space-y-3">
+
+            <li>
+                <a href="{{ route('panitia.dashboard') }}"
+                   class="{{ request()->routeIs('panitia.dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('panitia.attendees') }}"
+                   class="{{ request()->routeIs('panitia.attendees') ? 'active' : '' }}">
+                    Attendees
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('panitia.event.create') }}"
+                   class="{{ request()->routeIs('panitia.event.create') ? 'active' : '' }}">
+                    + Create Event
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+    <div>
+        <a href="#" class="text-gray-400 text-sm">Logout</a>
+    </div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="flex-1 p-6">
+    @yield('content')
+</div>
+
+</body>
+@endsection

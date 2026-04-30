@@ -1,28 +1,23 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/dashboard');
+    return redirect()->route('panitia.attendees');
 });
 
-Route::get('/dashboard', function () {
-    return view('panitia.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-require __DIR__.'/auth.php';
-
-Route::prefix('panitia')->middleware(['auth','role:panitia'])->group(function(){
+Route::prefix('panitia')->group(function(){
 
     Route::get('/dashboard', function () {
         return view('panitia.dashboard');
     })->name('panitia.dashboard');
+
+    Route::get('/attendees', function () {
+        return view('panitia.attendees');
+    })->name('panitia.attendees');
+
+    Route::get('/create', function () {
+        return view('panitia.create');
+    })->name('panitia.event.create');
 
 });
