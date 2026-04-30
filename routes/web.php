@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('panitia.attendees');
+    return redirect()->route('panitia.dashboard');
 });
 
 Route::prefix('panitia')->group(function(){
