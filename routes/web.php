@@ -8,7 +8,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('panitia.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -18,3 +18,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::prefix('panitia')->middleware(['auth','role:panitia'])->group(function(){
+
+    Route::get('/dashboard', function () {
+        return view('panitia.dashboard');
+    })->name('panitia.dashboard');
+
+});
