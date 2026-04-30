@@ -10,7 +10,7 @@
     <!-- HERO (ambil dari user dashboard) -->
     <div class="relative rounded-2xl overflow-hidden glow-card">
 
-        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d"
+        <img src="{{ asset('images/megawati.jpg') }}"
              class="w-full h-56 object-cover opacity-40">
 
         <div class="absolute inset-0 p-8 flex flex-col justify-center">
@@ -104,12 +104,12 @@
             <!-- CARD 1 -->
             <div class="glow-card overflow-hidden">
 
-                <img src="https://images.unsplash.com/photo-1515169067865-5387ec356754"
-                     class="h-40 w-full object-cover">
+                <img src="{{ asset('images/bahlil.jpg') }}" 
+                    class="h-40 w-full object-cover">
 
                 <div class="p-4">
-                    <h3 class="font-semibold">Tech Summit</h3>
-                    <p class="text-xs text-gray-400">May 2026</p>
+                    <h3 class="font-semibold">King Bahlil</h3>
+                    <p class="text-xs text-gray-400">The King Of Gasoline</p>
 
                     <div class="flex justify-between mt-3 text-sm">
                         <span>$25</span>
@@ -122,12 +122,12 @@
             <!-- CARD 2 -->
             <div class="glow-card overflow-hidden">
 
-                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+                <img src="{{ asset('images/jokowi.jpg') }}"
                      class="h-40 w-full object-cover">
 
                 <div class="p-4">
-                    <h3 class="font-semibold">Canvas of Dreams</h3>
-                    <p class="text-xs text-gray-400">Free Event</p>
+                    <h3 class="font-semibold">Loh Kaget</h3>
+                    <p class="text-xs text-gray-400">2 Periode</p>
 
                     <div class="flex justify-between mt-3 text-sm">
                         <span>FREE</span>
@@ -140,12 +140,12 @@
             <!-- CARD 3 -->
             <div class="glow-card overflow-hidden">
 
-                <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7"
+                <img src="{{ asset('images/prabowo.jpg') }}"
                      class="h-40 w-full object-cover">
 
                 <div class="p-4">
-                    <h3 class="font-semibold">Central Amphitheater</h3>
-                    <p class="text-xs text-gray-400">Live music</p>
+                    <h3 class="font-semibold">Hidup Jokowi</h3>
+                    <p class="text-xs text-gray-400">Jendral</p>
 
                     <div class="flex justify-between mt-3 text-sm">
                         <span>Location</span>
