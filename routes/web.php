@@ -20,4 +20,8 @@ Route::prefix('panitia')->group(function(){
         return view('panitia.create');
     })->name('panitia.event.create');
 
+    Route::get('/events', function () {
+    return view('panitia.events.index');
+    })->name('panitia.events');
+
 });
