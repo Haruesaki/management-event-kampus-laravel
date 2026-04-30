@@ -1,30 +1,20 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\UserManagementController;
-Route::get('/user-management', [UserManagementController::class, 'index']);
-
 Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
     return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-use App\Http\Controllers\Panitia\DashboardController;
-use App\Http\Controllers\Panitia\EventController;
-use App\Http\Controllers\Panitia\AttendeeController;
-use App\Http\Controllers\Panitia\PaymentController;
-
-Route::prefix('panitia')->middleware(['auth','role:panitia'])->group(function(){
-
-    Route::get('/dashboard', [DashboardController::class,'index'])->name('panitia.dashboard');
-
-    Route::get('/event/create', [EventController::class,'create'])->name('panitia.event.create');
-    Route::post('/event/store', [EventController::class,'store']);
-
-    Route::get('/attendee', [AttendeeController::class,'index'])->name('panitia.attendee');
-
-    Route::get('/payment', [PaymentController::class,'index'])->name('panitia.payment');
-});
-
-
-
+require __DIR__.'/auth.php';
