@@ -8,74 +8,48 @@
 
     <style>
         body {
-            background: radial-gradient(circle at top, #0b0b12, #050308);
+            background: #0B0B0F;
             color: white;
-            font-family: 'Inter', sans-serif;
         }
 
-        /* GLASS SIDEBAR */
         .sidebar {
-            background: linear-gradient(180deg, rgba(20,20,30,0.9), rgba(10,10,15,0.95));
-            backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(255,255,255,0.05);
+            background: linear-gradient(180deg, #14121c, #0d0b14);
         }
 
-        /* MENU ITEM */
         .menu-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
-            border-radius: 14px;
+            padding: 10px 14px;
+            border-radius: 10px;
             color: #9ca3af;
             transition: all 0.25s ease;
-            position: relative;
         }
 
         .menu-item:hover {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.04);
             color: white;
-            transform: translateX(4px);
         }
 
-        /* ACTIVE ITEM */
         .menu-active {
-            background: linear-gradient(90deg, rgba(168,85,247,0.25), transparent);
-            color: #d8b4fe;
+            background: linear-gradient(90deg, rgba(168,85,247,0.25), rgba(236,72,153,0.15));
+            color: #c084fc;
+            box-shadow: inset 0 0 20px rgba(168,85,247,0.15);
         }
 
-        .menu-active::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 20%;
-            height: 60%;
-            width: 4px;
-            border-radius: 10px;
-            background: linear-gradient(to bottom, #a855f7, #ec4899);
-            box-shadow: 0 0 12px rgba(168,85,247,0.8);
+        .menu-active svg {
+            color: #c084fc;
         }
 
-        /* CREATE BUTTON */
         .create-btn {
             background: linear-gradient(90deg, #a855f7, #ec4899);
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(168,85,247,0.4);
+            box-shadow: 0 10px 25px rgba(168,85,247,0.4);
+            transition: 0.25s;
         }
 
         .create-btn:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 0 30px rgba(168,85,247,0.7);
-        }
-
-        /* ICON */
-        .icon {
-            width: 20px;
-            height: 20px;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(168,85,247,0.6);
         }
     </style>
 </head>
@@ -83,18 +57,15 @@
 <body class="flex">
 
 <!-- SIDEBAR -->
-<aside class="w-64 min-h-screen p-6 flex flex-col justify-between sidebar">
+<div class="w-64 h-screen p-6 sidebar flex flex-col justify-between border-r border-[#1c1c24]">
 
     <!-- TOP -->
     <div>
-
-        <!-- LOGO -->
         <div class="mb-10">
-            <h1 class="text-lg font-semibold text-purple-400">Event Central</h1>
-            <p class="text-xs text-gray-500 tracking-widest mt-1">MANAGEMENT SUITE</p>
+            <h1 class="text-lg font-semibold">Event Central</h1>
+            <p class="text-xs text-gray-500 tracking-widest">MANAGEMENT SUITE</p>
         </div>
 
-        <!-- MENU -->
         <ul class="space-y-3 text-sm">
 
             <!-- Dashboard -->
@@ -102,23 +73,26 @@
                 <a href="{{ route('panitia.dashboard') }}"
                    class="menu-item {{ request()->routeIs('panitia.dashboard') ? 'menu-active' : '' }}">
                     
-                    <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5"
-                        viewBox="0 0 24 24">
-                        <path d="M3 12h7V3H3v9zM14 21h7v-9h-7v9zM14 3v7h7V3h-7zM3 21h7v-7H3v7z"/>
+                    <!-- ICON -->
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="5" height="5"/>
+                        <rect x="10" y="3" width="5" height="5"/>
+                        <rect x="3" y="10" width="5" height="5"/>
+                        <rect x="10" y="10" width="5" height="5"/>
                     </svg>
 
                     Dashboard
                 </a>
             </li>
 
-            <!-- Ongoing -->
+            <!-- Ongoing Events -->
             <li>
                 <a href="#"
-                   class="menu-item text-gray-400 hover:text-white">
+                   class="menu-item">
                     
-                    <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5"
-                        viewBox="0 0 24 24">
-                        <path d="M8 7V3M16 7V3M3 11h18M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="4" width="12" height="10" rx="2"/>
+                        <line x1="3" y1="8" x2="15" y2="8"/>
                     </svg>
 
                     Ongoing Events
@@ -130,9 +104,9 @@
                 <a href="{{ route('panitia.attendees') }}"
                    class="menu-item {{ request()->routeIs('panitia.attendees') ? 'menu-active' : '' }}">
                     
-                    <svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5"
-                        viewBox="0 0 24 24">
-                        <path d="M17 20h5V4H2v16h5M17 20a4 4 0 00-8 0M17 20H9"/>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="9" cy="6" r="3"/>
+                        <path d="M3 15c1.5-3 9.5-3 12 0"/>
                     </svg>
 
                     Attendees
@@ -140,35 +114,35 @@
             </li>
 
         </ul>
-
     </div>
 
     <!-- BOTTOM -->
     <div class="space-y-5">
 
-        <!-- CREATE BUTTON -->
-        <a href="{{ route('panitia.event.create') }}" class="create-btn">
+        <!-- BUTTON -->
+        <a href="{{ route('panitia.event.create') }}"
+           class="block text-center py-3 rounded-xl font-medium create-btn">
             + Create Event
         </a>
 
         <!-- HELP -->
-        <div class="flex items-center gap-3 text-gray-400 text-sm hover:text-white cursor-pointer transition">
-            ❓ Help Center
+        <div class="text-sm text-gray-500 flex items-center gap-2 cursor-pointer hover:text-white transition">
+            <span>❓</span> Help Center
         </div>
 
         <!-- LOGOUT -->
-        <div class="flex items-center gap-3 text-gray-400 text-sm hover:text-white cursor-pointer transition">
-            ↩ Logout
+        <div class="text-sm text-gray-500 flex items-center gap-2 cursor-pointer hover:text-white transition">
+            <span>⏻</span> Logout
         </div>
 
     </div>
 
-</aside>
+</div>
 
 <!-- CONTENT -->
-<main class="flex-1 p-6">
+<div class="flex-1 p-6">
     @yield('content')
-</main>
+</div>
 
 </body>
 </html>
