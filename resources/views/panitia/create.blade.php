@@ -1,11 +1,12 @@
-@extends('panitia.layout')
+@extends('layouts.app')
 
 @section('content')
 
-<h1 class="text-2xl font-bold mb-6">Create Event</h1>
+<h1 class="text-2xl font-bold mb-6">Create Event Page</h1>
 
-<div class="card">
-    <p>Form create event nanti di sini</p>
-</div>
+<a href="{{ route('panitia.attendees') }}"
+   class="bg-gray-700 px-6 py-3 rounded-lg inline-block">
+   Back to Attendees
+</a>
 
 @endsection

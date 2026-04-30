@@ -1,6 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>Event Central</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,27 +8,48 @@
 
     <style>
         body {
-            background: radial-gradient(circle at top, #1a1333, #0b0719);
+            background: radial-gradient(circle at top, #0f0b1a, #05030d);
             color: white;
+            font-family: 'Inter', sans-serif;
         }
 
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            border-radius: 8px;
-            color: #aaa;
+        .sidebar {
+            background: #0F0F14;
+            border-right: 1px solid #1c1c24;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: #9ca3af;
             transition: 0.2s;
         }
 
-        .sidebar a:hover {
-            background: #1f163a;
+        .menu-item:hover {
+            background: #1a1a22;
             color: white;
         }
 
         .active {
+            background: #1a1a22;
             color: #c084fc;
-            font-weight: bold;
-            background: #1f163a;
+            font-weight: 500;
+        }
+
+        .create-btn {
+            background: linear-gradient(90deg, #7c3aed, #ec4899);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .create-btn:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -37,47 +57,62 @@
 <body class="flex">
 
 <!-- SIDEBAR -->
-<div class="w-64 h-screen p-6 bg-black sidebar flex flex-col justify-between">
+<aside class="w-64 min-h-screen p-6 sidebar flex flex-col justify-between">
 
+    <!-- TOP -->
     <div>
-        <h1 class="text-xl font-bold mb-8">Event Central</h1>
+        <h1 class="text-lg font-semibold mb-10 tracking-wide">
+            Event Central
+        </h1>
 
-        <ul class="space-y-3">
+        <ul class="space-y-2 text-sm">
 
+            <!-- Dashboard -->
             <li>
                 <a href="{{ route('panitia.dashboard') }}"
-                   class="{{ request()->routeIs('panitia.dashboard') ? 'active' : '' }}">
-                    Dashboard
+                   class="menu-item {{ request()->routeIs('panitia.dashboard') ? 'active' : '' }}">
+                    📊 <span>Dashboard</span>
                 </a>
             </li>
 
+            <!-- Attendees -->
             <li>
                 <a href="{{ route('panitia.attendees') }}"
-                   class="{{ request()->routeIs('panitia.attendees') ? 'active' : '' }}">
-                    Attendees
+                   class="menu-item {{ request()->routeIs('panitia.attendees') ? 'active' : '' }}">
+                    👥 <span>Attendees</span>
                 </a>
             </li>
 
+            <!-- Create -->
             <li>
                 <a href="{{ route('panitia.event.create') }}"
-                   class="{{ request()->routeIs('panitia.event.create') ? 'active' : '' }}">
-                    + Create Event
+                   class="menu-item {{ request()->routeIs('panitia.event.create') ? 'active' : '' }}">
+                    ➕ <span>Create Event</span>
                 </a>
             </li>
 
         </ul>
     </div>
 
-    <div>
-        <a href="#" class="text-gray-400 text-sm">Logout</a>
+    <!-- BOTTOM -->
+    <div class="space-y-4">
+
+        <a href="{{ route('panitia.event.create') }}" class="create-btn">
+            + Create Event
+        </a>
+
+        <p class="text-xs text-gray-500 hover:text-white cursor-pointer transition">
+            Logout
+        </p>
+
     </div>
 
-</div>
+</aside>
 
 <!-- CONTENT -->
-<div class="flex-1 p-6">
+<main class="flex-1 p-6">
     @yield('content')
-</div>
+</main>
 
 </body>
-@endsection
+</html>
