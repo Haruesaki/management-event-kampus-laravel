@@ -1,126 +1,204 @@
-<x-app-layout>
-    <div class="p-8 text-white min-h-screen" style="background-color: #121214;">
-        <div class="flex justify-between items-end mb-8">
-            <div>
-                <h2 class="text-purple-400 text-xs font-bold tracking-widest uppercase mb-1">Management</h2>
-                <h1 class="text-4xl font-bold">Curated Events</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Curated Events</title>
+    <style>
+        :root {
+            --bg-base: #050505; --bg-main: #121214; --bg-card: #1c1c21;
+            --border: #27272a; --text-main: #ffffff; --text-muted: #9ca3af;
+            --purple: #a855f7; --pink: #ec4899;
+            --gradient: linear-gradient(to right, var(--purple), var(--pink));
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { display: flex; height: 100vh; background-color: var(--bg-base); color: var(--text-main); overflow: hidden; }
+        
+        .sidebar { width: 260px; padding: 30px 20px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .main-content { flex: 1; padding: 40px; background-color: var(--bg-main); overflow-y: auto; }
+        
+        .logo { font-size: 20px; font-weight: bold; color: var(--pink); letter-spacing: 1px; margin-bottom: 40px; }
+        .logo span { color: var(--text-main); }
+        .user-title { color: var(--purple); font-weight: bold; font-size: 14px; }
+        .user-subtitle { color: var(--text-muted); font-size: 11px; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px;}
+        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 15px; }
+        .nav-item { color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 10px; border-radius: 8px; transition: 0.3s; }
+        .nav-item.active { background-color: rgba(255,255,255,0.05); color: var(--purple); border-left: 3px solid var(--purple); border-radius: 0 8px 8px 0; }
+
+        /* Header Area */
+        .top-section { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        .title h4 { font-size: 11px; color: var(--purple); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+        .title h1 { font-size: 36px; font-weight: bold; }
+        .btn-add { background: var(--gradient); border: none; padding: 12px 24px; border-radius: 25px; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(168,85,247,0.3); }
+
+        .layout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+
+        /* Tabs & List */
+        .tabs-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .tabs { display: flex; gap: 30px; }
+        .tab { padding: 15px 0; font-size: 14px; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab.active { color: white; border-bottom-color: var(--purple); font-weight: bold; }
+        .tab-info { font-size: 11px; color: var(--text-muted); }
+
+        .event-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; gap: 20px; margin-bottom: 15px; position: relative;}
+        .event-img { width: 180px; height: 110px; background: #333; border-radius: 8px; }
+        .event-badge { position: absolute; top: 15px; right: 15px; font-size: 9px; font-weight: bold; letter-spacing: 1px; padding: 4px 8px; border-radius: 4px; background: var(--bg-base); color: var(--text-muted); }
+        .event-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 0;}
+        .event-title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+        .event-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 15px; }
+        .event-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+        .price-wrap { display: flex; align-items: center; gap: 10px; }
+        .price { font-size: 22px; font-weight: bold; }
+        .price-badge { font-size: 9px; font-weight: bold; color: var(--pink); background: rgba(236,72,153,0.1); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(236,72,153,0.3);}
+        .actions { color: var(--text-muted); font-size: 16px; letter-spacing: 10px; }
+
+        /* Form Right Side */
+        .form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 25px; }
+        .f-title { font-size: 20px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;}
+        .f-title span { color: var(--purple); }
+        
+        .dropzone { border: 2px dashed var(--border); border-radius: 12px; padding: 30px; text-align: center; margin-bottom: 25px; }
+        .dropzone p { font-size: 13px; color: var(--text-muted); margin-bottom: 5px;}
+        .dropzone p span { color: var(--purple); cursor: pointer; }
+        .dropzone small { font-size: 9px; color: #666; letter-spacing: 1px; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; font-size: 10px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .form-input { width: 100%; background: var(--bg-base); border: 1px solid var(--border); border-radius: 8px; padding: 10px 15px; color: white; font-size: 13px; outline: none;}
+        .form-input:focus { border-color: var(--purple); }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .btn-publish { background: var(--gradient); border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        .btn-draft { background: var(--bg-base); border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">Campus<span>Admin</span></div>
+        <div class="user-title">Nocturnal Curator</div>
+        <div class="user-subtitle">System Administrator</div>
+        <ul class="nav-menu">
+            <a href="/admin/dashboard.blade.php"><li class="nav-item active">Dashboard</li></a>
+            <a href="/admin/users/index.blade.php"><li class="nav-item">User Management</li></a>
+            <a href="/admin/events/index.blade.php"><li class="nav-item">Event Management</li></a>
+            <a href="/admin/users/bulk.blade.php"><li class="nav-item">Bulk Operations</li></a>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="top-section">
+            <div class="title">
+                <h4>Management</h4>
+                <h1>Curated Events</h1>
             </div>
-            <button class="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg text-sm font-semibold shadow-[0_0_15px_rgba(168,85,247,0.4)]">+ Create New Event</button>
+            <button class="btn-add">+ Create New Event</button>
         </div>
 
-        <div class="grid grid-cols-3 gap-8">
-            <!-- Left List -->
-            <div class="col-span-2">
-                <!-- Tabs -->
-                <div class="flex items-center justify-between border-b border-gray-800 mb-6">
-                    <div class="flex space-x-6 text-sm">
-                        <button class="py-3 border-b-2 border-purple-500 text-white font-semibold">All Events</button>
-                        <button class="py-3 text-gray-400 hover:text-white">Upcoming</button>
-                        <button class="py-3 text-gray-400 hover:text-white">Finished</button>
+        <div class="layout-grid">
+            <div class="col-list">
+                <div class="tabs-header">
+                    <div class="tabs">
+                        <div class="tab active">All Events</div>
+                        <div class="tab">Upcoming</div>
+                        <div class="tab">Finished</div>
                     </div>
-                    <div class="text-xs text-gray-500">Showing 24 Events</div>
+                    <div class="tab-info">Showing 24 Events</div>
                 </div>
 
-                <!-- Event Cards -->
-                <div class="space-y-4">
-                    <!-- Event 1 -->
-                    <div class="bg-[#1c1c21] rounded-xl border border-gray-800 p-4 flex space-x-6 relative overflow-hidden">
-                        <div class="absolute top-4 right-4 bg-gray-800 text-gray-300 text-[10px] px-2 py-1 rounded font-bold tracking-wider">UPCOMING</div>
-                        <div class="w-48 h-32 bg-purple-900 rounded-lg bg-cover bg-center" style="background-image: url('/path/to/event1.jpg');"></div>
-                        <div class="flex flex-col justify-between py-1 flex-1">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2">Neo-Retro Synthwave Night</h3>
-                                <div class="flex items-center text-xs text-gray-400 space-x-4">
-                                    <span>📅 Oct 24, 2024</span>
-                                    <span>📍 Main Auditorium</span>
-                                    <span>👥 450/500 Quota</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-end">
-                                <div class="flex items-center space-x-3">
-                                    <span class="text-xl font-bold">$25.00</span>
-                                    <span class="bg-pink-500/20 text-pink-400 text-[10px] px-2 py-1 rounded font-bold">PAID ENTRY</span>
-                                </div>
-                                <div class="flex space-x-3 text-gray-400">
-                                    <button class="hover:text-white">✏️</button>
-                                    <button class="hover:text-red-500">🗑</button>
-                                </div>
+                <div class="event-card">
+                    <div class="event-badge">UPCOMING</div>
+                    <div class="event-img" style="background: #4c1d95;"></div>
+                    <div class="event-info">
+                        <div>
+                            <div class="event-title">Neo-Retro Synthwave Night</div>
+                            <div class="event-meta">
+                                <span>📅 Oct 24, 2024</span>
+                                <span>📍 Main Auditorium</span>
+                                <span>👥 450/500 Quota</span>
                             </div>
                         </div>
+                        <div class="event-bottom">
+                            <div class="price-wrap">
+                                <div class="price">$25.00</div>
+                                <div class="price-badge">PAID ENTRY</div>
+                            </div>
+                            <div class="actions">✎ 🗑</div>
+                        </div>
                     </div>
-                    
-                    <!-- Event 2 -->
-                    <div class="bg-[#1c1c21] rounded-xl border border-gray-800 p-4 flex space-x-6 relative opacity-75">
-                        <div class="absolute top-4 right-4 bg-gray-800 text-gray-500 text-[10px] px-2 py-1 rounded font-bold tracking-wider">FINISHED</div>
-                        <div class="w-48 h-32 bg-gray-800 rounded-lg bg-cover bg-center" style="background-image: url('/path/to/event2.jpg');"></div>
-                        <div class="flex flex-col justify-between py-1 flex-1">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-300 mb-2">Global Tech Symposium</h3>
-                                <div class="flex items-center text-xs text-gray-500 space-x-4">
-                                    <span>📅 Sep 12, 2024</span>
-                                    <span>📍 Hall B</span>
-                                    <span>👥 120/120 Quota</span>
-                                </div>
+                </div>
+
+                <div class="event-card" style="opacity: 0.7;">
+                    <div class="event-badge">FINISHED</div>
+                    <div class="event-img"></div>
+                    <div class="event-info">
+                        <div>
+                            <div class="event-title">Global Tech Symposium</div>
+                            <div class="event-meta">
+                                <span>📅 Sep 12, 2024</span>
+                                <span>📍 Hall B</span>
+                                <span>👥 120/120 Quota</span>
                             </div>
-                            <div class="flex justify-between items-end">
-                                <span class="text-xl font-bold text-gray-400">FREE</span>
-                                <button class="text-gray-500 hover:text-white">👁</button>
-                            </div>
+                        </div>
+                        <div class="event-bottom">
+                            <div class="price">FREE</div>
+                            <div class="actions">👁</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Sidebar: Event Curator Form -->
-            <div class="bg-[#1c1c21] rounded-2xl border border-gray-800 p-6 h-fit">
-                <h3 class="text-xl font-bold flex items-center space-x-2 mb-6">
-                    <span class="text-purple-400">✨</span> <span>Event Curator</span>
-                </h3>
-                
-                <div class="border-2 border-dashed border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center text-center mb-6">
-                    <div class="text-gray-500 mb-2">🖼</div>
-                    <p class="text-sm text-gray-400">Drop event poster or <span class="text-purple-400 cursor-pointer">browse</span></p>
-                    <p class="text-[10px] text-gray-600 mt-1">RECOMMENDED: 1200X800PX</p>
-                </div>
+            <div class="col-form">
+                <div class="form-card">
+                    <div class="f-title"><span>✨</span> Event Curator</div>
+                    
+                    <div class="dropzone">
+                        <div style="font-size: 24px; margin-bottom:10px; color:var(--text-muted)">🖼</div>
+                        <p>Drop event poster or <span>browse</span></p>
+                        <small>RECOMMENDED: 1200X800PX</small>
+                    </div>
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Event Title</label>
-                        <input type="text" placeholder="Enter a cinematic title..." class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                    <div class="form-group">
+                        <label class="form-label">Event Title</label>
+                        <input type="text" class="form-input" placeholder="Enter a cinematic title...">
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+
+                    <div class="grid-2 form-group">
                         <div>
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Date</label>
-                            <input type="date" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none text-gray-400">
+                            <label class="form-label">Date</label>
+                            <input type="text" class="form-input" placeholder="mm/dd/yyyy">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Location</label>
-                            <input type="text" placeholder="Venue Hall" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-input" placeholder="Venue Hall">
                         </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-4">
+
+                    <div class="grid-3 form-group">
                         <div>
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Quota</label>
-                            <input type="number" placeholder="50" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none">
+                            <label class="form-label">Quota</label>
+                            <input type="text" class="form-input" placeholder="50">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Price ($)</label>
-                            <input type="text" placeholder="0.00" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none">
+                            <label class="form-label">Price ($)</label>
+                            <input type="text" class="form-input" placeholder="0.00">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Payment</label>
-                            <select class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none appearance-none">
+                            <label class="form-label">Payment</label>
+                            <select class="form-input" style="appearance: none;">
                                 <option>Active</option>
                             </select>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-2 gap-4 mt-8">
-                    <button class="bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg font-bold text-sm">Publish Event</button>
-                    <button class="bg-gray-800 hover:bg-gray-700 py-3 rounded-lg font-bold text-sm transition">Draft</button>
+                    <div class="btn-row">
+                        <button class="btn-publish">Publish Event</button>
+                        <button class="btn-draft">Draft</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</body>
+</html>
