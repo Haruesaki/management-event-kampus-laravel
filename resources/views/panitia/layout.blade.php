@@ -12,7 +12,6 @@
             color: white;
         }
 
-        /* SIDEBAR */
         .sidebar {
             background: linear-gradient(180deg, #0f0f14, #0a0a10);
             border-right: 1px solid rgba(255,255,255,0.05);
@@ -61,7 +60,6 @@
             box-shadow: 0 0 35px rgba(168,85,247,0.8);
         }
 
-        /* NAVBAR */
         .navbar {
             position: fixed;
             top: 0;
@@ -98,7 +96,6 @@
             height: 18px;
         }
 
-        /* CARD */
         .glow-card {
             background: #15151D;
             border-radius: 16px;
@@ -184,9 +181,13 @@
             Help Center
         </div>
 
-        <div class="text-sm text-gray-500 hover:text-red-400 cursor-pointer">
-            Logout
-        </div>
+        {{-- Logout Sidebar --}}
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="text-sm text-gray-500 hover:text-red-400 cursor-pointer w-full text-left">
+                Logout
+            </button>
+        </form>
     </div>
 
 </aside>
@@ -201,75 +202,79 @@
     <div class="flex items-center gap-4">
 
         <!-- NOTIF -->
-<div class="nav-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"/>
-        <path d="M13.73 21a2 2 0 01-3.46 0"/>
-    </svg>
-</div>
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"/>
+                <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+        </div>
 
-<!-- SETTINGS -->
-<div class="nav-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06
-                 a2 2 0 01-2.83 2.83l-.06-.06
-                 a1.65 1.65 0 00-1.82-.33
-                 a1.65 1.65 0 00-1 1.51V21
-                 a2 2 0 01-2 2h-1
-                 a2 2 0 01-2-2v-.09
-                 a1.65 1.65 0 00-1-1.51
-                 a1.65 1.65 0 00-1.82.33l-.06.06
-                 a2 2 0 01-2.83-2.83l.06-.06
-                 a1.65 1.65 0 00.33-1.82
-                 a1.65 1.65 0 00-1.51-1H3
-                 a2 2 0 01-2-2v-1
-                 a2 2 0 012-2h.09
-                 a1.65 1.65 0 001.51-1
-                 a1.65 1.65 0 00-.33-1.82l-.06-.06
-                 a2 2 0 012.83-2.83l.06.06
-                 a1.65 1.65 0 001.82.33h0
-                 a1.65 1.65 0 001-1.51V3
-                 a2 2 0 012-2h1
-                 a2 2 0 012 2v.09
-                 a1.65 1.65 0 001 1.51
-                 a1.65 1.65 0 001.82-.33l.06-.06
-                 a2 2 0 012.83 2.83l-.06.06
-                 a1.65 1.65 0 00-.33 1.82v0
-                 a1.65 1.65 0 001.51 1H21
-                 a2 2 0 012 2v1
-                 a2 2 0 01-2 2h-.09
-                 a1.65 1.65 0 00-1.51 1z"/>
-    </svg>
-</div>
+        <!-- SETTINGS -->
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06
+                         a2 2 0 01-2.83 2.83l-.06-.06
+                         a1.65 1.65 0 00-1.82-.33
+                         a1.65 1.65 0 00-1 1.51V21
+                         a2 2 0 01-2 2h-1
+                         a2 2 0 01-2-2v-.09
+                         a1.65 1.65 0 00-1-1.51
+                         a1.65 1.65 0 00-1.82.33l-.06.06
+                         a2 2 0 01-2.83-2.83l.06-.06
+                         a1.65 1.65 0 00.33-1.82
+                         a1.65 1.65 0 00-1.51-1H3
+                         a2 2 0 01-2-2v-1
+                         a2 2 0 012-2h.09
+                         a1.65 1.65 0 001.51-1
+                         a1.65 1.65 0 00-.33-1.82l-.06-.06
+                         a2 2 0 012.83-2.83l.06.06
+                         a1.65 1.65 0 001.82.33h0
+                         a1.65 1.65 0 001-1.51V3
+                         a2 2 0 012-2h1
+                         a2 2 0 012 2v.09
+                         a1.65 1.65 0 001 1.51
+                         a1.65 1.65 0 001.82-.33l.06-.06
+                         a2 2 0 012.83 2.83l-.06.06
+                         a1.65 1.65 0 00-.33 1.82v0
+                         a1.65 1.65 0 001.51 1H21
+                         a2 2 0 012 2v1
+                         a2 2 0 01-2 2h-.09
+                         a1.65 1.65 0 00-1.51 1z"/>
+            </svg>
+        </div>
 
-<!-- USER AVATAR -->
-<div class="relative group cursor-pointer">
+        <!-- USER AVATAR + DROPDOWN -->
+        <div class="relative group cursor-pointer">
 
-    <div class="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-sm font-semibold shadow-lg shadow-purple-500/30 group-hover:scale-105 transition">
-        NC
-    </div>
+            <div class="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-sm font-semibold shadow-lg shadow-purple-500/30 group-hover:scale-105 transition">
+                NC
+            </div>
 
-    <!-- DROPDOWN -->
-    <div class="absolute right-0 mt-3 w-44 bg-[#15151D] border border-[#1c1c24] rounded-xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 shadow-xl">
+            <!-- DROPDOWN -->
+            <div class="absolute right-0 mt-3 w-44 bg-[#15151D] border border-[#1c1c24] rounded-xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 shadow-xl">
 
-        <a href="#" class="block px-4 py-2 text-sm hover:bg-[#1c1c24] rounded-t-xl">
-            Profile
-        </a>
+                <a href="#" class="block px-4 py-2 text-sm hover:bg-[#1c1c24] rounded-t-xl">
+                    Profile
+                </a>
 
-        <a href="#" class="block px-4 py-2 text-sm hover:bg-[#1c1c24]">
-            Settings
-        </a>
+                <a href="#" class="block px-4 py-2 text-sm hover:bg-[#1c1c24]">
+                    Settings
+                </a>
 
-        <div class="border-t border-[#1c1c24] my-1"></div>
+                <div class="border-t border-[#1c1c24] my-1"></div>
 
-        <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-[#1c1c24] rounded-b-xl">
-            Logout
-        </a>
+                {{-- Logout Dropdown --}}
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#1c1c24] rounded-b-xl">
+                        Logout
+                    </button>
+                </form>
 
-    </div>
+            </div>
 
-</div>
+        </div>
 
     </div>
 

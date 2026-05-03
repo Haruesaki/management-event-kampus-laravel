@@ -309,8 +309,7 @@
             <a href="#">Schedule</a>
             <a href="#">About</a>
             @auth
-                <a href="{{ route('dashboard') }}" class="btn-outline">Dashboard</a>
-            @else
+<a href="{{ route('panitia.dashboard') }}" class="btn-outline">Dashboard</a>            @else
                 <a href="{{ route('login') }}" class="btn-outline">Sign In</a>
             @endauth
         </nav>

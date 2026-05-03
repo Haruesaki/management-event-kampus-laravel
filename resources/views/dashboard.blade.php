@@ -283,11 +283,11 @@
 {{-- Explore Categories --}}
 <div class="section-row">
     <h2 class="section-title">Explore Categories</h2>
-    <a href="{{ route('events.index') }}" class="view-all">View All</a>
+<a href="{{ route('user.events') }}" class="view-all">View All</a>
 </div>
 
 <div class="categories-grid">
-    <a href="{{ route('events.index', ['category' => 'music']) }}" class="cat-card">
+<a href="{{ route('user.events', ['category' => 'music']) }}" class="cat-card">
         <div class="cat-icon">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
@@ -295,7 +295,7 @@
         </div>
         <div class="cat-name">Music</div>
     </a>
-    <a href="{{ route('events.index', ['category' => 'seminar']) }}" class="cat-card">
+    <a href="{{ route('user.events', ['category' => 'seminar']) }}" class="cat-card">
         <div class="cat-icon">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
@@ -303,7 +303,7 @@
         </div>
         <div class="cat-name">Seminar</div>
     </a>
-    <a href="{{ route('events.index', ['category' => 'workshop']) }}" class="cat-card">
+    <a href="{{ route('user.events', ['category' => 'workshop']) }}" class="cat-card">
         <div class="cat-icon">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
@@ -311,7 +311,7 @@
         </div>
         <div class="cat-name">Workshop</div>
     </a>
-    <a href="{{ route('events.index', ['category' => 'sports']) }}" class="cat-card">
+    <a href="{{ route('user.events', ['category' => 'sports']) }}" class="cat-card">
         <div class="cat-icon">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <circle cx="12" cy="12" r="10" stroke-linecap="round"/>

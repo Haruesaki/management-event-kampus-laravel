@@ -87,6 +87,7 @@ class EventController extends Controller
     public function index(Request $request)
     {
         $events = $this->dummyEvents();
+        $faculties = [];
 
         // Simple category filter
         if ($request->filled('category')) {
@@ -104,7 +105,10 @@ class EventController extends Controller
             });
         }
 
-        return view('events.index', ['events' => array_values($events)]);
+        return view('events.index', 
+        [
+        'events'    => array_values($events),
+        'faculties' => $faculties,]);
     }
 
     /**

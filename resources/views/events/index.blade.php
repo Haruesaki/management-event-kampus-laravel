@@ -183,8 +183,7 @@
 </div>
 
 {{-- Filter Bar --}}
-<form method="GET" action="{{ route('events.index') }}">
-    <div class="filter-bar">
+<form method="GET" action="{{ route('user.events') }}">    <div class="filter-bar">
         <div class="filter-search">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>

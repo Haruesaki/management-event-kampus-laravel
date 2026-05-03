@@ -410,7 +410,7 @@
         <div class="cta-title">Looking for more?</div>
         <p class="cta-desc">Explore curated upcoming events tailored to your unique taste.</p>
     </div>
-    <a href="{{ route('events.index') }}" class="btn-cta">Explore Discovery</a>
+<a href="{{ route('user.events') }}" class="btn-cta">Explore Discovery</a>
 </div>
 
 @endsection

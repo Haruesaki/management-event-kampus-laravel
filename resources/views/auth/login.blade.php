@@ -72,12 +72,10 @@
         </form>
 
         <div class="auth-footer">
-            Don't have an account? <a href="{{ route('register') }}">Register</a>
+            Don't have an account? <a href="#">Register</a>
         </div>
     </div>
 
-    <a href="{{ route('dashboard') }}" class="back-link">
-        ← Back to Gallery
-    </a>
+    <a href="{{ route('panitia.dashboard') }}" class="back-link">← Back to Gallery</a>
 </div>
 @endsection
