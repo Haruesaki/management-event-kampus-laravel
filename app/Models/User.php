@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -44,5 +45,37 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Relasi ke model Role.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Helper: cek apakah user adalah Admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role_id === 1;
+    }
+
+    /**
+     * Helper: cek apakah user adalah Panitia
+     */
+    public function isPanitia(): bool
+    {
+        return $this->role_id === 2;
+    }
+
+    /**
+     * Helper: cek apakah user adalah Peserta
+     */
+    public function isPeserta(): bool
+    {
+        return $this->role_id === 3;
     }
 }

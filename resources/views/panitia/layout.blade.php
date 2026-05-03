@@ -184,9 +184,12 @@
             Help Center
         </div>
 
-        <div class="text-sm text-gray-500 hover:text-red-400 cursor-pointer">
-            Logout
-        </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="text-sm text-gray-500 hover:text-red-400 cursor-pointer w-full text-left">
+                Logout
+            </button>
+        </form>
     </div>
 
 </aside>
@@ -263,9 +266,12 @@
 
         <div class="border-t border-[#1c1c24] my-1"></div>
 
-        <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-[#1c1c24] rounded-b-xl">
-            Logout
-        </a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#1c1c24] rounded-b-xl">
+                Logout
+            </button>
+        </form>
 
     </div>
 

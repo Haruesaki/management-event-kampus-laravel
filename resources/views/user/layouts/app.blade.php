@@ -222,7 +222,7 @@
             <div class="brand-sub">Digital Curator</div>
         </div>
         <nav class="sidebar-nav">
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('home') || request()->routeIs('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('user.dashboard') }}" class="nav-item {{ request()->routeIs('home') || request()->routeIs('user.dashboard') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 13a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/>
                 </svg>
@@ -247,6 +247,19 @@
                 Profile
             </a>
         </nav>
+        @auth
+        <div style="padding: 20px 12px; margin-top: auto;">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="nav-item" style="width: 100%; border: none; background: rgba(239,68,68,0.1); color: #ef4444; cursor: pointer; justify-content: flex-start;">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </form>
+        </div>
+        @endauth
     </aside>
 
     {{-- Main wrapper --}}
@@ -256,7 +269,7 @@
             <div style="display:flex; align-items:center; gap:32px;">
                 <span class="topbar-brand">Ethereal Auditorium</span>
                 <nav class="topbar-nav">
-                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('home') || request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('user.dashboard') }}" class="{{ request()->routeIs('home') || request()->routeIs('user.dashboard') ? 'active' : '' }}">Dashboard</a>
                     <a href="#">Schedule</a>
                     <a href="#">Venues</a>
                 </nav>
