@@ -41,14 +41,15 @@
         margin-bottom: 18px;
     }
     .hero-title {
-        font-family: 'Syne', sans-serif;
+        font-family: 'Poppins', sans-serif;
         font-size: 38px; font-weight: 800;
         line-height: 1.05;
         margin-bottom: 14px;
+        color: #ffffff;
     }
     .hero-title span { color: var(--accent); }
     .hero-desc {
-        font-size: 14px; color: var(--text-2);
+        font-size: 14px; color: #d4cef0;
         line-height: 1.65;
         margin-bottom: 28px;
         max-width: 420px;
@@ -89,14 +90,15 @@
         margin-bottom: 18px;
     }
     .section-title {
-        font-family: 'Syne', sans-serif;
+        font-family: 'Poppins', sans-serif;
         font-size: 20px; font-weight: 700;
+        color: #ffffff;
     }
     .view-all {
-        font-size: 13px; color: var(--text-2);
+        font-size: 13px; color: #b0a8cc;
         text-decoration: none; transition: color 0.2s;
     }
-    .view-all:hover { color: var(--accent); }
+    .view-all:hover { color: #ffffff; }
 
     /* Categories */
     .categories-grid {
@@ -125,8 +127,9 @@
     }
     .cat-icon svg { width: 20px; height: 20px; color: var(--accent); }
     .cat-name {
-        font-size: 13px; font-weight: 500;
-        color: var(--text-2);
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px; font-weight: 600;
+        color: #d4cef0;
     }
 
     /* Events carousel */
@@ -180,16 +183,17 @@
     }
     .event-venue-tag svg { width: 10px; height: 10px; }
     .event-name {
-        font-family: 'Syne', sans-serif;
+        font-family: 'Poppins', sans-serif;
         font-size: 15px; font-weight: 700;
         margin-bottom: 10px; line-height: 1.3;
+        color: #ffffff;
     }
     .event-footer {
         display: flex; align-items: center; justify-content: space-between;
     }
     .event-price {
         font-size: 15px; font-weight: 700;
-        color: var(--text-1);
+        color: #ffffff;
     }
     .event-price.free { color: var(--accent); }
     .btn-book {
@@ -225,8 +229,8 @@
         transform: translate(-50%,-50%) rotate(-45deg);
     }
     .venue-info { padding: 16px; flex: 1; }
-    .venue-name { font-family: 'Syne',sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-    .venue-desc { font-size: 12px; color: var(--text-2); line-height: 1.55; margin-bottom: 12px; }
+    .venue-name { font-family: 'Poppins',sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #ffffff; }
+    .venue-desc { font-size: 12px; color: #b0a8cc; line-height: 1.55; margin-bottom: 12px; }
     .venue-directions {
         font-size: 12px; font-weight: 600;
         color: var(--accent); text-decoration: none;
@@ -266,7 +270,7 @@
             in the heart of the main campus plaza.
         </p>
         <div class="hero-actions">
-            <a href="{{ route('events.show', 1) }}" class="btn-filled">
+            <a href="#" class="btn-filled">
                 Get Tickets Now →
             </a>
             <a href="#" class="btn-ghost">

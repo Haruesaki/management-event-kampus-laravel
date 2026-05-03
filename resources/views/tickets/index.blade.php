@@ -6,14 +6,14 @@
     /* Page header */
     .bookings-header { margin-bottom: 36px; }
     .bookings-label {
-        font-size: 10px; font-weight: 600; color: var(--text-3);
+        font-size: 10px; font-weight: 600; color: #9b92bc;
         text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 6px;
     }
     .bookings-title {
-        font-family: 'Syne', sans-serif;
-        font-size: 36px; font-weight: 800; margin-bottom: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 36px; font-weight: 800; margin-bottom: 8px; color: #ffffff;
     }
-    .bookings-desc { font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 520px; }
+    .bookings-desc { font-size: 14px; color: #d4cef0; line-height: 1.6; max-width: 520px; }
 
     /* Section heading */
     .section-row {
@@ -22,7 +22,8 @@
     }
     .section-heading {
         display: flex; align-items: center; gap: 8px;
-        font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+        font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700;
+        color: #ffffff;
     }
     .active-dot {
         width: 8px; height: 8px; border-radius: 50%;
@@ -30,12 +31,12 @@
         box-shadow: 0 0 6px rgba(34,197,94,0.6);
     }
     .count-badge {
-        font-size: 13px; font-weight: 500; color: var(--text-3);
+        font-size: 13px; font-weight: 500; color: #b0a8cc;
     }
     .link-subtle {
-        font-size: 13px; color: var(--text-2); text-decoration: none; transition: color 0.2s;
+        font-size: 13px; color: #d4cef0; text-decoration: none; transition: color 0.2s;
     }
-    .link-subtle:hover { color: var(--accent); }
+    .link-subtle:hover { color: #c47fff; }
 
     /* Active tickets grid */
     .active-tickets-grid {
@@ -88,20 +89,20 @@
         margin-bottom: 4px;
     }
     .ticket-event-name {
-        font-family: 'Syne', sans-serif;
+        font-family: 'Poppins', sans-serif;
         font-size: 17px; font-weight: 700;
-        line-height: 1.2; margin-bottom: 4px;
+        line-height: 1.2; margin-bottom: 4px; color: #ffffff;
     }
     .ticket-datetime {
-        font-size: 12px; color: var(--text-3); margin-bottom: 14px;
+        font-size: 12px; color: #b0a8cc; margin-bottom: 14px;
     }
     .ticket-seat-row {
         display: grid; grid-template-columns: repeat(3, 1fr);
         gap: 8px; margin-bottom: 14px;
     }
     .seat-item { }
-    .seat-label { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
-    .seat-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+    .seat-label { font-size: 9px; color: #9b92bc; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
+    .seat-val { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 800; color: #ffffff; }
     .download-btn {
         display: inline-flex; align-items: center; gap: 6px;
         font-size: 12px; font-weight: 600;
@@ -139,8 +140,8 @@
         display: flex; align-items: center; justify-content: center;
     }
     .past-info { flex: 1; }
-    .past-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-    .past-meta { font-size: 12px; color: var(--text-3); }
+    .past-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; color: #ffffff; }
+    .past-meta { font-size: 12px; color: #9b92bc; }
     .past-right { display: flex; align-items: center; gap: 10px; }
     .attended-label { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; text-align: right; }
     .toggle-wrap { display: flex; align-items: center; gap: 6px; }
@@ -170,8 +171,8 @@
         display: flex; align-items: center; justify-content: space-between;
         gap: 20px;
     }
-    .cta-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-    .cta-desc { font-size: 13px; color: var(--text-2); }
+    .cta-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #ffffff; }
+    .cta-desc { font-size: 13px; color: #d4cef0; }
     .btn-cta {
         padding: 12px 24px;
         border-radius: 12px;

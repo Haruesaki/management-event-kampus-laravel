@@ -1,49 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\UserManagementController;
-use App\Http\Controllers\TicketController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegistrationController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
-// AUTH
-Route::get('/login', [LoginController::class, 'showForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// Dashboard
 Route::get('/', function () {
-    return view('dashboard');
-})->name('dashboard');
-
-// Events
-Route::resource('events', EventController::class);
-
-// 🎫 Tickets
-Route::resource('tickets', TicketController::class);
-
-// 👤 Profile (wajib login)
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    return redirect()->route('panitia.dashboard');
 });
 
-// 👥 User Management
-Route::get('/user-management', [UserManagementController::class, 'index'])
-    ->name('user-management.index');
+Route::prefix('panitia')->group(function(){
 
-// Registrations
-Route::resource('registrations', RegistrationController::class);
+    Route::get('/dashboard', function () {
+        return view('panitia.dashboard');
+    })->name('panitia.dashboard');
 
-//register
-Route::get('/register', [RegisterController::class, 'showForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
+    Route::get('/attendees', function () {
+        return view('panitia.attendees');
+    })->name('panitia.attendees');
+
+    Route::get('/create', function () {
+        return view('panitia.create');
+    })->name('panitia.event.create');
+
+    Route::get('/events', function () {
+    return view('panitia.events.index');
+    })->name('panitia.events');
+
+});
