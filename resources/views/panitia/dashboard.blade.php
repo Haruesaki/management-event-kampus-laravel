@@ -7,7 +7,7 @@
 
 <div class="space-y-8">
 
-    <!-- HERO (ambil dari user dashboard) -->
+    <!-- HERO -->
     <div class="relative rounded-2xl overflow-hidden glow-card">
 
         <img src="{{ asset('images/megawati.jpg') }}"
@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <!-- STATS (punya panitia) -->
+    <!-- STATS -->
     <div class="grid grid-cols-4 gap-6">
 
         <div class="glow-card p-5">
@@ -65,7 +65,7 @@
 
     </div>
 
-    <!-- CATEGORY (ambil dari user dashboard) -->
+    <!-- CATEGORY -->
     <div>
         <div class="flex justify-between mb-3">
             <h2 class="text-sm text-gray-400">Explore Categories</h2>
@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <!-- UPCOMING EVENTS (user style tapi buat panitia) -->
+    <!-- UPCOMING EVENTS -->
     <div>
 
         <div class="flex justify-between mb-3">

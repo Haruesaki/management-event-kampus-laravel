@@ -5,7 +5,7 @@
 <div class="bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] p-8 rounded-2xl">
 
 ```
-<!-- HEADER -->
+
 <div class="flex justify-between items-center mb-8">
     <div>
         <h1 class="text-2xl font-semibold">Attendee Registry</h1>
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<!-- STATS -->
+
 <div class="grid grid-cols-4 gap-6 mb-8">
     <div class="bg-[#15151D] p-5 rounded-2xl shadow-lg hover:shadow-purple-500/20 transition">
         <p class="text-gray-400 text-sm">Total Sales</p>
@@ -47,10 +47,10 @@
     </div>
 </div>
 
-<!-- TABLE + MAP -->
+
 <div class="grid grid-cols-3 gap-6">
 
-    <!-- TABLE -->
+    
     <div class="col-span-2 bg-[#15151D] rounded-2xl overflow-hidden">
 
         <div class="p-4 border-b border-[#1c1c24] flex gap-2">
@@ -115,7 +115,7 @@
 
     </div>
 
-    <!-- MAP -->
+    
     <div class="bg-[#15151D] rounded-2xl p-4">
         <p class="text-sm text-gray-400 mb-3">Venue Map</p>
         <img src="https://images.unsplash.com/photo-1557683316-973673baf926"
