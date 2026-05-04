@@ -21,6 +21,7 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Handle an incoming authentication request.
+     * Redirect berdasarkan role user yang login.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -28,7 +29,19 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        // Redirect berdasarkan role
+        if ($user->role_id === 1) {
+            // Admin → halaman admin dashboard
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role_id === 2) {
+            // Panitia → halaman panitia dashboard
+            return redirect()->route('panitia.dashboard');
+        } else {
+            // Peserta/User → halaman user dashboard
+            return redirect()->route('user.dashboard');
+        }
     }
 
     /**
@@ -42,6 +55,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

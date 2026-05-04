@@ -1,7 +1,4 @@
 <?php
-// ============================================================
-// SIMPAN FILE INI SEBAGAI: app/Models/Role.php
-// ============================================================
 
 namespace App\Models;
 
@@ -11,6 +8,9 @@ class Role extends Model
 {
     protected $fillable = ['role_name'];
 
+    /**
+     * Relasi ke users.
+     */
     public function users()
     {
         return $this->hasMany(User::class);
