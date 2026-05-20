@@ -1,0 +1,395 @@
+/* ==========================================================
+   shared/layout.css
+   Layout bersama: Sidebar + Topbar + User Card
+   Digunakan oleh: SEMUA ROLE (user, admin, panitia)
+   Tombol/menu di tiap role tetap disesuaikan sendiri.
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+    --bg-root:      #0c0a14;
+    --bg-sidebar:   #13101e;
+    --bg-main:      #100e1a;
+    --bg-card:      #1c1829;
+    --bg-card-2:    #201c30;
+    --bg-hover:     rgba(179,102,255,0.10);
+    --border:       rgba(255,255,255,0.08);
+    --accent:       #b366ff;
+    --accent-2:     #e055f5;
+    --accent-soft:  rgba(179,102,255,0.18);
+    --accent-glow:  rgba(179,102,255,0.40);
+    --text-1:       #ffffff;
+    --text-2:       #d4cef0;
+    --text-3:       #9b92bc;
+    --sidebar-w:    270px;
+    --topbar-h:     60px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-root);
+    color: var(--text-1);
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* ──────────────────────────────────────
+   SIDEBAR
+   ────────────────────────────────────── */
+.sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    z-index: 100;
+    padding: 24px 0;
+}
+
+/* Brand */
+.sidebar-brand {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+}
+.sidebar-brand .brand-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+}
+.sidebar-brand .brand-sub {
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 3px;
+}
+
+/* Nav */
+.sidebar-nav {
+    padding: 16px 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow-y: auto;
+}
+
+/* Nav items — dipakai semua role */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    cursor: pointer;
+}
+.nav-item svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+.nav-item:hover {
+    background: var(--accent-soft);
+    color: #ffffff;
+}
+.nav-item:hover svg { opacity: 1; }
+
+/* Active state */
+.nav-item.active,
+.nav-item.active-menu {
+    background: var(--accent-soft);
+    color: #d89cff;
+    border-left: 3px solid var(--accent);
+    padding-left: 9px;
+}
+.nav-item.active svg,
+.nav-item.active-menu svg {
+    opacity: 1;
+    color: #d89cff;
+}
+
+/* Nav section label */
+.nav-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 12px 12px 4px;
+    opacity: 0.6;
+}
+
+/* ──────────────────────────────────────
+   SIDEBAR USER / ROLE CARD (bottom)
+   ────────────────────────────────────── */
+.sidebar-footer {
+    padding: 0 12px 4px;
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+}
+
+.role-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+.role-card:hover { background: rgba(255,255,255,0.08); }
+
+.role-card-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+/* Admin: ungu lebih gelap */
+.role-card-avatar.avatar-admin {
+    background: linear-gradient(135deg, #7c5cfc, #a07fff);
+}
+/* Panitia: gradient teal-ungu */
+.role-card-avatar.avatar-panitia {
+    background: linear-gradient(135deg, #9333ea, #ec4899);
+}
+
+.role-card-info { flex: 1; min-width: 0; }
+.role-card-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: var(--text-1);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.role-card-label {
+    font-size: 10px;
+    color: var(--text-3);
+    margin-top: 1px;
+}
+
+/* Logout button */
+.role-card-logout {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: rgba(239,68,68,0.10);
+    border: 1px solid rgba(239,68,68,0.22);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: #ef4444;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+}
+.role-card-logout:hover {
+    background: rgba(239,68,68,0.22);
+    border-color: rgba(239,68,68,0.45);
+}
+.role-card-logout svg { width: 14px; height: 14px; }
+
+/* ──────────────────────────────────────
+   LAYOUT WRAPPER
+   ────────────────────────────────────── */
+.layout-wrapper {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ──────────────────────────────────────
+   TOPBAR / NAVBAR
+   ────────────────────────────────────── */
+.topbar {
+    height: var(--topbar-h);
+    background: rgba(16,14,26,0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    gap: 16px;
+}
+
+/* Brand teks di topbar */
+.topbar-brand {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #c47fff, #e870f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Search box */
+.topbar-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 16px;
+    flex: 1;
+    max-width: 380px;
+}
+.topbar-search svg { width: 14px; height: 14px; color: var(--text-3); flex-shrink: 0; }
+.topbar-search input {
+    background: none; border: none; outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--text-1);
+    width: 100%;
+}
+.topbar-search input::placeholder { color: var(--text-3); }
+
+/* Right side actions */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+.topbar-nav { display: flex; gap: 24px; align-items: center; }
+.topbar-nav a {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.topbar-nav a:hover, .topbar-nav a.active { color: #ffffff; }
+.topbar-nav a.active { border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
+
+/* Icon buttons */
+.topbar-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.topbar-icon:hover { border-color: var(--accent); color: var(--accent); }
+.topbar-icon svg { width: 16px; height: 16px; }
+
+/* Avatar topbar */
+.topbar-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    border: 2px solid var(--accent-glow);
+    color: #fff;
+    flex-shrink: 0;
+}
+.topbar-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+/* Login button */
+.btn-login {
+    padding: 7px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.btn-login:hover { background: var(--accent-soft); }
+
+/* ──────────────────────────────────────
+   MAIN CONTENT AREA
+   ────────────────────────────────────── */
+.main-content {
+    flex: 1;
+    padding: 32px 28px;
+    overflow-y: auto;
+}
+
+/* ──────────────────────────────────────
+   ADMIN PAGE LAYOUT ALIASES
+   (.layout / .main / .content — dipakai admin blade files)
+   ────────────────────────────────────── */
+
+/* Wrapper untuk admin standalone pages (tidak pakai layout-wrapper) */
+.layout-wrapper-admin {
+    margin-left: var(--sidebar-w);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    flex: 1;
+}
+
+/* Alias: .layout = body-level flex container */
+.layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Alias: .main = area kanan setelah sidebar fixed */
+.main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Alias: .content = scrollable page body */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 28px;
+}
+
+/* ──────────────────────────────────────
+   SCROLLBAR
+   ────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-3); border-radius: 3px; }

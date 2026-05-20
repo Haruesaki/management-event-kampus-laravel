@@ -7,211 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg-root:    #0c0a14;
-            --bg-sidebar: #13101e;
-            --bg-main:    #100e1a;
-            --bg-card:    #1c1829;
-            --bg-card-2:  #201c30;
-            --border:     rgba(255,255,255,0.10);
-            --accent:     #b366ff;
-            --accent-2:   #e055f5;
-            --accent-soft:rgba(179,102,255,0.18);
-            --accent-glow:rgba(179,102,255,0.40);
-            --text-1:     #ffffff;
-            --text-2:     #d4cef0;
-            --text-3:     #9b92bc;
-            --sidebar-w:  200px;
-            --topbar-h:   60px;
-        }
-
-        html, body { height: 100%; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-root);
-            color: var(--text-1);
-            display: flex;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ── Sidebar ── */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; left: 0;
-            height: 100vh;
-            z-index: 100;
-            padding: 24px 0;
-        }
-        .sidebar-brand {
-            padding: 0 20px 28px;
-            border-bottom: 1px solid var(--border);
-        }
-        .sidebar-brand .brand-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: 0.03em;
-        }
-        .sidebar-brand .brand-sub {
-            font-size: 10px;
-            color: #b0a8cc;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 2px;
-        }
-        .sidebar-nav {
-            padding: 20px 12px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: #ccc5e8;
-            text-decoration: none;
-            transition: all 0.2s;
-            position: relative;
-        }
-        .nav-item svg { width: 17px; height: 17px; opacity: 0.85; flex-shrink: 0; }
-        .nav-item:hover { background: var(--accent-soft); color: #ffffff; }
-        .nav-item:hover svg { opacity: 1; }
-        .nav-item.active {
-            background: var(--accent-soft);
-            color: #d89cff;
-            border-left: 3px solid var(--accent);
-            padding-left: 9px;
-        }
-        .nav-item.active svg { opacity: 1; color: #d89cff; }
-
-        /* ── Wrapper ── */
-        .layout-wrapper {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* ── Topbar ── */
-        .topbar {
-            height: var(--topbar-h);
-            background: rgba(16,14,26,0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 28px;
-            position: sticky;
-            top: 0;
-            z-index: 90;
-        }
-        .topbar-brand {
-            font-family: 'Poppins', sans-serif;
-            font-size: 17px;
-            font-weight: 800;
-            background: linear-gradient(90deg, #c47fff, #e870f5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.01em;
-        }
-        .topbar-nav { display: flex; gap: 28px; align-items: center; }
-        .topbar-nav a {
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: #ccc5e8;
-            text-decoration: none;
-            padding-bottom: 2px;
-            transition: color 0.2s;
-        }
-        .topbar-nav a:hover, .topbar-nav a.active {
-            color: #ffffff;
-        }
-        .topbar-nav a.active { border-bottom: 2px solid var(--accent); }
-        .topbar-right { display: flex; align-items: center; gap: 16px; }
-        .topbar-icon {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            color: var(--text-2);
-            transition: all 0.2s;
-        }
-        .topbar-icon:hover { border-color: var(--accent); color: var(--accent); }
-        .topbar-icon svg { width: 16px; height: 16px; }
-        .topbar-search {
-            display: flex; align-items: center; gap: 8px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 7px 14px;
-        }
-        .topbar-search svg { width: 14px; height: 14px; color: var(--text-3); flex-shrink: 0; }
-        .topbar-search input {
-            background: none; border: none; outline: none;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px; color: var(--text-1);
-            width: 160px;
-        }
-        .topbar-search input::placeholder { color: var(--text-3); }
-        .btn-login {
-            padding: 7px 18px;
-            border-radius: 20px;
-            border: 1px solid var(--accent);
-            background: transparent;
-            color: var(--accent);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px; font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .btn-login:hover { background: var(--accent-soft); }
-        .avatar {
-            width: 34px; height: 34px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 700;
-            cursor: pointer;
-            overflow: hidden;
-            border: 2px solid var(--accent-glow);
-        }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* ── Main content ── */
-        .main-content {
-            flex: 1;
-            padding: 32px 28px;
-        }
-
-        /* ── Scrollbar ── */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--text-3); border-radius: 3px; }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/shared/layout.css') }}">
     @stack('styles')
 </head>
 <body>
@@ -248,16 +44,24 @@
             </a>
         </nav>
         @auth
-        <div style="padding: 20px 12px; margin-top: auto;">
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="nav-item" style="width: 100%; border: none; background: rgba(239,68,68,0.1); color: #ef4444; cursor: pointer; justify-content: flex-start;">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Logout
-                </button>
-            </form>
+        <div style="margin-top: auto;">
+            <div class="role-card">
+                <div class="role-card-avatar">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                </div>
+                <div class="role-card-info">
+                    <div class="role-card-name">{{ auth()->user()->name }}</div>
+                    <div class="role-card-label">User</div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                    @csrf
+                    <button type="submit" class="role-card-logout" title="Logout">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </div>
         @endauth
     </aside>
@@ -292,7 +96,7 @@
                     </svg>
                 </div>
                 @auth
-                    <div class="avatar">
+                    <div class="topbar-avatar">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
                 @else

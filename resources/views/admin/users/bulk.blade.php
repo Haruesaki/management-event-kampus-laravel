@@ -9,7 +9,7 @@ $active_page = "bulk-operations";
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CampusAdmin - Bulk Operations</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg-base: #0a0a0c;
@@ -30,7 +30,7 @@ $active_page = "bulk-operations";
     --accent-yellow: #f59e0b;
   }
   html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg-base); color: var(--text-primary); }
-  .layout { display: flex; height: 100vh; overflow: hidden; }
+  .layout { display: flex; height: 100vh; width: 100%; overflow: hidden; }
 
   .sidebar {
     width: 260px; min-width: 260px; background: var(--bg-sidebar);
@@ -38,7 +38,7 @@ $active_page = "bulk-operations";
   }
   .sidebar-brand { padding: 0 24px 28px; border-bottom: 1px solid var(--border); }
   .sidebar-brand .brand-name {
-    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+    font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800;
     color: var(--accent-purple-light); letter-spacing: -0.5px;
   }
   .sidebar-brand .brand-sub { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
@@ -105,7 +105,7 @@ $active_page = "bulk-operations";
   .content { flex: 1; overflow-y: auto; padding: 28px 28px 0; }
 
   /* HEADER */
-  .page-title { font-family: 'Syne', sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 6px; }
+  .page-title { font-family: 'Poppins', sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 6px; }
   .page-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-width: 560px; margin-bottom: 28px; }
 
   /* MAIN GRID */
@@ -125,7 +125,7 @@ $active_page = "bulk-operations";
     margin: 0 auto 16px; color: var(--accent-purple-light);
   }
   .upload-icon-wrap svg { width: 30px; height: 30px; }
-  .upload-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .upload-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
   .upload-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
   .btn-select {
     display: inline-flex; align-items: center; gap: 8px;
@@ -175,7 +175,7 @@ $active_page = "bulk-operations";
     padding: 18px 20px; border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
   }
-  .queue-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
+  .queue-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 700; }
   .queue-sub { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
   .queue-status {
     font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
@@ -239,7 +239,7 @@ $active_page = "bulk-operations";
     width: 100%; padding: 14px; border-radius: 12px;
     background: linear-gradient(135deg, var(--accent-red), var(--accent-pink));
     color: white; font-size: 14px; font-weight: 700;
-    cursor: pointer; border: none; font-family: 'Syne', sans-serif;
+    cursor: pointer; border: none; font-family: 'Poppins', sans-serif;
     letter-spacing: -0.5px; transition: all 0.2s;
     box-shadow: 0 4px 20px rgba(239,68,68,0.3);
   }
@@ -256,7 +256,7 @@ $active_page = "bulk-operations";
   .bottom-stat.stat-red { border-left-color: var(--accent-red); }
   .bottom-stat.stat-purple { border-left-color: var(--accent-purple); }
   .bstat-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
-  .bstat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -1.5px; }
+  .bstat-value { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -1.5px; }
   .bstat-sub { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
   .bstat-value.pink { color: var(--accent-pink); }
   .bstat-sub.permanent { color: var(--accent-red); font-weight: 600; }

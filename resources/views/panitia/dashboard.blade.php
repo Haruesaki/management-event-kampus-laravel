@@ -5,181 +5,112 @@
 
 @section('content')
 
-<div class="space-y-8">
+<div class="panitia-page">
 
-    <!-- HERO (ambil dari user dashboard) -->
-    <div class="relative rounded-2xl overflow-hidden glow-card">
-
-        <img src="{{ asset('images/megawati.jpg') }}"
-             class="w-full h-56 object-cover opacity-40">
-
-        <div class="absolute inset-0 p-8 flex flex-col justify-center">
-
-            <p class="text-xs text-purple-400 tracking-widest mb-2">
-                FEATURED EVENT
-            </p>
-
-            <h1 class="text-3xl font-bold">
-                Dies Natalis <span class="neon-text">Concert 2026</span>
-            </h1>
-
-            <p class="text-gray-400 text-sm mt-2 max-w-xl">
-                Experience an orchestral fusion and digital arts in one unforgettable night.
-            </p>
-
-            <div class="mt-4 flex gap-3">
-                <a href="{{ route('panitia.events') }}" class="create-btn px-4 py-2 text-sm">
+    {{-- HERO BANNER --}}
+    <div class="hero-banner">
+        <img src="{{ asset('images/megawati.jpg') }}" class="hero-img" alt="Featured Event">
+        <div class="hero-overlay">
+            <p class="hero-label">Featured Event</p>
+            <h1 class="hero-title">Dies Natalis <span>Concert 2026</span></h1>
+            <p class="hero-desc">Experience an orchestral fusion and digital arts in one unforgettable night.</p>
+            <div class="hero-actions">
+                <a href="{{ route('panitia.events') }}" class="btn-manage">
                     Manage Event
                 </a>
-
-                <button class="px-4 py-2 bg-[#1c1c24] rounded-lg text-sm">
-                    View Details
-                </button>
+                <button class="btn-details">View Details</button>
             </div>
-
         </div>
     </div>
 
-    <!-- STATS (punya panitia) -->
-    <div class="grid grid-cols-4 gap-6">
-
-        <div class="glow-card p-5">
-            <p class="text-gray-400 text-sm">Total Attendees</p>
-            <p class="text-2xl font-bold mt-1">342</p>
+    {{-- STATS --}}
+    <div class="stats-row">
+        <div class="stat-card">
+            <p class="stat-label">Total Attendees</p>
+            <p class="stat-value">342</p>
         </div>
-
-        <div class="glow-card p-5">
-            <p class="text-gray-400 text-sm">Paid</p>
-            <p class="text-2xl font-bold text-green-400 mt-1">280</p>
+        <div class="stat-card">
+            <p class="stat-label">Paid</p>
+            <p class="stat-value green">280</p>
         </div>
-
-        <div class="glow-card p-5">
-            <p class="text-gray-400 text-sm">Pending</p>
-            <p class="text-2xl font-bold text-yellow-400 mt-1">62</p>
+        <div class="stat-card">
+            <p class="stat-label">Pending</p>
+            <p class="stat-value yellow">62</p>
         </div>
-
-        <div class="glow-card p-5">
-            <p class="text-gray-400 text-sm">Revenue</p>
-            <p class="text-2xl font-bold mt-1">$12,450</p>
+        <div class="stat-card">
+            <p class="stat-label">Revenue</p>
+            <p class="stat-value">$12,450</p>
         </div>
-
     </div>
 
-    <!-- CATEGORY (ambil dari user dashboard) -->
+    {{-- CATEGORIES --}}
     <div>
-        <div class="flex justify-between mb-3">
-            <h2 class="text-sm text-gray-400">Explore Categories</h2>
+        <div class="section-row">
+            <p class="section-title">Explore Categories</p>
         </div>
-
-        <div class="grid grid-cols-4 gap-4">
-
-            <div class="glow-card p-4 text-center hover:scale-105 transition">
-                <p>Music</p>
-            </div>
-
-            <div class="glow-card p-4 text-center hover:scale-105 transition">
-                <p>Seminar</p>
-            </div>
-
-            <div class="glow-card p-4 text-center hover:scale-105 transition">
-                <p>Workshop</p>
-            </div>
-
-            <div class="glow-card p-4 text-center hover:scale-105 transition">
-                <p>Sports</p>
-            </div>
-
+        <div class="category-grid">
+            <div class="category-card">🎵 Music</div>
+            <div class="category-card">📢 Seminar</div>
+            <div class="category-card">🛠 Workshop</div>
+            <div class="category-card">⚽ Sports</div>
         </div>
     </div>
 
-    <!-- UPCOMING EVENTS (user style tapi buat panitia) -->
+    {{-- YOUR EVENTS --}}
     <div>
-
-        <div class="flex justify-between mb-3">
-            <h2 class="text-sm text-gray-400">Your Events</h2>
+        <div class="section-row">
+            <p class="section-title">Your Events</p>
         </div>
-
-        <div class="grid grid-cols-3 gap-6">
-
-            <!-- CARD 1 -->
-            <div class="glow-card overflow-hidden">
-
-                <img src="{{ asset('images/bahlil.jpg') }}" 
-                    class="h-40 w-full object-cover">
-
-                <div class="p-4">
-                    <h3 class="font-semibold">King Bahlil</h3>
-                    <p class="text-xs text-gray-400">The King Of Gasoline</p>
-
-                    <div class="flex justify-between mt-3 text-sm">
-                        <span>$25</span>
-                        <span class="text-purple-400">Active</span>
+        <div class="events-grid">
+            <div class="event-card">
+                <img src="{{ asset('images/bahlil.jpg') }}" class="event-thumb" alt="Event">
+                <div class="event-info">
+                    <p class="event-name">King Bahlil</p>
+                    <p class="event-meta">The King Of Gasoline</p>
+                    <div class="event-footer">
+                        <span class="event-price">$25</span>
+                        <span class="badge-active">Active</span>
                     </div>
                 </div>
-
             </div>
-
-            <!-- CARD 2 -->
-            <div class="glow-card overflow-hidden">
-
-                <img src="{{ asset('images/jokowi.jpg') }}"
-                     class="h-40 w-full object-cover">
-
-                <div class="p-4">
-                    <h3 class="font-semibold">Loh Kaget</h3>
-                    <p class="text-xs text-gray-400">2 Periode</p>
-
-                    <div class="flex justify-between mt-3 text-sm">
-                        <span>FREE</span>
-                        <span class="text-green-400">Open</span>
+            <div class="event-card">
+                <img src="{{ asset('images/jokowi.jpg') }}" class="event-thumb" alt="Event">
+                <div class="event-info">
+                    <p class="event-name">Loh Kaget</p>
+                    <p class="event-meta">2 Periode</p>
+                    <div class="event-footer">
+                        <span class="event-price">FREE</span>
+                        <span class="badge-open">Open</span>
                     </div>
                 </div>
-
             </div>
-
-            <!-- CARD 3 -->
-            <div class="glow-card overflow-hidden">
-
-                <img src="{{ asset('images/prabowo.jpg') }}"
-                     class="h-40 w-full object-cover">
-
-                <div class="p-4">
-                    <h3 class="font-semibold">Hidup Jokowi</h3>
-                    <p class="text-xs text-gray-400">Jendral</p>
-
-                    <div class="flex justify-between mt-3 text-sm">
-                        <span>Location</span>
-                        <span class="text-pink-400">Preview</span>
+            <div class="event-card">
+                <img src="{{ asset('images/prabowo.jpg') }}" class="event-thumb" alt="Event">
+                <div class="event-info">
+                    <p class="event-name">Hidup Jokowi</p>
+                    <p class="event-meta">Jendral</p>
+                    <div class="event-footer">
+                        <span class="event-price">Location</span>
+                        <span class="badge-preview">Preview</span>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
-    <!-- RECENT ATTENDEES (panitia control tetap ada) -->
-    <div class="glow-card p-4">
-
-        <h2 class="text-sm text-gray-400 mb-3">Recent Attendees</h2>
-
-        <table class="w-full text-sm">
-            <tr class="border-b border-[#1c1c24]">
-                <td class="py-2">Aria Vance</td>
-                <td class="text-yellow-400">Pending</td>
-                <td class="text-right">
-                    <button class="bg-green-500 px-3 py-1 rounded text-xs">Confirm</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="py-2">Kaelen Moore</td>
-                <td class="text-green-400">Paid</td>
-                <td class="text-right">-</td>
-            </tr>
-        </table>
-
+    {{-- RECENT ATTENDEES --}}
+    <div class="attendees-table">
+        <p class="section-title" style="margin-bottom:16px;">Recent Attendees</p>
+        <div class="attendee-row">
+            <span class="attendee-name">Aria Vance</span>
+            <span class="attendee-status pending">Pending</span>
+            <button class="btn-confirm">Confirm</button>
+        </div>
+        <div class="attendee-row">
+            <span class="attendee-name">Kaelen Moore</span>
+            <span class="attendee-status paid">Paid</span>
+            <span style="margin-left:16px; color:#555; font-size:13px;">—</span>
+        </div>
     </div>
 
 </div>
