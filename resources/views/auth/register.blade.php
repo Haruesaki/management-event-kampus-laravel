@@ -2,7 +2,7 @@
 @section('title', 'Register')
 
 @section('auth-content')
-<div style="width:100%; max-width:420px;">
+<div style="width:100%; max-width:400px;">
 
     <div class="auth-card">
 
@@ -13,7 +13,7 @@
         <div class="auth-title">
             Begin Your <span>Journey</span>
         </div>
-        <div class="auth-subtitle">Join the Digital Curator Experience</div>
+        <div class="auth-subtitle">Create your account to join Event Kampus</div>
 
         <form method="POST" action="{{ route('register.post') }}" style="margin-top:28px;">
             @csrf

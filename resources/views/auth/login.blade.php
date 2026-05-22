@@ -2,25 +2,27 @@
 @section('title', 'Login')
 
 @section('auth-content')
-<div style="width:100%; max-width:400px; text-align:center;">
+<div style="width:100%; max-width:400px;">
 
     {{-- Card --}}
-    <div class="auth-card" style="text-align:left;">
+    <div class="auth-card">
+        
+        <div class="auth-title">
+            Welcome <span>Back</span>
+        </div>
+        <div class="auth-subtitle">Sign in to continue to Event Kampus</div>
 
         @if(session('status'))
-            <div class="alert-error" style="background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.3);color:#d8b4fe;">
+            <div class="alert-error" style="background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.3);color:#d8b4fe; margin-top: 20px;">
                 {{ session('status') }}
             </div>
         @endif
 
         @if($errors->any())
-            <div class="alert-error">
+            <div class="alert-error" style="margin-top: 20px;">
                 {{ $errors->first() }}
             </div>
         @endif
-
-        <h2 style="font-family:'Syne',sans-serif; font-size:22px; font-weight:700; margin-bottom:6px;">Welcome Back</h2>
-        <p style="font-size:13px; color:#9083b5; margin-bottom:28px;">Please enter your credentials to access the gallery.</p>
 
         <form method="POST" action="{{ route('login.post') }}">
             @csrf
@@ -75,9 +77,5 @@
             Don't have an account? <a href="{{ route('register') }}">Register</a>
         </div>
     </div>
-
-    <a href="{{ route('dashboard') }}" class="back-link">
-        ← Back to Gallery
-    </a>
 </div>
 @endsection

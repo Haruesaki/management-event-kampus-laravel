@@ -14,8 +14,7 @@
     {{-- Sidebar --}}
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-name">The Auditorium</div>
-            <div class="brand-sub">Digital Curator</div>
+            <a href="{{ route('dashboard') }}" class="brand-logo">Event<span>Kampus</span></a>
         </div>
         <nav class="sidebar-nav">
             <a href="{{ route('user.dashboard') }}" class="nav-item {{ request()->routeIs('home') || request()->routeIs('user.dashboard') ? 'active' : '' }}">
@@ -29,6 +28,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                 </svg>
                 Discovery
+            </a>
+            <a href="{{ route('schedule.index') }}" class="nav-item {{ request()->routeIs('schedule.*') ? 'active' : '' }}">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Schedule
             </a>
             <a href="{{ route('tickets.index') }}" class="nav-item {{ request()->routeIs('tickets.*') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -46,13 +51,15 @@
         @auth
         <div style="margin-top: auto;">
             <div class="role-card">
-                <div class="role-card-avatar">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                </div>
-                <div class="role-card-info">
-                    <div class="role-card-name">{{ auth()->user()->name }}</div>
-                    <div class="role-card-label">User</div>
-                </div>
+                <a href="{{ route('profile.show') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none; flex: 1;">
+                    <div class="role-card-avatar">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                    </div>
+                    <div class="role-card-info">
+                        <div class="role-card-name">{{ auth()->user()->name }}</div>
+                        <div class="role-card-label">User</div>
+                    </div>
+                </a>
                 <form method="POST" action="{{ route('logout') }}" style="margin:0;">
                     @csrf
                     <button type="submit" class="role-card-logout" title="Logout">
@@ -63,6 +70,13 @@
                 </form>
             </div>
         </div>
+        @else
+        <div style="margin-top: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <a href="{{ route('login') }}" class="btn-login" style="text-align: center; border-radius: 12px; padding: 10px;">Sign In</a>
+            @if (Route::has('register'))
+                <a href="{{ route('register') }}" class="btn-sidebar-register" style="text-align: center; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; padding: 10px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 13px; box-shadow: 0 4px 12px rgba(179,102,255,0.2);">Get Started</a>
+            @endif
+        </div>
         @endauth
     </aside>
 
@@ -71,37 +85,7 @@
         {{-- Topbar --}}
         <header class="topbar">
             <div style="display:flex; align-items:center; gap:32px;">
-                <span class="topbar-brand">Ethereal Auditorium</span>
-                <nav class="topbar-nav">
-                    <a href="{{ route('user.dashboard') }}" class="{{ request()->routeIs('home') || request()->routeIs('user.dashboard') ? 'active' : '' }}">Dashboard</a>
-                    <a href="#">Schedule</a>
-                    <a href="#">Venues</a>
-                </nav>
-            </div>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="topbar-search">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
-                    </svg>
-                    <input type="text" placeholder="Search events...">
-                </div>
-                <div class="topbar-icon">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                    </svg>
-                </div>
-                <div class="topbar-icon">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                    </svg>
-                </div>
-                @auth
-                    <div class="topbar-avatar">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                    </div>
-                @else
-                    <a href="{{ route('login') }}" class="btn-login">Login</a>
-                @endauth
+                <a href="{{ route('dashboard') }}" class="brand-logo">Event<span>Kampus</span></a>
             </div>
         </header>
 

@@ -162,6 +162,12 @@ body {
     transition: background 0.2s;
 }
 .role-card:hover { background: rgba(255,255,255,0.08); }
+.role-card a:hover .role-card-avatar {
+    transform: scale(1.05);
+}
+.role-card a:hover .role-card-name {
+    color: var(--accent-2);
+}
 
 .role-card-avatar {
     width: 36px; height: 36px;
@@ -256,6 +262,33 @@ body {
     letter-spacing: -0.01em;
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+/* Brand Logo (Text-only) */
+.brand-logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-decoration: none !important;
+    color: #ffffff !important;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+}
+
+.brand-logo:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+.brand-logo span {
+    background: linear-gradient(90deg, #c47fff, #e870f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-left: 2px;
 }
 
 /* Search box */

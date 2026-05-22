@@ -157,11 +157,13 @@ $active_page = "user-management";
     </nav>
     <div class="sidebar-footer">
       <div class="role-card">
-        <div class="role-card-avatar avatar-admin">{{ strtoupper(substr(Auth::user()->name ?? 'AD', 0, 2)) }}</div>
-        <div class="role-card-info">
-          <div class="role-card-name">{{ Auth::user()->name ?? 'Administrator' }}</div>
-          <div class="role-card-label">Administrator</div>
-        </div>
+        <a href="{{ route('profile.show') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none; flex: 1;">
+          <div class="role-card-avatar avatar-admin">{{ strtoupper(substr(Auth::user()->name ?? 'AD', 0, 2)) }}</div>
+          <div class="role-card-info">
+            <div class="role-card-name">{{ Auth::user()->name ?? 'Administrator' }}</div>
+            <div class="role-card-label">Administrator</div>
+          </div>
+        </a>
         <form method="POST" action="{{ route('logout') }}" style="margin:0;">
           @csrf
           <button type="submit" class="role-card-logout" title="Logout">

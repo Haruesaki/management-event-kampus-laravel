@@ -8,12 +8,11 @@
 @section('content')
 
 <div class="page-header">
-    <div class="page-label">Curated Experience</div>
     <h1 class="page-title">Discovery</h1>
 </div>
 
 {{-- Filter Bar --}}
-<form method="GET" action="{{ route('events.index') }}">
+<form method="GET" action="{{ route('events.index') }}" id="filterForm">
     <div class="filter-bar">
         <div class="filter-search">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -23,10 +22,11 @@
                 type="text" name="search"
                 value="{{ request('search') }}"
                 placeholder="Search for artists, venues, or campus landmarks..."
+                onchange="this.form.submit()"
             >
         </div>
         <div class="filter-select-wrap">
-            <select name="date" class="filter-select">
+            <select name="date" class="filter-select" onchange="this.form.submit()">
                 <option value="">Date: Anytime</option>
                 <option value="today" {{ request('date')=='today' ? 'selected' : '' }}>Today</option>
                 <option value="week" {{ request('date')=='week' ? 'selected' : '' }}>This Week</option>
@@ -34,7 +34,7 @@
             </select>
         </div>
         <div class="filter-select-wrap">
-            <select name="category" class="filter-select">
+            <select name="category" class="filter-select" onchange="this.form.submit()">
                 <option value="">Category: All</option>
                 <option value="music" {{ request('category')=='music' ? 'selected' : '' }}>Music</option>
                 <option value="seminar" {{ request('category')=='seminar' ? 'selected' : '' }}>Seminar</option>
@@ -45,14 +45,14 @@
             </select>
         </div>
         <div class="filter-select-wrap">
-            <select name="price" class="filter-select">
+            <select name="price" class="filter-select" onchange="this.form.submit()">
                 <option value="">Price: Any</option>
                 <option value="free" {{ request('price')=='free' ? 'selected' : '' }}>Free</option>
                 <option value="paid" {{ request('price')=='paid' ? 'selected' : '' }}>Paid</option>
             </select>
         </div>
         <div class="filter-select-wrap">
-            <select name="faculty" class="filter-select">
+            <select name="faculty" class="filter-select" onchange="this.form.submit()">
                 <option value="">Faculty: All</option>
                 @foreach($faculties ?? [] as $faculty)
                     <option value="{{ $faculty->id }}" {{ request('faculty')==$faculty->id ? 'selected' : '' }}>
@@ -61,7 +61,6 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="btn-search">Search</button>
     </div>
 </form>
 

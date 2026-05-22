@@ -12,7 +12,7 @@
     <div class="bookings-label">Your Collection</div>
     <h1 class="bookings-title">My Bookings</h1>
     <p class="bookings-desc">
-        Manage your upcoming experiences and relive the memories of past performances at the Ethereal Auditorium.
+        Manage your upcoming experiences and relive the memories of past performances at the Event Kampus.
     </p>
 </div>
 
@@ -163,10 +163,10 @@
             <div class="past-meta">{{ \Carbon\Carbon::parse($ticket->event->date)->format('M d, Y') }} • {{ $ticket->event->venue }}</div>
         </div>
         <div class="past-right">
-            <div>
-                <div class="attended-label">Attended</div>
-                <div class="toggle-wrap">
-                    <div class="toggle {{ $ticket->attended ? 'on' : '' }}"></div>
+            <div style="text-align: right; min-width: 80px;">
+                <div class="attended-label">Status</div>
+                <div style="font-size: 13px; font-weight: 700; margin-top: 4px; color: {{ ($ticket->attended ?? false) ? 'var(--accent)' : 'var(--text-3)' }};">
+                    {{ ($ticket->attended ?? false) ? 'Hadir' : 'Tidak Hadir' }}
                 </div>
             </div>
             <div class="past-arrow">
@@ -195,10 +195,10 @@
             <div class="past-meta">{{ $p[1] }}</div>
         </div>
         <div class="past-right">
-            <div>
-                <div class="attended-label">Attended</div>
-                <div class="toggle-wrap">
-                    <div class="toggle {{ $p[2] ? 'on' : '' }}"></div>
+            <div style="text-align: right; min-width: 80px;">
+                <div class="attended-label">Status</div>
+                <div style="font-size: 13px; font-weight: 700; margin-top: 4px; color: {{ $p[2] ? 'var(--accent)' : 'var(--text-3)' }};">
+                    {{ $p[2] ? 'Hadir' : 'Tidak Hadir' }}
                 </div>
             </div>
             <div class="past-arrow">

@@ -3,15 +3,66 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// ─── ROOT: redirect ke login jika belum login, atau ke dashboard role ──────
-Route::get('/', function () {
+// ─── ROOT: Tampilan Landing Page untuk Guest, atau Redirect jika Login ──────
+Route::get('/', function (Illuminate\Http\Request $request) {
     if (Auth::check()) {
         $user = Auth::user();
         if ($user->role_id === 1) return redirect()->route('admin.dashboard');
         if ($user->role_id === 2) return redirect()->route('panitia.dashboard');
         return redirect()->route('user.dashboard');
     }
-    return redirect()->route('user.dashboard');
+
+    // Dummy events for landing page filtering
+    $upcomingEvents = [
+        [
+            'id' => 3,
+            'name' => 'Campus Marathon 2026',
+            'category' => 'Sports',
+            'venue' => 'Sports Complex',
+            'date' => '2026-05-10',
+            'time' => '06:00 AM',
+            'price' => 5.00,
+        ],
+        [
+            'id' => 4,
+            'name' => 'Leadership Seminar',
+            'category' => 'Seminar',
+            'venue' => 'Auditorium A',
+            'date' => '2026-06-20',
+            'time' => '10:00 AM',
+            'price' => 0,
+        ],
+    ];
+
+    $filteredEvents = collect($upcomingEvents);
+
+    if ($request->filled('search')) {
+        $search = strtolower($request->search);
+        $filteredEvents = $filteredEvents->filter(function($event) use ($search) {
+            return str_contains(strtolower($event['name']), $search) || 
+                   str_contains(strtolower($event['venue']), $search);
+        });
+    }
+
+    if ($request->filled('category')) {
+        $filteredEvents = $filteredEvents->filter(function($event) use ($request) {
+            return strtolower($event['category']) === strtolower($request->category);
+        });
+    }
+
+    if ($request->filled('price')) {
+        if ($request->price === 'free') {
+            $filteredEvents = $filteredEvents->filter(function($event) {
+                return $event['price'] == 0;
+            });
+        } elseif ($request->price === 'paid') {
+            $filteredEvents = $filteredEvents->filter(function($event) {
+                return $event['price'] > 0;
+            });
+        }
+    }
+
+    return view('welcome', ['upcomingEvents' => $filteredEvents->values()->all()]);
 });
 
 // ─── AUTH ROUTES (login, logout, register, dll.) ────────────────────────────
@@ -67,6 +118,49 @@ Route::prefix('user')->group(function () {
         return view('dashboard');
     })->name('user.dashboard');
 
+    // Schedule page
+    Route::get('/schedule', function () {
+        $ongoingEvents = [
+            [
+                'id' => 1,
+                'name' => 'Future Tech Summit',
+                'category' => 'Technology',
+                'time' => '09:00 - 17:00',
+                'status' => 'Ongoing',
+                'color' => '#b366ff'
+            ],
+            [
+                'id' => 2,
+                'name' => 'Digital Art Workshop',
+                'category' => 'Art',
+                'time' => '13:00 - 15:30',
+                'status' => 'Ongoing',
+                'color' => '#e055f5'
+            ]
+        ];
+
+        $upcomingEvents = [
+            [
+                'id' => 3,
+                'name' => 'Campus Marathon',
+                'date' => 'May 10, 2026',
+                'time' => '06:00 AM',
+                'venue' => 'Sports Complex',
+                'status' => 'Upcoming'
+            ],
+            [
+                'id' => 4,
+                'name' => 'Leadership Seminar',
+                'date' => 'June 20, 2026',
+                'time' => '10:00 AM',
+                'venue' => 'Auditorium A',
+                'status' => 'Upcoming'
+            ]
+        ];
+
+        return view('user.schedule.index', compact('ongoingEvents', 'upcomingEvents'));
+    })->name('schedule.index');
+
     $dummyEvents = [
         [
             'id' => 1,
@@ -79,7 +173,7 @@ Route::prefix('user')->group(function () {
         ],
         [
             'id' => 2,
-            'name' => 'Canvas of Dreams',
+            'name' => 'Digital Art Workshop',
             'category' => 'Art',
             'venue' => 'Fine Arts Pavilion',
             'price' => 0,

@@ -90,13 +90,15 @@
         @auth
         <div class="sidebar-footer">
             <div class="role-card">
-                <div class="role-card-avatar avatar-panitia">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                </div>
-                <div class="role-card-info">
-                    <div class="role-card-name">{{ auth()->user()->name }}</div>
-                    <div class="role-card-label">Panitia</div>
-                </div>
+                <a href="{{ route('profile.show') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none; flex: 1;">
+                    <div class="role-card-avatar avatar-panitia">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                    </div>
+                    <div class="role-card-info">
+                        <div class="role-card-name">{{ auth()->user()->name }}</div>
+                        <div class="role-card-label">Panitia</div>
+                    </div>
+                </a>
                 <form method="POST" action="{{ route('logout') }}" style="margin:0;">
                     @csrf
                     <button type="submit" class="role-card-logout" title="Logout">
