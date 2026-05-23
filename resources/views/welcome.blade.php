@@ -10,10 +10,10 @@
 {{-- Welcome Identification Section --}}
 <div style="margin-bottom: 40px; padding: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;">
     <h2 style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px;">
-        Halo, saya Ahmad Doni Jalaludin
+        Halo, selamat datang!
     </h2>
     <p style="color: var(--text-3); font-size: 14px;">
-        NPM: 2407051022 — Selamat datang di Manajemen Event Kampus.
+        Selamat datang di Manajemen Event Kampus.
     </p>
 </div>
 

@@ -96,9 +96,9 @@ Route::prefix('panitia')->middleware(['auth'])->group(function () {
         return view('panitia.dashboard');
     })->name('panitia.dashboard');
 
-    Route::get('/attendees', function () {
-        return view('panitia.attendees');
-    })->name('panitia.attendees');
+    Route::get('/manage-event', function () {
+        return view('panitia.events.manage');
+    })->name('panitia.manage_event');
 
     Route::get('/create', function () {
         return view('panitia.create');
@@ -107,6 +107,10 @@ Route::prefix('panitia')->middleware(['auth'])->group(function () {
     Route::get('/events', function () {
         return view('panitia.events.index');
     })->name('panitia.events');
+
+    Route::get('/archived-events', function () {
+        return view('panitia.events.archived');
+    })->name('panitia.archived_events');
 
 });
 
