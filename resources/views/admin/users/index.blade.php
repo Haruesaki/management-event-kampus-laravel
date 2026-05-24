@@ -39,7 +39,7 @@
       <button class="filter-tab">Panitia</button>
       <button class="filter-tab">Peserta</button>
     </div>
-    <button class="btn-onboard">
+    <button class="btn-onboard" id="btnOnboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/>
         <line x1="8" y1="12" x2="16" y2="12"/>
@@ -149,4 +149,174 @@
     </div>
     <div class="quota-label">Quota Usage: 85%</div>
   </div>
+
+
+  {{-- ════════════════════════════════════════ --}}
+  {{-- ONBOARD NEW USER MODAL                   --}}
+  {{-- ════════════════════════════════════════ --}}
+  <div class="onboard-overlay" id="onboardOverlay">
+    <div class="onboard-modal">
+
+      <div class="modal-accent-bar"></div>
+
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="16" y1="11" x2="22" y2="11"/>
+            </svg>
+          </div>
+          <div>
+            <div class="modal-title">Onboard New User</div>
+            <div class="modal-subtitle">Register a new digital entity to the network</div>
+          </div>
+        </div>
+        <div class="modal-close" id="modalClose">×</div>
+      </div>
+
+      <div class="modal-body">
+
+        {{-- Live preview --}}
+        <div class="avatar-preview-row">
+          <div class="avatar-preview" id="avatarPreview">?</div>
+          <div class="avatar-preview-info">
+            <div class="avatar-preview-name" id="previewName">New Entity</div>
+            <div class="avatar-preview-hint">Preview · auto-generated from input</div>
+          </div>
+          <span class="role-preview-badge peserta" id="previewBadge">PESERTA</span>
+        </div>
+
+        {{-- Name --}}
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" id="inputFirstName" placeholder="e.g. Lestari" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" id="inputLastName" placeholder="e.g. Ananta" autocomplete="off">
+          </div>
+        </div>
+
+        {{-- Email --}}
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="entity@campus.edu" autocomplete="off">
+        </div>
+
+        {{-- Role & Status --}}
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Assigned Role</label>
+            <div class="select-wrapper">
+              <select class="form-select" id="inputRole">
+                <option value="peserta">Peserta</option>
+                <option value="panitia">Panitia</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Access Status</label>
+            <div class="select-wrapper">
+              <select class="form-select">
+                <option>Active</option>
+                <option>Offline</option>
+                <option>Deactivated</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {{-- Password --}}
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" placeholder="••••••••">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-input" placeholder="••••••••">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" id="modalCancel">Abort</button>
+        <button class="btn-modal-submit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Deploy Entity
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+  const overlay   = document.getElementById('onboardOverlay');
+  const btnOpen   = document.getElementById('btnOnboard');
+  const btnClose  = document.getElementById('modalClose');
+  const btnCancel = document.getElementById('modalCancel');
+
+  function openModal()  { overlay.classList.add('active');    document.body.style.overflow = 'hidden'; }
+  function closeModal() { overlay.classList.remove('active'); document.body.style.overflow = ''; }
+
+  btnOpen.addEventListener('click', openModal);
+  btnClose.addEventListener('click', closeModal);
+  btnCancel.addEventListener('click', closeModal);
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+  });
+
+  // Live preview — name & initials
+  const inputFirst    = document.getElementById('inputFirstName');
+  const inputLast     = document.getElementById('inputLastName');
+  const previewName   = document.getElementById('previewName');
+  const avatarPreview = document.getElementById('avatarPreview');
+  const avatarColors  = ['#3b1f8c','#163a24','#2a1f4a','#1a1a2e','#7c1f5c','#1f3a5c'];
+
+  function updatePreview() {
+    const first = inputFirst.value.trim();
+    const last  = inputLast.value.trim();
+    previewName.textContent = [first, last].filter(Boolean).join(' ') || 'New Entity';
+    const initials = [first[0], last[0]].filter(Boolean).join('').toUpperCase() || '?';
+    avatarPreview.textContent = initials;
+    if (initials !== '?') {
+      const idx = (initials.charCodeAt(0) + (initials[1] ? initials.charCodeAt(1) : 0)) % avatarColors.length;
+      avatarPreview.style.background = avatarColors[idx];
+    } else {
+      avatarPreview.style.background = '#2a2438';
+    }
+  }
+
+  inputFirst.addEventListener('input', updatePreview);
+  inputLast.addEventListener('input',  updatePreview);
+
+  // Live preview — role badge
+  const inputRole    = document.getElementById('inputRole');
+  const previewBadge = document.getElementById('previewBadge');
+
+  inputRole.addEventListener('change', function () {
+    previewBadge.textContent = this.value.toUpperCase();
+    previewBadge.className   = 'role-preview-badge ' + this.value;
+  });
+})();
+</script>
+@endpush

@@ -20,7 +20,7 @@
         </svg>
         Download Report
       </button>
-      <button class="btn btn-purple">+ New Operation</button>
+      <!-- <button class="btn btn-purple">+ New Operation</button> -->
     </div>
   </div>
 
@@ -193,6 +193,4 @@
       </div>
     </div>
   </div>
-
-  <div class="fab">+</div>
 @endsection
