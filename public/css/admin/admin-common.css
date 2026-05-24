@@ -1,0 +1,62 @@
+/* ==========================================================
+   admin/admin-common.css
+   Variabel & layout dasar admin (shared antar halaman admin)
+   Di-load setelah shared/layout.css untuk meng-override warna.
+   Digunakan oleh: SEMUA halaman admin (dashboard, events, users, bulk)
+   ========================================================== */
+
+/* ── Admin color overrides (warna khusus admin) ── */
+:root {
+    /* Variabel utama (override dari shared/layout.css) */
+    --bg-card:      #141418;
+    --bg-card-2:    #1a1a1f;
+    --bg-hover:     rgba(124,92,252,0.08);
+    --border:       rgba(255,255,255,0.08);
+    --accent:       #7c5cfc;
+    --accent-2:     #a07fff;
+    --text-1:       #f0f0f5;
+    --text-2:       #c0c0cc;
+    --text-3:       #8a8a9a;
+    --accent-green: #22c55e;
+    --accent-red:   #ef4444;
+    --accent-yellow:#f59e0b;
+    --accent-pink:  #e040a0;
+
+    /* Legacy aliases — tetap dipertahankan supaya CSS halaman lama tidak rusak */
+    --bg-base:              #0c0a14;
+    --bg-sidebar:           #13101e;
+    --bg-card2:             #1a1a1f;
+    --border-light:         rgba(255,255,255,0.12);
+    --text-primary:         #f0f0f5;
+    --text-secondary:       #8a8a9a;
+    --text-muted:           #555566;
+    --accent-purple:        #7c5cfc;
+    --accent-purple-light:  #a07fff;
+}
+
+/* ── Layout wrapper admin ── */
+.layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Content area admin */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 28px;
+}
+
+/* ── Scrollbar admin (lebih tipis & gelap) ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
