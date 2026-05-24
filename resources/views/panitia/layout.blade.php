@@ -6,9 +6,11 @@
     <title>@yield('title', 'Panitia') — Event Central</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/shared/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/panitia/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -29,8 +31,7 @@
 
         {{-- Brand --}}
         <div class="sidebar-brand">
-            <div class="brand-name">Event Central</div>
-            <div class="brand-sub">Management Suite</div>
+            <a href="{{ route('panitia.dashboard') }}" class="brand-logo">Event<span>Kampus</span></a>
         </div>
 
         {{-- Navigation --}}
@@ -47,6 +48,14 @@
                 Dashboard
             </a>
 
+            <a href="{{ route('panitia.manage_event') }}"
+               class="nav-item {{ request()->routeIs('panitia.manage_event') ? 'active' : '' }}">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Kelola Event
+            </a>
+
             <a href="{{ route('panitia.events') }}"
                class="nav-item {{ request()->routeIs('panitia.events') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -55,21 +64,19 @@
                     <line x1="16" y1="3" x2="16" y2="7"/>
                     <line x1="3" y1="11" x2="21" y2="11"/>
                 </svg>
-                Ongoing Events
+                Event Berlangsung
             </a>
 
-            <a href="{{ route('panitia.attendees') }}"
-               class="nav-item {{ request()->routeIs('panitia.attendees') ? 'active' : '' }}">
+            <a href="{{ route('panitia.archived_events') }}"
+               class="nav-item {{ request()->routeIs('panitia.archived_events') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M17 11c2.2 0 4 1.8 4 4v2"/>
-                    <path d="M3 21v-2c0-2.2 1.8-4 4-4h4c2.2 0 4 1.8 4 4v2"/>
+                    <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                Attendees
+                Arsip Event
             </a>
 
             {{-- Tombol Create Event — Khusus Panitia --}}
-            <div class="nav-section-label">Quick Actions</div>
+            <div class="nav-section-label">Tindakan Cepat</div>
             <a href="{{ route('panitia.event.create') }}" class="nav-item" style="
                 background: linear-gradient(90deg, rgba(147,51,234,0.25), rgba(236,72,153,0.15));
                 border: 1px solid rgba(147,51,234,0.35);
@@ -81,7 +88,7 @@
                     <line x1="12" y1="8" x2="12" y2="16"/>
                     <line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
-                Create Event
+                Buat Event
             </a>
 
         </nav>
@@ -90,16 +97,18 @@
         @auth
         <div class="sidebar-footer">
             <div class="role-card">
-                <div class="role-card-avatar avatar-panitia">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                </div>
-                <div class="role-card-info">
-                    <div class="role-card-name">{{ auth()->user()->name }}</div>
-                    <div class="role-card-label">Panitia</div>
-                </div>
+                <a href="{{ route('profile.show') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none; flex: 1;">
+                    <div class="role-card-avatar avatar-panitia">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                    </div>
+                    <div class="role-card-info">
+                        <div class="role-card-name">{{ auth()->user()->name }}</div>
+                        <div class="role-card-label">Panitia</div>
+                    </div>
+                </a>
                 <form method="POST" action="{{ route('logout') }}" style="margin:0;">
                     @csrf
-                    <button type="submit" class="role-card-logout" title="Logout">
+                    <button type="submit" class="role-card-logout" title="Keluar">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
@@ -114,38 +123,34 @@
     {{-- ── LAYOUT WRAPPER ── --}}
     <div class="layout-wrapper">
 
+        @if(session('success'))
+            <div id="success-alert-global" style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 400px; padding: 16px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(21, 128, 61, 0.95)); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); backdrop-filter: blur(10px); animation: slideDownAlert 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;">
+                <div style="width: 32px; height: 32px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg style="width: 18px; height: 18px; color: #ffffff;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #ffffff; line-height: 1.4; flex: 1;">{{ session('success') }}</div>
+            </div>
+            <script>setTimeout(() => { document.getElementById('success-alert-global').style.display = 'none'; }, 4000);</script>
+        @endif
+
+        @if(session('error'))
+            <div id="error-alert-global" style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 400px; padding: 16px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(185, 28, 28, 0.95)); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); backdrop-filter: blur(10px); animation: slideDownAlert 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;">
+                <div style="width: 32px; height: 32px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg style="width: 18px; height: 18px; color: #ffffff;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #ffffff; line-height: 1.4; flex: 1;">{{ session('error') }}</div>
+            </div>
+            <script>setTimeout(() => { document.getElementById('error-alert-global').style.display = 'none'; }, 4000);</script>
+        @endif
+
         {{-- Topbar --}}
         <header class="topbar">
-            <span class="topbar-brand">Event Central</span>
-
-            <div class="topbar-search">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
-                </svg>
-                <input type="text" placeholder="Search events...">
-            </div>
-
-            <div class="topbar-actions">
-                {{-- Notif icon --}}
-                <div class="topbar-icon">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                    </svg>
-                </div>
-
-                {{-- Settings icon --}}
-                <div class="topbar-icon">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-                    </svg>
-                </div>
-
-                @auth
-                    <div class="topbar-avatar">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                    </div>
-                @endauth
+            <div style="display:flex; align-items:center; gap:32px;">
+                <a href="{{ route('panitia.dashboard') }}" class="brand-logo">Event<span>Kampus</span></a>
             </div>
         </header>
 
@@ -154,6 +159,12 @@
             @yield('content')
         </main>
 
+    </div>
+
+    {{-- GLOBAL LOADER --}}
+    <div id="global-loader" class="loader-overlay">
+        <div class="premium-loader"></div>
+        <div class="loader-text">Memproses Data...</div>
     </div>
 
     @stack('scripts')

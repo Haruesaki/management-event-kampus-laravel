@@ -1,7 +1,7 @@
 @extends('panitia.layout')
 
 @section('title', 'Dashboard')
-@section('subtitle', 'Manage your event')
+@section('subtitle', 'Kelola event Anda')
 
 @section('content')
 
@@ -9,16 +9,16 @@
 
     {{-- HERO BANNER --}}
     <div class="hero-banner">
-        <img src="{{ asset('images/megawati.jpg') }}" class="hero-img" alt="Featured Event">
+        <img src="{{ asset('images/megawati.jpg') }}" class="hero-img" alt="Event Unggulan">
         <div class="hero-overlay">
-            <p class="hero-label">Featured Event</p>
-            <h1 class="hero-title">Dies Natalis <span>Concert 2026</span></h1>
-            <p class="hero-desc">Experience an orchestral fusion and digital arts in one unforgettable night.</p>
+            <p class="hero-label">Event Unggulan</p>
+            <h1 class="hero-title">Dies Natalis <span>Konser 2026</span></h1>
+            <p class="hero-desc">Rasakan perpaduan orkestra dan seni digital dalam satu malam yang tak terlupakan.</p>
             <div class="hero-actions">
-                <a href="{{ route('panitia.events') }}" class="btn-manage">
-                    Manage Event
+                <a href="{{ route('panitia.manage_event') }}" class="btn-manage">
+                    Kelola Event
                 </a>
-                <button class="btn-details">View Details</button>
+                <button class="btn-details">Lihat Detail</button>
             </div>
         </div>
     </div>
@@ -26,90 +26,74 @@
     {{-- STATS --}}
     <div class="stats-row">
         <div class="stat-card">
-            <p class="stat-label">Total Attendees</p>
-            <p class="stat-value">342</p>
+            <p class="stat-label">Total Event</p>
+            <p class="stat-value">{{ $totalEvents }}</p>
         </div>
         <div class="stat-card">
-            <p class="stat-label">Paid</p>
-            <p class="stat-value green">280</p>
+            <p class="stat-label">Total Kuota</p>
+            <p class="stat-value green">{{ number_format($totalQuota) }}</p>
         </div>
         <div class="stat-card">
-            <p class="stat-label">Pending</p>
-            <p class="stat-value yellow">62</p>
+            <p class="stat-label">Peserta Terdaftar</p>
+            <p class="stat-value yellow">0</p>
         </div>
         <div class="stat-card">
-            <p class="stat-label">Revenue</p>
-            <p class="stat-value">$12,450</p>
+            <p class="stat-label">Pendapatan</p>
+            <p class="stat-value">Rp 0</p>
         </div>
     </div>
 
     {{-- CATEGORIES --}}
-    <div>
-        <div class="section-row">
-            <p class="section-title">Explore Categories</p>
-        </div>
-        <div class="category-grid">
-            <div class="category-card">🎵 Music</div>
-            <div class="category-card">📢 Seminar</div>
-            <div class="category-card">🛠 Workshop</div>
-            <div class="category-card">⚽ Sports</div>
-        </div>
+    <!-- ... (tetap sama) ... -->
+{{-- YOUR EVENTS --}}
+<div>
+    <div class="section-row">
+        <p class="section-title">Event Terbaru Anda</p>
     </div>
+    <div class="events-grid">
+        @forelse($latestEvents as $event)
+        @php
+            $today = \Carbon\Carbon::today();
+            $eventDate = \Carbon\Carbon::parse($event->event_date);
+            $diffInDays = $today->diffInDays($eventDate, false);
 
-    {{-- YOUR EVENTS --}}
-    <div>
-        <div class="section-row">
-            <p class="section-title">Your Events</p>
-        </div>
-        <div class="events-grid">
-            <div class="event-card">
-                <img src="{{ asset('images/bahlil.jpg') }}" class="event-thumb" alt="Event">
-                <div class="event-info">
-                    <p class="event-name">King Bahlil</p>
-                    <p class="event-meta">The King Of Gasoline</p>
-                    <div class="event-footer">
-                        <span class="event-price">$25</span>
-                        <span class="badge-active">Active</span>
-                    </div>
+            if ($event->is_closed) {
+                $statusLabel = 'Selesai';
+                $statusClass = 'badge-preview'; // Merah/Gelap
+                $statusText = 'Red'; // Custom class handling
+            } elseif ($diffInDays <= 14) {
+                $statusLabel = 'Aktif';
+                $statusClass = 'badge-active'; // Hijau
+            } else {
+                $statusLabel = 'Mendatang';
+                $statusClass = 'badge-open'; // Kuning
+            }
+        @endphp
+        <div class="event-card">
+            @if($event->poster_url)
+                <img src="{{ asset($event->poster_url) }}" class="event-thumb" alt="Event">
+            @else
+                <div class="event-thumb-placeholder"></div>
+            @endif
+            <div class="event-info">
+                <p class="event-name line-clamp-1">{{ $event->title }}</p>
+                <p class="event-meta">{{ $event->category }}</p>
+                <div class="event-footer">
+                    <span class="event-price">
+                        @php $minPrice = $event->tickets->min('price'); @endphp
+                        {{ $minPrice == 0 ? 'GRATIS' : 'Rp '.number_format($minPrice, 0, ',', '.') }}
+                    </span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $statusClass === 'badge-active' ? 'bg-green-500/20 text-green-400' : ($statusClass === 'badge-open' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400') }}">
+                        {{ $statusLabel }}
+                    </span>
                 </div>
             </div>
-            <div class="event-card">
-                <img src="{{ asset('images/jokowi.jpg') }}" class="event-thumb" alt="Event">
-                <div class="event-info">
-                    <p class="event-name">Loh Kaget</p>
-                    <p class="event-meta">2 Periode</p>
-                    <div class="event-footer">
-                        <span class="event-price">FREE</span>
-                        <span class="badge-open">Open</span>
-                    </div>
-                </div>
+        </div>        @empty
+...
+            <div class="col-span-full py-10 text-center text-gray-500">
+                Belum ada event yang dibuat. <a href="{{ route('panitia.event.create') }}" class="text-purple-400">Buat sekarang?</a>
             </div>
-            <div class="event-card">
-                <img src="{{ asset('images/prabowo.jpg') }}" class="event-thumb" alt="Event">
-                <div class="event-info">
-                    <p class="event-name">Hidup Jokowi</p>
-                    <p class="event-meta">Jendral</p>
-                    <div class="event-footer">
-                        <span class="event-price">Location</span>
-                        <span class="badge-preview">Preview</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- RECENT ATTENDEES --}}
-    <div class="attendees-table">
-        <p class="section-title" style="margin-bottom:16px;">Recent Attendees</p>
-        <div class="attendee-row">
-            <span class="attendee-name">Aria Vance</span>
-            <span class="attendee-status pending">Pending</span>
-            <button class="btn-confirm">Confirm</button>
-        </div>
-        <div class="attendee-row">
-            <span class="attendee-name">Kaelen Moore</span>
-            <span class="attendee-status paid">Paid</span>
-            <span style="margin-left:16px; color:#555; font-size:13px;">—</span>
+            @endforelse
         </div>
     </div>
 

@@ -3,6 +3,18 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/user/tickets.css') }}">
+<style>
+    .ticket-type-badge {
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .badge-paid { background: rgba(168,85,247,0.2); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3); }
+    .badge-free { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+</style>
 @endpush
 
 @section('content')
@@ -10,9 +22,9 @@
 {{-- Header --}}
 <div class="bookings-header">
     <div class="bookings-label">Your Collection</div>
-    <h1 class="bookings-title">My Bookings</h1>
+    <h1 class="bookings-title">My Tickets</h1>
     <p class="bookings-desc">
-        Manage your upcoming experiences and relive the memories of past performances at the Ethereal Auditorium.
+        Kelola tiket event Anda dan persiapkan diri untuk pengalaman kampus yang tak terlupakan.
     </p>
 </div>
 
@@ -22,15 +34,15 @@
         <div class="active-dot"></div>
         Active Tickets
     </div>
-    <span class="count-badge">{{ ($activeTickets ?? collect())->count() }} Active</span>
+    <span class="count-badge">{{ $registrations->count() }} Tickets Owned</span>
 </div>
 
 <div class="active-tickets-grid">
-    @forelse($activeTickets ?? [] as $ticket)
+    @forelse($registrations as $reg)
     <div class="ticket-card">
         <div class="ticket-image">
-            @if($ticket->event->thumbnail)
-                <img src="{{ asset('storage/'.$ticket->event->thumbnail) }}" alt="">
+            @if($reg->event->poster_url)
+                <img src="{{ asset($reg->event->poster_url) }}" alt="{{ $reg->event->title }}">
             @else
                 <div class="ticket-image-bg">
                     <svg style="width:32px;height:32px;color:#2a2040;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -38,187 +50,54 @@
                     </svg>
                 </div>
             @endif
-            <div class="ticket-badge">{{ $ticket->seat_section ?? 'General' }}</div>
+            <div class="ticket-badge">{{ $reg->event->category }}</div>
         </div>
         <div class="ticket-body">
             <div class="ticket-type-row">
-                <div></div>
-                <div class="ticket-id">ID: #{{ $ticket->code }}</div>
+                <span class="ticket-type-badge {{ $reg->ticket->type === 'Gratis' ? 'badge-free' : 'badge-paid' }}">
+                    {{ $reg->ticket->type }}
+                </span>
+                <div class="ticket-id">ORDER ID: #{{ str_pad($reg->id, 5, '0', STR_PAD_LEFT) }}</div>
             </div>
-            <div class="ticket-event-name">{{ $ticket->event->name }}</div>
+            <div class="ticket-event-name">{{ $reg->event->title }}</div>
             <div class="ticket-datetime">
-                {{ \Carbon\Carbon::parse($ticket->event->date)->format('l, M d') }} • {{ $ticket->event->time_start }}
+                {{ \Carbon\Carbon::parse($reg->event->event_date)->format('l, d M Y') }} • {{ $reg->event->gates_open ?? '08:00 AM' }}
             </div>
-            @if($ticket->seat_section)
-            <div class="ticket-seat-row">
-                <div class="seat-item">
-                    <div class="seat-label">Section</div>
-                    <div class="seat-val">{{ $ticket->seat_section }}</div>
-                </div>
-                <div class="seat-item">
-                    <div class="seat-label">Row</div>
-                    <div class="seat-val">{{ $ticket->seat_row }}</div>
-                </div>
-                <div class="seat-item">
-                    <div class="seat-label">Seat</div>
-                    <div class="seat-val">{{ $ticket->seat_number }}</div>
-                </div>
+            
+            <div style="margin-top: 20px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="font-size: 10px; color: var(--text-3); text-transform: uppercase; margin-bottom: 4px;">Ticket Variant</div>
+                <div style="font-size: 14px; font-weight: 700; color: #fff;">{{ $reg->ticket->name }}</div>
             </div>
-            @endif
-            <a href="{{ route('tickets.download', $ticket->id) }}" class="download-btn">
+
+            <a href="#" class="download-btn" style="margin-top: 20px;">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
-                Download PDF
+                Download E-Ticket
             </a>
         </div>
     </div>
     @empty
-    {{-- Dummy cards --}}
-    @foreach([
-        ['id'=>1,'badge'=>'Orchestra Seating','code'=>'EA-90822','name'=>'Neo-Classical Synthesis','date'=>'Friday, Oct 24','time'=>'8:00 PM','section'=>'A1','row'=>'12','seat'=>'42'],
-        ['id'=>2,'badge'=>'Private Box','code'=>'EA-44102','name'=>'Midnight Opera Series','date'=>'Sunday, Nov 02','time'=>'10:30 PM','box'=>'VIP 4','suite'=>'North','guests'=>'2'],
-    ] as $dummy)
-    <div class="ticket-card">
-        <div class="ticket-image">
-            <div class="ticket-image-bg">
-                <svg style="width:32px;height:32px;color:#2a2040;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13"/>
-                </svg>
-            </div>
-            <div class="ticket-badge">{{ $dummy['badge'] }}</div>
-        </div>
-        <div class="ticket-body">
-            <div class="ticket-type-row">
-                <div></div>
-                <div class="ticket-id">ID: #{{ $dummy['code'] }}</div>
-            </div>
-            <div class="ticket-event-name">{{ $dummy['name'] }}</div>
-            <div class="ticket-datetime">{{ $dummy['date'] }} • {{ $dummy['time'] }}</div>
-            @if(isset($dummy['section']))
-            <div class="ticket-seat-row">
-                <div class="seat-item">
-                    <div class="seat-label">Section</div>
-                    <div class="seat-val">{{ $dummy['section'] }}</div>
-                </div>
-                <div class="seat-item">
-                    <div class="seat-label">Row</div>
-                    <div class="seat-val">{{ $dummy['row'] }}</div>
-                </div>
-                <div class="seat-item">
-                    <div class="seat-label">Seat</div>
-                    <div class="seat-val">{{ $dummy['seat'] }}</div>
-                </div>
-            </div>
-            @else
-            <div class="ticket-seat-row">
-                <div class="seat-item">
-                    <div class="seat-label">Box</div>
-                    <div class="seat-val">{{ $dummy['box'] }}</div>
-                </div>
-                <div class="seat-item">
-                    <div class="seat-label">Suite</div>
-                    <div class="seat-val">{{ $dummy['suite'] }}</div>
-                </div>
-                <div class="seat-item">
-                    <div class="seat-label">Guest</div>
-                    <div class="seat-val">{{ $dummy['guests'] }}</div>
-                </div>
-            </div>
-            @endif
-            <a href="#" class="download-btn">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
-                Download PDF
-            </a>
-        </div>
+    <div class="col-span-full py-20 text-center" style="background: var(--bg-card); border-radius: 24px; border: 1px dashed var(--border);">
+        <svg style="width:48px; height:48px; color: var(--text-3); margin-bottom: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+        </svg>
+        <h3 style="color: #fff; font-size: 18px; font-weight: 700;">Belum Ada Tiket</h3>
+        <p style="color: var(--text-3); font-size: 14px; margin-top: 8px;">Jelajahi berbagai event seru dan pesan tiket Anda sekarang!</p>
+        <a href="{{ route('events.index') }}" class="btn-cta" style="margin-top: 24px; display: inline-block;">Mulai Cari Event</a>
     </div>
-    @endforeach
-    @endforelse
-</div>
-
-{{-- Past Events --}}
-<div class="section-row">
-    <div class="section-heading">Past Events</div>
-    <a href="#" class="link-subtle" style="font-weight:600;">View All History</a>
-</div>
-
-<div class="past-list">
-    @forelse($pastTickets ?? [] as $ticket)
-    <div class="past-item">
-        <div class="past-thumb">
-            @if($ticket->event->thumbnail)
-                <img src="{{ asset('storage/'.$ticket->event->thumbnail) }}" alt="">
-            @else
-                <div class="past-thumb-placeholder">
-                    <svg style="width:18px;height:18px;color:#4e4670;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13"/>
-                    </svg>
-                </div>
-            @endif
-        </div>
-        <div class="past-info">
-            <div class="past-name">{{ $ticket->event->name }}</div>
-            <div class="past-meta">{{ \Carbon\Carbon::parse($ticket->event->date)->format('M d, Y') }} • {{ $ticket->event->venue }}</div>
-        </div>
-        <div class="past-right">
-            <div>
-                <div class="attended-label">Attended</div>
-                <div class="toggle-wrap">
-                    <div class="toggle {{ $ticket->attended ? 'on' : '' }}"></div>
-                </div>
-            </div>
-            <div class="past-arrow">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-            </div>
-        </div>
-    </div>
-    @empty
-    @foreach([
-        ['Electronic Underground Vol. 4','Sep 12, 2023 • The Deep Lounge',true],
-        ['Live Podcast: The Future of Sound','Aug 28, 2023 • Hall B',false],
-        ['Summer Night Symphony','Aug 05, 2023 • Main Theater',true],
-    ] as $p)
-    <div class="past-item">
-        <div class="past-thumb">
-            <div class="past-thumb-placeholder">
-                <svg style="width:18px;height:18px;color:#4e4670;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13"/>
-                </svg>
-            </div>
-        </div>
-        <div class="past-info">
-            <div class="past-name">{{ $p[0] }}</div>
-            <div class="past-meta">{{ $p[1] }}</div>
-        </div>
-        <div class="past-right">
-            <div>
-                <div class="attended-label">Attended</div>
-                <div class="toggle-wrap">
-                    <div class="toggle {{ $p[2] ? 'on' : '' }}"></div>
-                </div>
-            </div>
-            <div class="past-arrow">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-            </div>
-        </div>
-    </div>
-    @endforeach
     @endforelse
 </div>
 
 {{-- CTA --}}
-<div class="cta-section">
+@if($registrations->count() > 0)
+<div class="cta-section" style="margin-top: 60px;">
     <div>
-        <div class="cta-title">Looking for more?</div>
-        <p class="cta-desc">Explore curated upcoming events tailored to your unique taste.</p>
+        <div class="cta-title">Ingin Cari Event Lain?</div>
+        <p class="cta-desc">Temukan berbagai pengalaman baru yang diselenggarakan oleh organisasi kampus.</p>
     </div>
-    <a href="{{ route('events.index') }}" class="btn-cta">Explore Discovery</a>
+    <a href="{{ route('events.index') }}" class="btn-cta">Cari Event Lainnya</a>
 </div>
+@endif
 
 @endsection

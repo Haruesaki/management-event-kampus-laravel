@@ -1,20 +1,275 @@
-@extends('admin.layouts.app')
+<?php
+$page_title = "Event Management";
+$active_page = "event-management";
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusAdmin - Event Management</title>
+<link rel="stylesheet" href="{{ asset('css/shared/layout.css') }}">
+<style>
+  /* CONTENT OVERRIDES */
+  :root {
+    --bg-card: #141418; --bg-card2: #1a1a1f; --bg-hover: rgba(124,92,252,0.08);
+    --border: rgba(255,255,255,0.08); --accent: #7c5cfc; --accent-2: #a07fff;
+    --text-1: #f0f0f5; --text-2: #c0c0cc; --text-3: #8a8a9a;
+    --accent-green: #22c55e; --accent-red: #ef4444; --accent-yellow: #f59e0b; --accent-pink: #e040a0;
+    /* Legacy aliases */
+    --bg-base: #0c0a14; --bg-sidebar: #13101e; --border-light: rgba(255,255,255,0.12);
+    --text-primary: #f0f0f5; --text-secondary: #8a8a9a; --text-muted: #555566;
+    --accent-purple: #7c5cfc; --accent-purple-light: #a07fff;
+  }
+  .layout { display: flex; height: 100vh; width: 100%; overflow: hidden; }
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .content { flex: 1; overflow-y: auto; padding: 32px 28px; }
 
-@section('title', 'Event Management')
-@section('search_placeholder', 'Search events...')
+  /* HEADER */
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin/events.css') }}">
-@endpush
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
+  }
+  .page-header-left .breadcrumb { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-purple-light); margin-bottom: 6px; }
+  .page-header-left h1 { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+  .btn-create {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-purple), #9b59f5);
+    color: white; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 4px 20px rgba(124,92,252,0.3);
+  }
+  .btn-create:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,92,252,0.4); }
 
-@section('content')
-  <div class="page-header">
-    <div class="page-header-left">
-      <div class="breadcrumb">Management</div>
-      <h1>Curated Events</h1>
+  /* MAIN GRID */
+  .main-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; flex: 1; }
+
+  /* LEFT: EVENT LIST */
+  /* .events-left {} */
+  .events-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; align-items: center; }
+  .events-tab {
+    padding: 10px 0; margin-right: 24px; font-size: 13px; font-weight: 600;
+    cursor: pointer; color: var(--text-secondary); border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all 0.2s;
+  }
+  .events-tab.active { color: var(--text-primary); border-bottom-color: var(--accent-purple); }
+  .events-count { margin-left: auto; font-size: 12px; color: var(--text-muted); }
+
+  .event-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; margin-bottom: 12px;
+    display: flex; transition: border-color 0.2s; cursor: pointer;
+  }
+  .event-card:hover { border-color: var(--border-light); }
+  .event-thumb {
+    width: 180px; min-width: 180px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #1a0a2e, #3b1f8c);
+  }
+  .event-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .event-thumb-placeholder {
+    width: 180px; height: 100%;
+    display: flex; align-items: center; justify-content: center; min-height: 130px;
+  }
+  .event-thumb-placeholder svg { width: 48px; height: 48px; opacity: 0.15; }
+  .event-tag-status {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .tag-upcoming { background: rgba(124,92,252,0.9); color: white; }
+  .tag-finished { background: rgba(0,0,0,0.7); color: var(--text-secondary); border: 1px solid var(--border); }
+
+  .event-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+  .event-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .event-meta { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+  .event-meta-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .event-meta-item svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .event-footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+  .event-price { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; }
+  .event-price.free { color: var(--text-secondary); font-size: 16px; font-weight: 600; }
+  .price-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 4px 10px; border-radius: 20px; text-transform: uppercase; margin-left: 10px;
+  }
+  .badge-paid { background: rgba(34,197,94,0.12); color: var(--accent-green); }
+  .event-actions { display: flex; gap: 8px; }
+  .ev-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--bg-card2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-secondary); transition: all 0.2s;
+  }
+  .ev-btn:hover { color: var(--text-primary); }
+  .ev-btn svg { width: 14px; height: 14px; }
+
+  /* BOTTOM STATS */
+  .bottom-stats { display: flex; gap: 16px; margin-top: 16px; }
+  .bottom-stat {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 20px; flex: 1;
+  }
+  .bottom-stat-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(124,92,252,0.15); display: flex; align-items: center; justify-content: center;
+    color: var(--accent-purple-light); flex-shrink: 0;
+  }
+  .bottom-stat-icon svg { width: 18px; height: 18px; }
+  .bottom-stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .bottom-stat-value { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; }
+  .bottom-stat-value span { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+  /* RIGHT: CREATE FORM */
+  .create-panel {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px; height: fit-content; position: sticky; top: 0;
+  }
+  .panel-title {
+    font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+  }
+  .panel-title-icon {
+    width: 20px; height: 20px; color: var(--accent-purple-light);
+  }
+  .upload-zone {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 28px;
+    text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 18px;
+  }
+  .upload-zone:hover { border-color: var(--accent-purple); background: rgba(124,92,252,0.04); }
+  .upload-zone svg { width: 32px; height: 32px; color: var(--text-muted); margin-bottom: 10px; }
+  .upload-zone .upload-text { font-size: 13px; color: var(--text-secondary); }
+  .upload-zone .upload-text span { color: var(--accent-purple-light); cursor: pointer; }
+  .upload-zone .upload-hint { font-size: 11px; color: var(--text-muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+  .form-input {
+    width: 100%; background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; color: var(--text-primary);
+    font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--accent-purple); }
+  .form-input::placeholder { color: var(--text-muted); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .form-select {
+    width: 100%; background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; color: var(--text-primary);
+    font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8a9a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .form-select:focus { border-color: var(--accent-purple); }
+
+  .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-publish {
+    flex: 1; padding: 12px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-purple), #9b59f5);
+    color: white; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-publish:hover { opacity: 0.9; }
+  .btn-draft {
+    padding: 12px 20px; border-radius: 10px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-secondary); font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .btn-draft:hover { color: var(--text-primary); border-color: var(--border-light); }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR (shared design) -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name">CampusAdmin</div>
+      <div class="brand-sub">Admin Panel</div>
     </div>
-    <button class="btn-create">+ Create New Event</button>
-  </div>
+    <nav class="sidebar-nav">
+      <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>Dashboard
+      </a>
+      <a href="{{ route('admin.users') }}" class="nav-item {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+          <path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.87"/>
+        </svg>User Management
+      </a>
+      <a href="{{ route('admin.events') }}" class="nav-item {{ request()->routeIs('admin.events*') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>Event Management
+      </a>
+      <a href="{{ route('admin.users.bulk') }}" class="nav-item {{ request()->routeIs('admin.users.bulk') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+        </svg>Bulk Operations
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="role-card">
+        <a href="{{ route('profile.show') }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none; flex: 1;">
+          <div class="role-card-avatar avatar-admin">{{ strtoupper(substr(Auth::user()->name ?? 'AD', 0, 2)) }}</div>
+          <div class="role-card-info">
+            <div class="role-card-name">{{ Auth::user()->name ?? 'Administrator' }}</div>
+            <div class="role-card-label">Administrator</div>
+          </div>
+        </a>
+        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+          @csrf
+          <button type="submit" class="role-card-logout" title="Logout">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <span class="topbar-brand">CampusAdmin</span>
+      <div class="topbar-search">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" placeholder="Search events...">
+      </div>
+      <div class="topbar-actions">
+        <div class="topbar-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+        </div>
+        <div class="topbar-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="breadcrumb">Management</div>
+          <h1>Curated Events</h1>
+        </div>
+        <button class="btn-create">+ Create New Event</button>
+      </div>
 
   <div class="main-grid">
     {{-- EVENT LIST --}}
@@ -218,10 +473,21 @@
         </div>
       </div>
 
-      <div class="form-actions">
-        <button class="btn-publish">Publish Event</button>
-        <button class="btn-draft">Draft</button>
+          <div class="form-actions">
+            <button class="btn-publish">Publish Event</button>
+            <button class="btn-draft">Draft</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-@endsection
+</div>
+
+{{-- GLOBAL LOADER --}}
+<div id="global-loader" class="loader-overlay">
+    <div class="premium-loader"></div>
+    <div class="loader-text">Memproses Data...</div>
+</div>
+
+</body>
+</html>

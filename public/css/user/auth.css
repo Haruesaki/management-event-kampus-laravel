@@ -27,7 +27,7 @@ html, body {
 }
 body {
     display: flex;
-    flex-direction: column;
+    flex-direction: column !important;
     position: relative;
     overflow-x: hidden;
 }
@@ -107,18 +107,30 @@ body {
 
 /* ── Topbar ── */
 .auth-topbar {
-    height: 56px;
-    display: flex; align-items: center; justify-content: flex-end;
-    padding: 0 40px;
+    height: 60px !important;
+    min-height:60px !important;
+    max-height: 60px !important;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     position: relative; z-index: 10;
     background: rgba(10,8,20,0.6);
     backdrop-filter: blur(10px);
+    box-sizing: border-box;
 }
-.auth-topbar-nav { display: flex; gap: 28px; align-items: center; }
+.auth-topbar .brand-logo {
+    font-size: 1.6rem !important;
+    line-height: 1 !important;
+    height: auto !important;
+    display: inline-flex;
+    align-items: center;
+}
+
+.auth-topbar-nav { display: flex; gap: 32px; align-items: center; }
 .auth-topbar-nav a {
-    font-size: 13px; color: var(--text-2);
+    font-size: 14px; color: var(--text-2);
     text-decoration: none; transition: color 0.2s;
+    font-weight: 500;
 }
 .auth-topbar-nav a:hover { color: var(--text-1); }
 .btn-outline {
@@ -133,14 +145,28 @@ body {
     background: transparent;
 }
 .btn-outline:hover { background: rgba(168,85,247,0.12); }
-
 /* ── Auth body ── */
 .auth-body {
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 48px 20px;
+    padding: 32px 20px 32px;
+    position: relative; z-index: 5;
+}
+
+/* Kustomisasi khusus Body Login & Register */
+.auth-body-login {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 32px 20px 32px;
+    position: relative; z-index: 5;
+ }
+.auth-body-register {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 32px 20px 32px;
     position: relative; z-index: 5;
 }
 
@@ -149,9 +175,39 @@ body {
     background: var(--bg-card);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 24px;
-    padding: 44px 48px 40px;
+    padding: 44px 52px 40px;
     width: 100%;
-    max-width: 380px;
+    max-width: 460px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.1);
+}
+
+/* Kustomisasi khusus Card Login & Register */
+.auth-card-login {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px 52px 40px;
+    width: 100%;
+    max-width: 400px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.1);
+}
+
+.auth-card-login .auth-title { margin-bottom: 12px; }
+.auth-card-login .auth-subtitle { margin-bottom: 32px; }
+.auth-card-login .form-group { margin-top: 24px; }
+.auth-card-login .btn-primary { margin-top: 36px; }
+
+.auth-card-register {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px 52px 40px;
+    width: 100%;
+    max-width: 460px;
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.1);
@@ -159,18 +215,16 @@ body {
 
 .auth-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 800;
     line-height: 1.1;
     color: #ffffff;
 }
 .auth-title span { color: var(--accent); }
 .auth-subtitle {
-    font-size: 11px;
-    color: #9b92bc;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-top: 8px;
+    font-size: 14px;
+    color: #9083b5;
+    margin-top: 10px;
 }
 
 /* ── Form ── */

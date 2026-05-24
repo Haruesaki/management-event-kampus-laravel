@@ -3,8 +3,8 @@
 @section('content')
 
 <div x-data="{ 
-    tickets: JSON.parse(localStorage.getItem('draft_tickets') || '[]'), 
-    poster: localStorage.getItem('draft_poster') || null,
+    tickets: {{ $event->tickets->map(fn($t) => ['name' => $t->name, 'type' => $t->type, 'price' => (float)$t->price, 'quota' => $t->quota])->toJson() }}, 
+    poster: '{{ asset($event->poster_url) }}',
     showModal: false, 
     showUploadModal: false,
     editIndex: -1,
@@ -18,13 +18,6 @@
     init() {
         this.showModal = false;
         this.showUploadModal = false;
-        this.$watch('tickets', (value) => {
-            localStorage.setItem('draft_tickets', JSON.stringify(value));
-        });
-        this.$watch('poster', (value) => {
-            if(value) localStorage.setItem('draft_poster', value);
-            else localStorage.removeItem('draft_poster');
-        });
     },
 
     handlePoster(file) {
@@ -59,28 +52,17 @@
         this.editIndex = -1;
         this.newTicket = { name: '', type: 'Gratis', price: 0, quota: '' };
     },
-    clearDraft() {
-        localStorage.removeItem('draft_tickets');
-        localStorage.removeItem('draft_poster');
-    },
     validateAndSubmit(e) {
-        // Karena tombol sekarang di dalam form, kita gunakan pengiriman form standar
-        // Fungsi ini dipanggil dari event @submit pada form
         if (!this.poster || this.tickets.length === 0) {
             e.preventDefault();
             this.showErrorToast('Mohon unggah poster dan buat minimal satu jenis tiket.');
             return;
         }
-
-        // Jika valid, biarkan form terkirim
-        this.clearDraft();
     },
     showErrorToast(msg) {
         this.toastMessage = msg;
         this.showToast = false; 
-        
         clearTimeout(this.toastTimeout);
-        
         setTimeout(() => {
             this.showToast = true;
             this.toastTimeout = setTimeout(() => {
@@ -112,24 +94,24 @@
 
     <!-- HEADER -->
     <div class="mb-8">
-        <p class="text-xs text-purple-400 tracking-widest mb-1">STUDIO PRODUKSI</p>
-        <h1 class="text-3xl font-semibold">Buat Event Baru</h1>
-        <p class="text-gray-400 text-sm mt-1">Ciptakan pengalaman luar biasa Anda berikutnya dengan presisi dan gaya.</p>
+        <p class="text-xs text-purple-400 tracking-widest mb-1">MANAJEMEN EVENT</p>
+        <h1 class="text-3xl font-semibold">Edit Event: {{ $event->title }}</h1>
+        <p class="text-gray-400 text-sm mt-1">Perbarui detail acara Anda untuk menarik lebih banyak peserta.</p>
     </div>
 
     <!-- MAIN CONTENT SECTIONS -->
-    <form action="{{ route('panitia.event.store') }}" method="POST" @submit="validateAndSubmit($event)" class="space-y-16">
+    <form action="{{ route('panitia.event.update', $event->id) }}" method="POST" @submit="validateAndSubmit($event)" class="space-y-16">
         @csrf
         
         {{-- Data Hidden --}}
-        <input type="hidden" name="poster_data" :value="poster">
+        <input type="hidden" name="poster_data" :value="poster.startsWith('data:image') ? poster : ''">
         <input type="hidden" name="tickets" :value="JSON.stringify(tickets)">
 
         <!-- SECTION 1: IDENTITAS EVENT -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div class="space-y-2">
                 <p class="text-white font-semibold text-lg">Identitas Event</p>
-                <p class="text-sm text-gray-400 leading-relaxed">Tetapkan atribut visual dan kunci. Pastikan koherensi di semua titik kontak.</p>
+                <p class="text-sm text-gray-400 leading-relaxed">Sesuaikan visual dan informasi utama acara Anda.</p>
             </div>
 
             <div class="lg:col-span-2">
@@ -161,18 +143,17 @@
                     <div class="space-y-5">
                         <div class="space-y-1.5">
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Nama Event</label>
-                            <input type="text" name="title" required placeholder="Contoh: Digital Art Summit 2026"
+                            <input type="text" name="title" value="{{ $event->title }}" required
                                 class="w-full bg-[#15151D] p-3.5 rounded-xl outline-none border border-[#1c1c24] focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition" />
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Kategori</label>
                             <select name="category" required class="w-full bg-[#15151D] p-3.5 rounded-xl outline-none border border-[#1c1c24] focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition text-gray-400">
-                                <option value="">Pilih Kategori</option>
-                                <option>Seminar</option>
-                                <option>Workshop</option>
-                                <option>Konser</option>
-                                <option>Olahraga</option>
+                                <option value="Seminar" {{ $event->category == 'Seminar' ? 'selected' : '' }}>Seminar</option>
+                                <option value="Workshop" {{ $event->category == 'Workshop' ? 'selected' : '' }}>Workshop</option>
+                                <option value="Konser" {{ $event->category == 'Konser' ? 'selected' : '' }}>Konser</option>
+                                <option value="Olahraga" {{ $event->category == 'Olahraga' ? 'selected' : '' }}>Olahraga</option>
                             </select>
                         </div>
                     </div>
@@ -184,33 +165,33 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div class="space-y-2">
                 <p class="text-white font-semibold text-lg">Waktu & Tempat</p>
-                <p class="text-sm text-gray-400 leading-relaxed">Tentukan jadwal dan lokasi untuk event Anda.</p>
+                <p class="text-sm text-gray-400 leading-relaxed">Perbarui jadwal dan lokasi acara Anda.</p>
             </div>
 
             <div class="lg:col-span-2">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Tanggal Event</label>
-                        <input type="date" name="event_date" required
+                        <input type="date" name="event_date" value="{{ \Carbon\Carbon::parse($event->event_date)->format('Y-m-d') }}" required
                             class="w-full bg-[#15151D] p-3.5 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none text-gray-400" />
                     </div>
 
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Pintu Dibuka</label>
-                        <input type="text" name="gates_open" placeholder="18:30"
+                        <input type="text" name="gates_open" value="{{ $event->gates_open }}" placeholder="18:30"
                             class="w-full bg-[#15151D] p-3.5 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none" />
                     </div>
 
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Estimasi Durasi</label>
-                        <input type="text" name="duration" placeholder="3 Jam"
+                        <input type="text" name="duration" value="{{ $event->duration }}" placeholder="3 Jam"
                             class="w-full bg-[#15151D] p-3.5 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none" />
                     </div>
 
                     <div class="md:col-span-3 space-y-1.5">
                         <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Lokasi Fisik / Venue</label>
                         <div class="relative">
-                            <input type="text" name="location" required placeholder="Cari Alamat atau Nama Tempat..."
+                            <input type="text" name="location" value="{{ $event->location }}" required placeholder="Cari Alamat atau Nama Tempat..."
                                 class="w-full bg-[#15151D] p-3.5 pl-11 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none" />
                             <svg class="w-5 h-5 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -222,7 +203,7 @@
                     <div class="md:col-span-3 space-y-1.5">
                         <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Link Google Maps (Opsional)</label>
                         <div class="relative">
-                            <input type="url" name="google_maps_url" placeholder="https://maps.app.goo.gl/..."
+                            <input type="url" name="google_maps_url" value="{{ $event->google_maps_url }}" placeholder="https://maps.app.goo.gl/..."
                                 class="w-full bg-[#15151D] p-3.5 pl-11 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none transition" />
                             <svg class="w-5 h-5 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -237,11 +218,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div class="space-y-2">
                 <p class="text-white font-semibold text-lg">Akses & Harga</p>
-                <p class="text-sm text-gray-400 leading-relaxed">Atur tingkatan tiket dan ketersediaan kuota event Anda.</p>
+                <p class="text-sm text-gray-400 leading-relaxed">Kelola tingkatan tiket dan ketersediaan kuota.</p>
             </div>
 
             <div class="lg:col-span-2 space-y-4">
-                {{-- TICKET CARDS LIST --}}
                 <template x-for="(ticket, index) in tickets" :key="index">
                     <div class="bg-[#15151D] p-5 rounded-2xl border border-[#1c1c24] flex justify-between items-center group animate-fadeIn">
                         <div class="flex items-center gap-5">
@@ -273,7 +253,6 @@
                     </div>
                 </template>
 
-                {{-- ADD TICKET BUTTON --}}
                 <button type="button" @click="showModal = true" class="w-full border-2 border-dashed border-[#1c1c24] text-gray-500 py-8 rounded-2xl hover:border-purple-500/40 hover:text-purple-400 hover:bg-purple-500/5 transition-all duration-300 font-medium flex flex-col items-center justify-center gap-3 group">
                     <div class="w-12 h-12 rounded-full bg-[#15151D] flex items-center justify-center group-hover:scale-110 transition duration-300">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -289,134 +268,75 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div class="space-y-2">
                 <p class="text-white font-semibold text-lg">Narasi</p>
-                <p class="text-sm text-gray-400 leading-relaxed">Ceritakan kisah dan detail penting di balik event Anda.</p>
+                <p class="text-sm text-gray-400 leading-relaxed">Ceritakan kembali visi dan detail acara Anda.</p>
             </div>
 
             <div class="lg:col-span-2">
                 <div class="space-y-1.5">
                     <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider ml-1">Deskripsi Lengkap</label>
                     <textarea name="description" required rows="6" placeholder="Tuliskan pengalaman apa yang akan didapatkan oleh peserta..."
-                        class="w-full bg-[#15151D] p-5 rounded-2xl border border-[#1c1c24] focus:border-purple-500/50 outline-none leading-relaxed transition resize-none"></textarea>
+                        class="w-full bg-[#15151D] p-5 rounded-2xl border border-[#1c1c24] focus:border-purple-500/50 outline-none leading-relaxed transition resize-none">{{ $event->description }}</textarea>
                 </div>
             </div>
         </div>
 
         <!-- FINAL ACTIONS -->
         <div class="pt-8 border-t border-[#1c1c24] flex flex-col md:flex-row justify-end gap-4">
-            <button type="button" class="px-8 py-3.5 rounded-xl bg-[#1c1c24] text-gray-300 font-semibold hover:bg-[#2a2a35] hover:text-white transition order-2 md:order-1">
-                Simpan dlm Draf
-            </button>
+            <a href="{{ route('panitia.manage_event') }}" class="px-8 py-3.5 rounded-xl bg-[#1c1c24] text-gray-300 font-semibold hover:bg-[#2a2a35] hover:text-white transition order-2 md:order-1 text-center">
+                Batalkan
+            </a>
             <button type="submit" class="px-10 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:scale-[1.02] transition active:scale-[0.98] order-1 md:order-2">
-                Publikasikan Event
+                Simpan Perubahan
             </button>
         </div>
     </form>
 
-    {{-- MODAL POPUP TICKETS --}}
-    <div x-show="showModal" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        
-        <div @click.away="closeModal()" 
-             class="bg-[#12121A] border border-[#1c1c24] w-full max-w-md rounded-3xl overflow-hidden shadow-2xl">
-            
+    {{-- MODAL POPUP TICKETS (Reuse dari create) --}}
+    <div x-show="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" x-cloak>
+        <div @click.away="closeModal()" class="bg-[#12121A] border border-[#1c1c24] w-full max-w-md rounded-3xl overflow-hidden shadow-2xl">
             <div class="p-6 border-b border-[#1c1c24] flex justify-between items-center">
                 <h3 class="text-xl font-bold text-white" x-text="editIndex > -1 ? 'Perbarui Tiket' : 'Konfigurasi Tiket'"></h3>
                 <button type="button" @click="closeModal()" class="text-gray-500 hover:text-white transition">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
-
             <div class="p-6 space-y-5">
                 <div class="space-y-1.5">
                     <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Nama Jenis Tiket</label>
-                    <input type="text" x-model="newTicket.name" placeholder="Misal: Early Bird, VIP, Reguler"
-                        class="w-full bg-[#0B0B0F] p-3.5 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none transition" />
+                    <input type="text" x-model="newTicket.name" class="w-full bg-[#0B0B0F] p-3.5 rounded-xl border border-[#1c1c24] outline-none text-white" />
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Kategori</label>
-                        <select x-model="newTicket.type" class="w-full bg-[#0B0B0F] p-3.5 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none transition text-gray-400">
+                        <select x-model="newTicket.type" class="w-full bg-[#0B0B0F] p-3.5 rounded-xl border border-[#1c1c24] outline-none text-gray-400">
                             <option>Gratis</option>
                             <option>Berbayar</option>
                         </select>
                     </div>
-
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Jumlah Slot</label>
-                        <input type="number" x-model="newTicket.quota" placeholder="100"
-                            class="w-full bg-[#0B0B0F] p-3.5 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none transition" />
+                        <input type="number" x-model="newTicket.quota" class="w-full bg-[#0B0B0F] p-3.5 rounded-xl border border-[#1c1c24] outline-none text-white" />
                     </div>
                 </div>
-
-                <div x-show="newTicket.type === 'Berbayar'" x-transition class="space-y-1.5">
+                <div x-show="newTicket.type === 'Berbayar'" class="space-y-1.5">
                     <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Harga Tiket (Rp)</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">Rp</span>
-                        <input type="number" x-model="newTicket.price" placeholder="50.000"
-                            class="w-full bg-[#0B0B0F] p-3.5 pl-12 rounded-xl border border-[#1c1c24] focus:border-purple-500/50 outline-none transition font-semibold" />
-                    </div>
+                    <input type="number" x-model="newTicket.price" class="w-full bg-[#0B0B0F] p-3.5 rounded-xl border border-[#1c1c24] outline-none text-white" />
                 </div>
-
-                <button type="button" @click="addTicket()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white hover:shadow-lg hover:shadow-purple-500/20 transition active:scale-95">
-                    Simpan Konfigurasi Tiket
-                </button>
+                <button type="button" @click="addTicket()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white">Simpan Tiket</button>
             </div>
         </div>
     </div>
 
-    {{-- UPLOAD POSTER MODAL --}}
-    <div x-show="showUploadModal" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-        
-        <div @click.away="showUploadModal = false" 
-             class="bg-[#12121A] border border-[#1c1c24] w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl">
-            
+    {{-- MODAL UPLOAD POSTER (Reuse dari create) --}}
+    <div x-show="showUploadModal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" x-cloak>
+        <div @click.away="showUploadModal = false" class="bg-[#12121A] border border-[#1c1c24] w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl">
             <div class="p-8 text-center space-y-6">
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-2xl font-bold text-white">Visual Event</h3>
-                    <button type="button" @click="showUploadModal = false" class="text-gray-500 hover:text-white">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
-                </div>
-
-                <div 
-                    @dragover.prevent="$el.classList.add('border-purple-500', 'bg-purple-500/5')"
-                    @dragleave.prevent="$el.classList.remove('border-purple-500', 'bg-purple-500/5')"
-                    @drop.prevent="$el.classList.remove('border-purple-500', 'bg-purple-500/5'); handlePoster($event.dataTransfer.files[0])"
-                    @click="$refs.fileInput.click()"
-                    class="border-2 border-dashed border-[#1c1c24] rounded-3xl p-12 flex flex-col items-center justify-center cursor-pointer hover:border-purple-500/50 hover:bg-purple-500/5 transition-all duration-300 group"
-                >
+                <h3 class="text-2xl font-bold text-white">Visual Event</h3>
+                <div @click="$refs.fileInput.click()" class="border-2 border-dashed border-[#1c1c24] rounded-3xl p-12 cursor-pointer">
                     <input type="file" x-ref="fileInput" class="hidden" accept="image/*" @change="handlePoster($event.target.files[0])">
-                    
-                    <div class="w-20 h-20 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4 group-hover:scale-110 transition duration-500">
-                        <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                    </div>
-                    
-                    <p class="text-white font-semibold text-lg">Tarik & Lepas Poster</p>
-                    <p class="text-gray-500 text-sm mt-1">atau klik untuk menelusuri file</p>
-                    <div class="mt-6 px-4 py-2 rounded-full bg-[#1c1c24] text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                        JPG, PNG atau WEBP (Maks. 5MB)
-                    </div>
+                    <p class="text-white font-semibold text-lg">Klik untuk ubah poster</p>
                 </div>
-
-                <p class="text-[11px] text-gray-600 italic">Pastikan poster memiliki aspek rasio yang menarik untuk meningkatkan konversi pendaftaran.</p>
+                <button type="button" @click="showUploadModal = false" class="text-gray-500 underline">Tutup</button>
             </div>
         </div>
     </div>
@@ -427,69 +347,14 @@
 
 @push('styles')
 <style>
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fadeIn {
-        animation: fadeIn 0.4s ease-out forwards;
-    }
-
-    /* ── CUSTOM ERROR TOAST ── */
-    .error-toast {
-        position: fixed;
-        bottom: 30px;
-        right: 30px; 
-        z-index: 10000;
-        width: calc(100% - 40px);
-        max-width: 400px;
-        background: linear-gradient(135deg, rgba(20, 15, 30, 0.95), rgba(30, 15, 30, 0.95));
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-radius: 14px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px rgba(239, 68, 68, 0.15);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
-    .toast-content {
-        padding: 16px 20px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    .toast-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: rgba(239, 68, 68, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        color: #ef4444;
-    }
-    .toast-icon svg { width: 20px; height: 20px; }
-    .toast-text {
-        color: #ffffff;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 13.5px;
-        font-weight: 500;
-        line-height: 1.5;
-    }
-    .toast-progress {
-        height: 4px;
-        background: linear-gradient(90deg, #ef4444, #f87171);
-        width: 100%;
-        animation: toastTimer 5s linear forwards;
-    }
-    @keyframes toastTimer {
-        from { width: 100%; }
-        to { width: 0%; }
-    }
-    @media (max-width: 640px) {
-        .error-toast { right: 20px; }
-    }
+    [x-cloak] { display: none !important; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+    .error-toast { position: fixed; bottom: 30px; right: 30px; z-index: 10000; width: calc(100% - 40px); max-width: 400px; background: linear-gradient(135deg, rgba(20, 15, 30, 0.95), rgba(30, 15, 30, 0.95)); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 14px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); backdrop-filter: blur(12px); overflow: hidden; display: flex; flex-direction: column; }
+    .toast-content { padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+    .toast-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ef4444; }
+    .toast-text { color: #ffffff; font-size: 13.5px; font-weight: 500; }
+    .toast-progress { height: 4px; background: linear-gradient(90deg, #ef4444, #f87171); width: 100%; animation: toastTimer 5s linear forwards; }
+    @keyframes toastTimer { from { width: 100%; } to { width: 0%; } }
 </style>
 @endpush
