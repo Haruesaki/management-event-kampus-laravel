@@ -3,66 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// ─── ROOT: Tampilan Landing Page untuk Guest, atau Redirect jika Login ──────
-Route::get('/', function (Illuminate\Http\Request $request) {
+// ─── ROOT: Langsung ke Dashboard sesuai Role ──────────────────────────────────
+Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
         if ($user->role_id === 1) return redirect()->route('admin.dashboard');
         if ($user->role_id === 2) return redirect()->route('panitia.dashboard');
         return redirect()->route('user.dashboard');
     }
-
-    // Dummy events for landing page filtering
-    $upcomingEvents = [
-        [
-            'id' => 3,
-            'name' => 'Campus Marathon 2026',
-            'category' => 'Sports',
-            'venue' => 'Sports Complex',
-            'date' => '2026-05-10',
-            'time' => '06:00 AM',
-            'price' => 5.00,
-        ],
-        [
-            'id' => 4,
-            'name' => 'Leadership Seminar',
-            'category' => 'Seminar',
-            'venue' => 'Auditorium A',
-            'date' => '2026-06-20',
-            'time' => '10:00 AM',
-            'price' => 0,
-        ],
-    ];
-
-    $filteredEvents = collect($upcomingEvents);
-
-    if ($request->filled('search')) {
-        $search = strtolower($request->search);
-        $filteredEvents = $filteredEvents->filter(function($event) use ($search) {
-            return str_contains(strtolower($event['name']), $search) || 
-                   str_contains(strtolower($event['venue']), $search);
-        });
-    }
-
-    if ($request->filled('category')) {
-        $filteredEvents = $filteredEvents->filter(function($event) use ($request) {
-            return strtolower($event['category']) === strtolower($request->category);
-        });
-    }
-
-    if ($request->filled('price')) {
-        if ($request->price === 'free') {
-            $filteredEvents = $filteredEvents->filter(function($event) {
-                return $event['price'] == 0;
-            });
-        } elseif ($request->price === 'paid') {
-            $filteredEvents = $filteredEvents->filter(function($event) {
-                return $event['price'] > 0;
-            });
-        }
-    }
-
-    return view('welcome', ['upcomingEvents' => $filteredEvents->values()->all()]);
+    return redirect()->route('user.dashboard');
 });
 
 // ─── AUTH ROUTES (login, logout, register, dll.) ────────────────────────────
@@ -93,20 +42,30 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 Route::prefix('panitia')->middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', function () {
-        return view('panitia.dashboard');
+        $user = Auth::user();
+        $totalEvents = \App\Models\Event::where('created_by', $user->id)->count();
+        $totalQuota = \App\Models\EventTicket::whereHas('event', function($q) use ($user) {
+            $q->where('created_by', $user->id);
+        })->sum('quota');
+        
+        $latestEvents = \App\Models\Event::with('tickets')
+            ->where('created_by', $user->id)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('panitia.dashboard', compact('totalEvents', 'totalQuota', 'latestEvents'));
     })->name('panitia.dashboard');
 
-    Route::get('/manage-event', function () {
-        return view('panitia.events.manage');
-    })->name('panitia.manage_event');
+    Route::get('/manage-event', [\App\Http\Controllers\Panitia\EventController::class, 'manage'])->name('panitia.manage_event');
 
-    Route::get('/create', function () {
-        return view('panitia.create');
-    })->name('panitia.event.create');
+    Route::get('/create', [\App\Http\Controllers\Panitia\EventController::class, 'create'])->name('panitia.event.create');
+    Route::post('/create', [\App\Http\Controllers\Panitia\EventController::class, 'store'])->name('panitia.event.store');
 
-    Route::get('/events', function () {
-        return view('panitia.events.index');
-    })->name('panitia.events');
+    Route::get('/events', [\App\Http\Controllers\Panitia\EventController::class, 'index'])->name('panitia.events');
+    Route::get('/events/{id}/edit', [\App\Http\Controllers\Panitia\EventController::class, 'edit'])->name('panitia.event.edit');
+    Route::post('/events/{id}/update', [\App\Http\Controllers\Panitia\EventController::class, 'update'])->name('panitia.event.update');
+    Route::post('/events/{id}/close', [\App\Http\Controllers\Panitia\EventController::class, 'close'])->name('panitia.event.close');
 
     Route::get('/archived-events', function () {
         return view('panitia.events.archived');
@@ -119,130 +78,66 @@ Route::prefix('user')->group(function () {
 
     // Dashboard user
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $today = \Carbon\Carbon::today();
+        
+        // 1. Ambil Event Aktif (is_closed 0 DAN tanggal <= 14 hari ke depan atau sudah lewat tapi belum ditutup)
+        $activeEvents = \App\Models\Event::with('tickets')
+            ->where('is_closed', 0)
+            ->whereDate('event_date', '<=', $today->copy()->addDays(14))
+            ->latest()
+            ->get();
+
+        // 2. Ambil Event Mendatang (> 14 hari)
+        $upcomingEvents = \App\Models\Event::with('tickets')
+            ->where('is_closed', 0)
+            ->whereDate('event_date', '>', $today->copy()->addDays(14))
+            ->latest()
+            ->get();
+
+        return view('dashboard', compact('activeEvents', 'upcomingEvents'));
     })->name('user.dashboard');
 
     // Schedule page
     Route::get('/schedule', function () {
-        $ongoingEvents = [
-            [
-                'id' => 1,
-                'name' => 'Future Tech Summit',
-                'category' => 'Technology',
-                'time' => '09:00 - 17:00',
-                'status' => 'Ongoing',
-                'color' => '#b366ff'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Digital Art Workshop',
-                'category' => 'Art',
-                'time' => '13:00 - 15:30',
-                'status' => 'Ongoing',
-                'color' => '#e055f5'
-            ]
-        ];
-
-        $upcomingEvents = [
-            [
-                'id' => 3,
-                'name' => 'Campus Marathon',
-                'date' => 'May 10, 2026',
-                'time' => '06:00 AM',
-                'venue' => 'Sports Complex',
-                'status' => 'Upcoming'
-            ],
-            [
-                'id' => 4,
-                'name' => 'Leadership Seminar',
-                'date' => 'June 20, 2026',
-                'time' => '10:00 AM',
-                'venue' => 'Auditorium A',
-                'status' => 'Upcoming'
-            ]
-        ];
-
+        $ongoingEvents = []; // Bisa diisi query DB nanti
+        $upcomingEvents = \App\Models\Event::latest()->take(2)->get();
         return view('user.schedule.index', compact('ongoingEvents', 'upcomingEvents'));
     })->name('schedule.index');
 
-    $dummyEvents = [
-        [
-            'id' => 1,
-            'name' => 'Future Tech Summit',
-            'category' => 'Technology',
-            'venue' => 'Main Engineering Hall',
-            'price' => 25.00,
-            'date' => '2026-03-15',
-            'color' => 'linear-gradient(135deg, #1e1a30, #2a2040)',
-        ],
-        [
-            'id' => 2,
-            'name' => 'Digital Art Workshop',
-            'category' => 'Art',
-            'venue' => 'Fine Arts Pavilion',
-            'price' => 0,
-            'date' => '2026-04-02',
-            'color' => 'linear-gradient(135deg, #1e2a1a, #2a3520)',
-        ],
-        [
-            'id' => 3,
-            'name' => 'Campus Marathon',
-            'category' => 'Sports',
-            'venue' => 'Sports Complex',
-            'price' => 5.00,
-            'date' => '2026-05-10',
-            'color' => 'linear-gradient(135deg, #2a1e1a, #402020)',
-        ],
-        [
-            'id' => 4,
-            'name' => 'Leadership Seminar',
-            'category' => 'Seminar',
-            'venue' => 'Auditorium A',
-            'price' => 0,
-            'date' => '2026-06-20',
-            'color' => 'linear-gradient(135deg, #1a2a2e, #203a40)',
-        ],
-    ];
-
-    // Alias: events.index → view yang sama (untuk filter form di user view)
-    Route::get('/events', function (Illuminate\Http\Request $request) use ($dummyEvents) {
-        $filteredEvents = collect($dummyEvents);
+    // Alias: events.index → Discovery Page dengan Data Asli
+    Route::get('/events', function (Illuminate\Http\Request $request) {
+        $query = \App\Models\Event::with('tickets');
 
         if ($request->filled('search')) {
-            $search = strtolower($request->search);
-            $filteredEvents = $filteredEvents->filter(function($event) use ($search) {
-                return str_contains(strtolower($event['name']), $search) || 
-                       str_contains(strtolower($event['venue']), $search);
-            });
+            $search = $request->search;
+            $query->where('title', 'like', "%$search%")
+                  ->orWhere('location', 'like', "%$search%");
         }
 
         if ($request->filled('category')) {
-            $filteredEvents = $filteredEvents->filter(function($event) use ($request) {
-                return strtolower($event['category']) === strtolower($request->category);
-            });
+            $query->where('category', $request->category);
         }
 
+        // Filter harga (berdasarkan tiket termurah)
         if ($request->filled('price')) {
             if ($request->price === 'free') {
-                $filteredEvents = $filteredEvents->filter(function($event) {
-                    return $event['price'] == 0;
+                $query->whereHas('tickets', function($q) {
+                    $q->where('type', 'Gratis');
                 });
             } elseif ($request->price === 'paid') {
-                $filteredEvents = $filteredEvents->filter(function($event) {
-                    return $event['price'] > 0;
+                $query->whereHas('tickets', function($q) {
+                    $q->where('type', 'Berbayar');
                 });
             }
         }
 
-        return view('user.events.index', ['events' => $filteredEvents->values()->all()]);
+        $events = $query->latest()->get();
+        return view('user.events.index', compact('events'));
     })->name('events.index');
 
-    // Detail event (placeholder)
-    Route::get('/events/{id}', function ($id) use ($dummyEvents) {
-        $event = collect($dummyEvents)->firstWhere('id', (int) $id);
-        if (!$event) {
-            abort(404);
-        }
+    // Detail event
+    Route::get('/events/{id}', function ($id) {
+        $event = \App\Models\Event::with('tickets')->findOrFail($id);
         return view('user.events.show', compact('event'));
     })->name('events.show');
 
@@ -251,10 +146,11 @@ Route::prefix('user')->group(function () {
 // ─── PROTECTED USER / PESERTA ROUTES (Harus login) ───────────────────────────
 Route::prefix('user')->middleware(['auth'])->group(function () {
 
-    // Tickets (placeholder)
-    Route::get('/tickets', function () {
-        return view('user.tickets.index');
-    })->name('tickets.index');
+    // Booking Ticket
+    Route::post('/booking', [\App\Http\Controllers\BookingController::class, 'store'])->name('events.booking');
+
+    // My Tickets
+    Route::get('/tickets', [\App\Http\Controllers\BookingController::class, 'index'])->name('tickets.index');
 
     // Profile (placeholder)
     Route::get('/profile', function () {

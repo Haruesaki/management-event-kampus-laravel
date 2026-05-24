@@ -482,5 +482,12 @@ $active_page = "event-management";
     </div>
   </div>
 </div>
+
+{{-- GLOBAL LOADER --}}
+<div id="global-loader" class="loader-overlay">
+    <div class="premium-loader"></div>
+    <div class="loader-text">Memproses Data...</div>
+</div>
+
 </body>
 </html>

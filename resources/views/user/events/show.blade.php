@@ -1,5 +1,5 @@
 @extends('user.layouts.app')
-@section('title', $event['name'])
+@section('title', $event->title)
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/user/events.css') }}">
@@ -20,8 +20,8 @@
 
     {{-- Hero Image --}}
     <div class="ed-hero">
-        @if(isset($event['thumbnail']) && $event['thumbnail'])
-            <img src="{{ asset('storage/' . $event['thumbnail']) }}" alt="{{ $event['name'] }}">
+        @if($event->poster_url)
+            <img src="{{ asset($event->poster_url) }}" alt="{{ $event->title }}">
         @else
             <div class="ed-hero-placeholder">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.8">
@@ -35,18 +35,14 @@
     {{-- Body --}}
     <div class="ed-body">
 
-        {{-- Category + Rating --}}
+        {{-- Category --}}
         <div class="ed-meta-bar">
-            <span class="ed-cat-badge">{{ strtoupper($event['category']) }}</span>
-            <div class="ed-rating">
-                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                4.9 Rating
-            </div>
+            <span class="ed-cat-badge">{{ strtoupper($event->category) }}</span>
         </div>
 
         {{-- Title --}}
         @php
-            $words = explode(' ', $event['name']);
+            $words = explode(' ', $event->title);
             $half  = ceil(count($words) / 2);
             $line1 = implode(' ', array_slice($words, 0, $half));
             $line2 = implode(' ', array_slice($words, $half));
@@ -62,20 +58,20 @@
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
-                {{ \Carbon\Carbon::parse($event['date'])->format('F d, Y') }}
+                {{ \Carbon\Carbon::parse($event->event_date)->format('F d, Y') }}
             </div>
             <div class="ed-info-pill">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                {{ $event['venue'] }}, Main Campus
+                {{ $event->location }}
             </div>
             <div class="ed-info-pill">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                {{ $event['time_start'] ?? '08:00 PM' }} – {{ $event['time_end'] ?? 'Late' }}
+                Open: {{ $event->gates_open ?? '08:00 AM' }}
             </div>
         </div>
 
@@ -88,47 +84,24 @@
                 {{-- About --}}
                 <div class="ed-section-label">About Event</div>
                 <div class="ed-about-text">
-                    <p>Experience an incredible journey at <strong style="color:#e0d8f8">{{ $event['name'] }}</strong>.
-                    This event brings together students, professionals, and enthusiasts to explore the amazing
-                    world of {{ strtolower($event['category']) }}. Prepare for an engaging session filled with
-                    insightful discussions, networking opportunities, and memorable moments.</p>
-                    <br>
-                    <p>Hosted at the prestigious <strong style="color:#e0d8f8">{{ $event['venue'] }}</strong>,
-                    you'll enjoy state-of-the-art facilities and a welcoming atmosphere.
-                    Don't miss out on this opportunity to connect with like-minded individuals and expand your horizons.</p>
+                    {!! nl2br(e($event->description)) !!}
                 </div>
 
                 {{-- Stats --}}
                 <div class="ed-stats">
                     <div class="ed-stat">
-                        <div class="ed-stat-val">2.5h</div>
+                        <div class="ed-stat-val">{{ $event->duration ?? '2.5h' }}</div>
                         <div class="ed-stat-key">Duration</div>
                     </div>
                     <div class="ed-stat">
-                        <div class="ed-stat-val">18+</div>
-                        <div class="ed-stat-key">Age Limit</div>
-                    </div>
-                    <div class="ed-stat">
-                        <div class="ed-stat-val">VIP</div>
-                        <div class="ed-stat-key">Available</div>
-                    </div>
-                    <div class="ed-stat">
-                        <div class="ed-stat-val">4k+</div>
-                        <div class="ed-stat-key">Capacity</div>
+                        <div class="ed-stat-val">{{ $event->tickets->count() }}</div>
+                        <div class="ed-stat-key">Ticket Types</div>
                     </div>
                 </div>
 
                 {{-- Featured Artists --}}
-                <div class="ed-section-label">Featured Artists</div>
+                <div class="ed-section-label">Organizer</div>
                 <div class="ed-artists-row" style="margin-bottom:36px;">
-                    @php
-                        $artists = [
-                            ['name' => 'Luna X',     'role' => 'Lead Synthesist'],
-                            ['name' => 'Marcus Vane','role' => 'Electric Cello'],
-                            ['name' => 'The Echo',   'role' => 'Vocalist'],
-                        ];
-                    @endphp
-                    @foreach($artists as $artist)
                     <div class="ed-artist">
                         <div class="ed-artist-avatar">
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
@@ -136,35 +109,10 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="ed-artist-name">{{ $artist['name'] }}</div>
-                            <div class="ed-artist-role">{{ $artist['role'] }}</div>
+                            <div class="ed-artist-name">{{ $event->creator->name ?? 'Panitia Event' }}</div>
+                            <div class="ed-artist-role">Official Organizer</div>
                         </div>
                     </div>
-                    @endforeach
-                </div>
-
-                {{-- Event Schedule --}}
-                <div class="ed-section-label">Event Schedule</div>
-                <div class="ed-schedule">
-                    @php
-                        $schedule = [
-                            ['time' => '07:00 PM', 'title' => 'Doors Open & Lounge Set',    'desc' => 'Welcome drinks and ambient atmospheric soundscapes by DJ Void.', 'active' => true],
-                            ['time' => '08:30 PM', 'title' => 'Part I: The Awakening',       'desc' => 'A high-energy opening featuring visual mapping and the core ensemble.', 'active' => false],
-                            ['time' => '10:00 PM', 'title' => 'Part II: Echoes of Eternity','desc' => 'The grand finale with full orchestral integration and laser light show.', 'active' => false],
-                        ];
-                    @endphp
-                    @foreach($schedule as $item)
-                    <div class="ed-sched-item">
-                        <div style="position:relative;">
-                            <div class="ed-sched-dot {{ $item['active'] ? 'active' : '' }} ed-sched-line"></div>
-                        </div>
-                        <div class="ed-sched-content">
-                            <div class="ed-sched-time">{{ $item['time'] }}</div>
-                            <div class="ed-sched-title">{{ $item['title'] }}</div>
-                            <div class="ed-sched-desc">{{ $item['desc'] }}</div>
-                        </div>
-                    </div>
-                    @endforeach
                 </div>
 
             </div>{{-- /left --}}
@@ -173,61 +121,58 @@
             <div class="ed-sidebar">
 
                 {{-- Select Tickets Card --}}
-                <div class="ed-ticket-card">
+                <div class="ed-ticket-card" x-data="{ selectedTicket: {{ $event->tickets->first()->id ?? 'null' }} }">
                     <div class="ed-ticket-card-title">Select Tickets</div>
 
-                    @if(isset($event['price']) && $event['price'] == 0)
-                        {{-- Free event --}}
-                        <div class="ed-ticket-opt selected" onclick="selectTicket(this)">
-                            <div>
-                                <div class="ed-ticket-opt-name">General Admission</div>
-                                <div class="ed-ticket-opt-desc">Free Entry</div>
-                            </div>
-                            <div class="ed-ticket-opt-price free-price">FREE</div>
-                        </div>
-                    @else
-                        {{-- Paid event – three tiers --}}
-                        @php $basePrice = $event['price'] ?? 25; @endphp
-                        <div class="ed-ticket-opt selected" onclick="selectTicket(this)">
-                            <div>
-                                <div class="ed-ticket-opt-name">Standard Entry</div>
-                                <div class="ed-ticket-opt-desc">General Admission Zone</div>
-                            </div>
-                            <div class="ed-ticket-opt-price">${{ number_format($basePrice, 0) }}</div>
-                        </div>
-                        <div class="ed-ticket-opt" onclick="selectTicket(this)">
-                            <div>
-                                <div class="ed-ticket-opt-name">VIP Premium</div>
-                                <div class="ed-ticket-opt-desc">Front Row + Backstage Access</div>
-                            </div>
-                            <div class="ed-ticket-opt-price">${{ number_format($basePrice * 9.8, 0) }}</div>
-                        </div>
-                        <div class="ed-ticket-opt" onclick="selectTicket(this)">
-                            <div>
-                                <div class="ed-ticket-opt-name">Auditorium Box</div>
-                                <div class="ed-ticket-opt-desc">Private Cabin (4 Persons)</div>
-                            </div>
-                            <div class="ed-ticket-opt-price">${{ number_format($basePrice * 30, 0) }}</div>
-                        </div>
-                    @endif
+                    <form action="{{ route('events.booking') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="event_id" value="{{ $event->id }}">
+                        <input type="hidden" name="ticket_id" :value="selectedTicket">
 
-                    <a href="#" class="btn-complete">Complete Booking</a>
-                    <div class="ed-secure-note">Secure Payment via Auditor-Pay</div>
+                        @foreach($event->tickets as $index => $ticket)
+                            <div class="ed-ticket-opt" 
+                                 :class="{ 'selected': selectedTicket === {{ $ticket->id }} }" 
+                                 @click="selectedTicket = {{ $ticket->id }}">
+                                <div>
+                                    <div class="ed-ticket-opt-name">{{ $ticket->name }}</div>
+                                    <div class="ed-ticket-opt-desc">Kategori: {{ $ticket->type }} ({{ $ticket->quota }} Slot)</div>
+                                </div>
+                                <div class="ed-ticket-opt-price {{ $ticket->price == 0 ? 'free-price' : '' }}">
+                                    {{ $ticket->price == 0 ? 'FREE' : 'Rp '.number_format($ticket->price, 0, ',', '.') }}
+                                </div>
+                            </div>
+                        @endforeach
+
+                        @if($event->tickets->sum('quota') > 0)
+                            <button type="submit" class="btn-complete" style="width:100%; border:none; cursor:pointer;">Complete Booking</button>
+                        @else
+                            <button type="button" class="btn-complete" style="width:100%; border:none; background: #333; cursor:not-allowed;" disabled>Sold Out</button>
+                        @endif
+                    </form>
+                    
+                    <div class="ed-secure-note">Secure Payment via Event Kampus</div>
                 </div>
 
                 {{-- Location Card --}}
                 <div class="ed-location-card">
-                    <div class="ed-map-area">
-                        <div class="ed-map-pin"></div>
-                    </div>
+                    @if($event->google_maps_url)
+                        <a href="{{ $event->google_maps_url }}" target="_blank" class="ed-map-area">
+                            <div class="ed-map-pin"></div>
+                            <div style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.6); padding:4px 10px; border-radius:4px; font-size:10px; color:#fff;">View on Maps</div>
+                        </a>
+                    @else
+                        <div class="ed-map-area">
+                            <div class="ed-map-pin"></div>
+                        </div>
+                    @endif
                     <div class="ed-location-info">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                         <div>
-                            <div class="ed-location-name">{{ $event['venue'] }}</div>
-                            <div class="ed-location-addr">Main Campus Area, University</div>
+                            <div class="ed-location-name">{{ $event->location }}</div>
+                            <div class="ed-location-addr">Event Venue</div>
                         </div>
                     </div>
                 </div>

@@ -66,56 +66,39 @@
 
 {{-- Events Grid --}}
 <div class="events-grid">
-    @php
-        $eventList = $events ?? [];
-        // If events is an Eloquent collection or paginator, convert properly
-        if (is_object($eventList) && method_exists($eventList, 'toArray')) {
-            $eventList = $eventList->items ?? $eventList;
-        }
-    @endphp
-
-    @forelse($eventList as $event)
-        @php
-            // Support both array and object
-            $eId       = is_array($event) ? $event['id']       : $event->id;
-            $eName     = is_array($event) ? $event['name']      : $event->name;
-            $eCategory = is_array($event) ? $event['category']  : $event->category;
-            $eVenue    = is_array($event) ? $event['venue']     : $event->venue;
-            $ePrice    = is_array($event) ? ($event['price'] ?? 0) : ($event->price ?? 0);
-            $eDate     = is_array($event) ? $event['date']      : $event->date;
-            $eColor    = is_array($event) ? ($event['color'] ?? 'linear-gradient(135deg,#1e1a30,#2a2040)') : ($event->color ?? 'linear-gradient(135deg,#1e1a30,#2a2040)');
-            $eThumb    = is_array($event) ? ($event['thumbnail'] ?? null) : ($event->thumbnail ?? null);
-        @endphp
-        <a href="{{ route('events.show', $eId) }}" class="event-card">
+    @forelse($events as $event)
+        <a href="{{ route('events.show', $event->id) }}" class="event-card">
             <div class="card-thumb">
-                @if($eThumb)
-                    <img src="{{ asset('storage/' . $eThumb) }}" alt="{{ $eName }}">
+                @if($event->poster_url)
+                    <img src="{{ asset($event->poster_url) }}" alt="{{ $event->title }}">
                 @else
-                    <div class="card-thumb-bg" style="background: {{ $eColor }};"></div>
+                    <div class="card-thumb-bg" style="background: linear-gradient(135deg, #1e1a30, #2a2040);"></div>
                 @endif
                 <div class="date-badge">
-                    <div class="d">{{ \Carbon\Carbon::parse($eDate)->format('d') }}</div>
-                    <div class="m">{{ \Carbon\Carbon::parse($eDate)->format('M') }}</div>
+                    <div class="d">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</div>
+                    <div class="m">{{ \Carbon\Carbon::parse($event->event_date)->format('M') }}</div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="card-category">{{ $eCategory }}</div>
-                <div class="card-title">{{ $eName }}</div>
+                <div class="card-category">{{ $event->category }}</div>
+                <div class="card-title">{{ $event->title }}</div>
                 <div class="card-venue">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    {{ $eVenue }}
+                    {{ $event->location }}
                 </div>
                 <div class="card-footer">
-                    @if($ePrice == 0)
+                    @php
+                        $minPrice = $event->tickets->min('price');
+                    @endphp
+                    @if($minPrice == 0)
                         <span class="card-price free">FREE</span>
-                        <span class="btn-book">Book Now</span>
                     @else
-                        <span class="card-price">${{ number_format($ePrice, 2) }}</span>
-                        <span class="btn-book">Book Now</span>
+                        <span class="card-price">Rp {{ number_format($minPrice, 0, ',', '.') }}</span>
                     @endif
+                    <span class="btn-book">Book Now</span>
                 </div>
             </div>
         </a>

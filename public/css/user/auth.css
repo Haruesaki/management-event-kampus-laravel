@@ -107,9 +107,9 @@ body {
 
 /* ── Topbar ── */
 .auth-topbar {
-    height: 88px !important;
-    min-height: 88px !important;
-    max-height: 88px !important;
+    height: 60px !important;
+    min-height:60px !important;
+    max-height: 60px !important;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 48px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -145,16 +145,29 @@ body {
     background: transparent;
 }
 .btn-outline:hover { background: rgba(168,85,247,0.12); }
-
 /* ── Auth body ── */
 .auth-body {
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 60px 20px 100px;
+    padding: 32px 20px 32px;
     position: relative; z-index: 5;
-    min-height: calc(100vh - 88px);
+}
+
+/* Kustomisasi khusus Body Login & Register */
+.auth-body-login {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 32px 20px 32px;
+    position: relative; z-index: 5;
+ }
+.auth-body-register {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 32px 20px 32px;
+    position: relative; z-index: 5;
 }
 
 /* ── Card ── */
@@ -162,9 +175,39 @@ body {
     background: var(--bg-card);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 24px;
-    padding: 44px 48px 40px;
+    padding: 44px 52px 40px;
+    width: 100%;
+    max-width: 460px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.1);
+}
+
+/* Kustomisasi khusus Card Login & Register */
+.auth-card-login {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px 52px 40px;
     width: 100%;
     max-width: 400px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.1);
+}
+
+.auth-card-login .auth-title { margin-bottom: 12px; }
+.auth-card-login .auth-subtitle { margin-bottom: 32px; }
+.auth-card-login .form-group { margin-top: 24px; }
+.auth-card-login .btn-primary { margin-top: 36px; }
+
+.auth-card-register {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px 52px 40px;
+    width: 100%;
+    max-width: 460px;
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.1);

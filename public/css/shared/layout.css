@@ -421,6 +421,128 @@ body {
 }
 
 /* ──────────────────────────────────────
+   LOADING SPINNER PREMIUM
+   ────────────────────────────────────── */
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(12, 10, 20, 0.7);
+    backdrop-filter: blur(8px);
+    display: none; /* Sembunyikan default */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.loader-overlay.active { display: flex; }
+
+.premium-loader {
+    width: 64px;
+    height: 64px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.premium-loader::before,
+.premium-loader::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    animation: premium-pulse 2s infinite ease-in-out;
+}
+
+.premium-loader::before {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    opacity: 0.6;
+}
+
+.premium-loader::after {
+    width: 80%;
+    height: 100%;
+    border: 4px solid #fff;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    animation: premium-spin 1s infinite linear;
+}
+
+.loader-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(179,102,255,0.5);
+    animation: text-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes premium-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes premium-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+@keyframes text-pulse {
+    0%, 100% { opacity: 0.6; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* ──────────────────────────────────────
+   CUSTOM NUMBER INPUT & SPIN BUTTONS
+   ────────────────────────────────────── */
+/* Sembunyikan spin buttons default */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Berikan desain elegan saat input aktif */
+input[type=number]:focus {
+    background: rgba(179, 102, 255, 0.05);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(179, 102, 255, 0.2);
+}
+
+/* ──────────────────────────────────────
+   CUSTOM DATE & TIME PICKER INDICATOR
+   ────────────────────────────────────── */
+input[type="datetime-local"],
+input[type="date"] {
+    color-scheme: dark; /* Memaksa browser menggunakan UI teks & kursor tema gelap */
+    color: #ffffff;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    /* Memberikan warna ungu cerah berpendar (Purple Glow) pada ikon */
+    filter: invert(0.5) sepia(1) saturate(100) hue-rotate(240deg) brightness(1.2);
+    transition: all 0.3s ease;
+    padding: 4px;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(0.6) sepia(1) saturate(150) hue-rotate(250deg) brightness(1.5);
+    drop-shadow: 0 0 10px rgba(179, 102, 255, 0.9);
+    transform: scale(1.1);
+}
+
+/* ──────────────────────────────────────
    SCROLLBAR
    ────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; }

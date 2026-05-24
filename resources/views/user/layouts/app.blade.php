@@ -8,6 +8,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/shared/layout.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0c0a14',
+                    }
+                }
+            }
+        }
+    </script>
     @stack('styles')
 </head>
 <body>
@@ -93,6 +106,12 @@
         <main class="main-content">
             @yield('content')
         </main>
+    </div>
+
+    {{-- GLOBAL LOADER --}}
+    <div id="global-loader" class="loader-overlay">
+        <div class="premium-loader"></div>
+        <div class="loader-text">Memproses Data...</div>
     </div>
 
     @stack('scripts')

@@ -504,5 +504,12 @@ $active_page = "bulk-operations";
     <line x1="12" y1="17" x2="12.01" y2="17"/>
   </svg>
 </div>
+
+{{-- GLOBAL LOADER --}}
+<div id="global-loader" class="loader-overlay">
+    <div class="premium-loader"></div>
+    <div class="loader-text">Memproses Data...</div>
+</div>
+
 </body>
 </html>

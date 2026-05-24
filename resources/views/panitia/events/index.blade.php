@@ -40,57 +40,88 @@
     <!-- GRID -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <!-- CARD - Hanya menampilkan yang Aktif -->
-        <div class="glow-card glow-hover p-6" x-show="search === '' || 'Neon Masquerade'.toLowerCase().includes(search.toLowerCase())">
+        @forelse($events as $event)
+        @php
+            $today = \Carbon\Carbon::today();
+            $eventDate = \Carbon\Carbon::parse($event->event_date);
+            $diffInDays = $today->diffInDays($eventDate, false);
+            
+            if ($event->is_closed) {
+                $statusLabel = 'Selesai';
+                $statusClass = 'bg-red-500/20 text-red-400';
+            } elseif ($diffInDays <= 14) {
+                $statusLabel = 'Aktif';
+                $statusClass = 'bg-green-500/20 text-green-400';
+            } else {
+                $statusLabel = 'Mendatang';
+                $statusClass = 'bg-yellow-500/20 text-yellow-400';
+            }
+        @endphp
+        <!-- CARD -->
+        <div class="glow-card glow-hover p-6" x-show="search === '' || '{{ strtolower($event->title) }}'.includes(search.toLowerCase())">
 
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">Neon Masquerade</h2>
-                <span class="px-3 py-1 text-xs rounded-full bg-green-500/20 text-green-400">
-                    ● Aktif
+                <h2 class="text-lg font-semibold">{{ $event->title }}</h2>
+                <span class="px-3 py-1 text-xs rounded-full {{ $statusClass }}">
+                    ● {{ $statusLabel }}
                 </span>
             </div>
 
-            <p class="text-gray-400 text-sm mb-5">
-                Festival malam dengan musik, seni & visual imersif.
+            <p class="text-gray-400 text-sm mb-5 line-clamp-2">
+                {{ $event->description }}
             </p>
 
             <!-- STATS -->
-            <div class="grid grid-cols-2 gap-4 mb-5">
-                <div>
-                    <p class="text-gray-400 text-xs">Peserta</p>
-                    <p class="text-xl font-bold">342</p>
-                </div>
-                <div>
-                    <p class="text-gray-400 text-xs">Pendapatan</p>
-                    <p class="text-xl font-bold">$12,450</p>
-                </div>
-            </div>
-
-            <!-- PROGRESS -->
-            <div class="mb-5">
-                <div class="flex justify-between text-xs text-gray-400 mb-1">
-                    <span>Tiket Terjual</span>
-                    <span>84%</span>
-                </div>
-
-                <div class="w-full h-2 bg-[#1c1c24] rounded overflow-hidden">
-                    <div class="h-2 bg-gradient-to-r from-purple-500 to-pink-500 animate-pulse"
-                         style="width:84%">
-                    </div>
+            <div class="space-y-4 mb-6">
+                <p class="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Rincian Tiket & Kuota</p>
+                <div class="grid grid-cols-1 gap-3">
+                    @foreach($event->tickets as $ticket)
+                        <div class="space-y-2 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <!-- Nama & Kategori -->
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-semibold text-gray-200 truncate pr-2">{{ $ticket->name }}</span>
+                                <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase {{ $ticket->type === 'Gratis' ? 'bg-green-500/20 text-green-400' : 'bg-purple-500/20 text-purple-400' }}">
+                                    {{ $ticket->type }}
+                                </span>
+                            </div>
+                            
+                            <!-- Slot & Bar -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-[10px]">
+                                    <span class="text-gray-400">Ketersediaan Slot</span>
+                                    <span class="text-white font-bold">{{ $ticket->quota }} Tersedia</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full {{ $ticket->type === 'Gratis' ? 'bg-green-500' : 'bg-purple-500' }}" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
             <!-- ACTION -->
             <div class="space-y-2">
-                <button class="w-full py-2 rounded-lg text-sm btn-glow">
+                <a href="{{ route('panitia.event.edit', $event->id) }}" class="block w-full py-2 text-center rounded-lg text-sm btn-glow">
                     Kelola
-                </button>
-                <button class="w-full py-2 rounded-lg text-sm bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition">
-                    Tutup Event
-                </button>
+                </a>
+                @if(!$event->is_closed)
+                    <form action="{{ route('panitia.event.close', $event->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menutup event ini?');">
+                        @csrf
+                        <button type="submit" class="w-full py-2 rounded-lg text-sm bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition">
+                            Tutup Event
+                        </button>
+                    </form>
+                @endif
             </div>
 
         </div>
+        @empty
+        <div class="col-span-full py-20 text-center">
+            <p class="text-gray-500">Belum ada event yang dipublikasikan.</p>
+            <a href="{{ route('panitia.event.create') }}" class="text-purple-400 hover:underline mt-2 inline-block">Mulai buat event pertama Anda</a>
+        </div>
+        @endforelse
 
     </div>
 

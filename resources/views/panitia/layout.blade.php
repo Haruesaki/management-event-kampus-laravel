@@ -123,6 +123,30 @@
     {{-- ── LAYOUT WRAPPER ── --}}
     <div class="layout-wrapper">
 
+        @if(session('success'))
+            <div id="success-alert-global" style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 400px; padding: 16px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(21, 128, 61, 0.95)); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); backdrop-filter: blur(10px); animation: slideDownAlert 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;">
+                <div style="width: 32px; height: 32px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg style="width: 18px; height: 18px; color: #ffffff;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #ffffff; line-height: 1.4; flex: 1;">{{ session('success') }}</div>
+            </div>
+            <script>setTimeout(() => { document.getElementById('success-alert-global').style.display = 'none'; }, 4000);</script>
+        @endif
+
+        @if(session('error'))
+            <div id="error-alert-global" style="position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 400px; padding: 16px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(185, 28, 28, 0.95)); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); backdrop-filter: blur(10px); animation: slideDownAlert 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;">
+                <div style="width: 32px; height: 32px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg style="width: 18px; height: 18px; color: #ffffff;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #ffffff; line-height: 1.4; flex: 1;">{{ session('error') }}</div>
+            </div>
+            <script>setTimeout(() => { document.getElementById('error-alert-global').style.display = 'none'; }, 4000);</script>
+        @endif
+
         {{-- Topbar --}}
         <header class="topbar">
             <div style="display:flex; align-items:center; gap:32px;">
@@ -135,6 +159,12 @@
             @yield('content')
         </main>
 
+    </div>
+
+    {{-- GLOBAL LOADER --}}
+    <div id="global-loader" class="loader-overlay">
+        <div class="premium-loader"></div>
+        <div class="loader-text">Memproses Data...</div>
     </div>
 
     @stack('scripts')

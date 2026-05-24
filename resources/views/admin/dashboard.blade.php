@@ -290,5 +290,12 @@ $active_page = "dashboard";
 </div>
 
 <div class="fab">+</div>
+
+{{-- GLOBAL LOADER --}}
+<div id="global-loader" class="loader-overlay">
+    <div class="premium-loader"></div>
+    <div class="loader-text">Memproses Data...</div>
+</div>
+
 </body>
 </html>
