@@ -1,31 +1,8 @@
 /* ==========================================================
    admin/dashboard.css  —  Admin Dashboard: Content Styles Only
    Layout (sidebar/topbar) diambil dari: css/shared/layout.css
+   Variabel & layout dasar admin diambil dari: css/admin/admin-common.css
    ========================================================== */
-
-/* ── Admin color overrides (konten spesifik admin) ── */
-:root {
-    /* Tambahan warna khusus admin */
-    --bg-card:      #141418;
-    --bg-card-2:    #1a1a1f;
-    --bg-hover:     rgba(124,92,252,0.08);
-    --border:       rgba(255,255,255,0.08);
-    --accent:       #7c5cfc;
-    --accent-2:     #a07fff;
-    --text-1:       #f0f0f5;
-    --text-2:       #c0c0cc;
-    --text-3:       #8a8a9a;
-    --accent-green: #22c55e;
-    --accent-red:   #ef4444;
-    --accent-yellow:#f59e0b;
-    --accent-pink:  #e040a0;
-}
-
-/* ── Layout wrapper admin ── */
-.layout { display: flex; height: 100vh; width: 100%; overflow: hidden; }
-
-/* Content area override */
-.main-content { flex: 1; overflow-y: auto; padding: 32px 28px; }
 
 /* ── Page Header ── */
 .page-header { margin-bottom: 28px; }
