@@ -2,216 +2,249 @@
 @section('title', $event['name'])
 
 @push('styles')
-<style>
-    /* Back Button */
-    .back-btn {
-        display: inline-flex; align-items: center; gap: 8px;
-        color: var(--text-3); text-decoration: none;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 14px; font-weight: 600;
-        margin-bottom: 24px; transition: color 0.2s;
-    }
-    .back-btn:hover { color: var(--text-1); }
-
-    /* Event Hero */
-    .event-hero {
-        position: relative;
-        border-radius: 20px;
-        overflow: hidden;
-        min-height: 380px;
-        display: flex;
-        align-items: flex-end;
-        margin-bottom: 40px;
-        background: {{ $event['color'] ?? 'linear-gradient(135deg, #1e1a30, #2a2040)' }};
-    }
-    .hero-bg-img {
-        position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.8;
-    }
-    .hero-overlay {
-        position: absolute; inset: 0;
-        background: linear-gradient(0deg, rgba(10,8,20,0.95) 0%, rgba(10,8,20,0.3) 100%);
-    }
-    .event-hero-content {
-        position: relative; z-index: 2;
-        padding: 40px; width: 100%;
-        display: flex; justify-content: space-between; align-items: flex-end;
-        flex-wrap: wrap; gap: 24px;
-    }
-
-    .event-category-tag {
-        display: inline-block;
-        font-size: 11px; font-weight: 700;
-        color: #c47fff;
-        text-transform: uppercase; letter-spacing: 0.15em;
-        background: rgba(179,102,255,0.1);
-        border: 1px solid rgba(179,102,255,0.3);
-        border-radius: 20px;
-        padding: 6px 14px;
-        margin-bottom: 16px;
-    }
-
-    .event-title {
-        font-family: 'Poppins', sans-serif;
-        font-size: 42px; font-weight: 800;
-        line-height: 1.1; margin-bottom: 12px;
-        color: #ffffff;
-    }
-
-    .event-venue-large {
-        display: flex; align-items: center; gap: 6px;
-        font-size: 15px; color: #b0a8cc;
-    }
-    .event-venue-large svg { width: 16px; height: 16px; color: var(--accent); }
-
-    .price-box {
-        background: rgba(20,16,30,0.6);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 16px;
-        padding: 24px; text-align: right;
-        backdrop-filter: blur(12px);
-        min-width: 220px;
-    }
-    .price-label { font-size: 12px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
-    .price-value { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 800; color: #ffffff; }
-    .price-value.free { color: #c47fff; }
-    
-    .btn-buy {
-        display: inline-block; margin-top: 16px; width: 100%; text-align: center;
-        padding: 12px 32px; border-radius: 12px;
-        background: linear-gradient(90deg, var(--accent), var(--accent-2));
-        color: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
-        border: none; cursor: pointer; text-decoration: none;
-        transition: all 0.2s;
-    }
-    .btn-buy:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(179,102,255,0.3); }
-
-    /* Content Grid */
-    .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
-    .section-title {
-        font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700;
-        color: #ffffff; margin-bottom: 16px;
-    }
-    .event-desc { font-size: 15px; color: #d4cef0; line-height: 1.7; margin-bottom: 32px; }
-
-    /* Info Cards */
-    .info-card {
-        background: var(--bg-card); border: 1px solid var(--border);
-        border-radius: 16px; padding: 24px; margin-bottom: 24px;
-    }
-    .info-item { display: flex; gap: 16px; margin-bottom: 20px; }
-    .info-item:last-child { margin-bottom: 0; }
-    .info-icon {
-        width: 44px; height: 44px; border-radius: 12px;
-        background: var(--bg-card-2);
-        display: flex; align-items: center; justify-content: center;
-        color: var(--accent); flex-shrink: 0;
-    }
-    .info-icon svg { width: 22px; height: 22px; }
-    .info-text .label { font-size: 12px; color: #9b92bc; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.1em; }
-    .info-text .val { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; color: #ffffff; }
-    .info-text .sub-val { font-size: 13px; color: var(--text-3); margin-top: 2px; }
-
-    @media (max-width: 768px) {
-        .content-grid { grid-template-columns: 1fr; }
-        .event-hero-content { flex-direction: column; align-items: flex-start; }
-        .price-box { width: 100%; text-align: left; }
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/user/events.css') }}">
 @endpush
 
 @section('content')
 
-<a href="{{ route('events.index') }}" class="back-btn">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-    </svg>
-    Back to Discovery
-</a>
+{{-- Bleed-out wrapper --}}
+<div class="event-detail-wrap">
 
-<div class="event-hero">
-    @if(isset($event['thumbnail']) && $event['thumbnail'])
-        <img src="{{ asset('storage/' . $event['thumbnail']) }}" class="hero-bg-img" alt="{{ $event['name'] }}">
-    @endif
-    <div class="hero-overlay"></div>
-    
-    <div class="event-hero-content">
-        <div>
-            <div class="event-category-tag">{{ $event['category'] }}</div>
-            <h1 class="event-title">{{ $event['name'] }}</h1>
-            <div class="event-venue-large">
+    {{-- Back Button --}}
+    <a href="{{ route('events.index') }}" class="ed-back-btn">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Back to Discovery
+    </a>
+
+    {{-- Hero Image --}}
+    <div class="ed-hero">
+        @if(isset($event['thumbnail']) && $event['thumbnail'])
+            <img src="{{ asset('storage/' . $event['thumbnail']) }}" alt="{{ $event['name'] }}">
+        @else
+            <div class="ed-hero-placeholder">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                </svg>
+            </div>
+        @endif
+        <div class="ed-hero-overlay"></div>
+    </div>
+
+    {{-- Body --}}
+    <div class="ed-body">
+
+        {{-- Category + Rating --}}
+        <div class="ed-meta-bar">
+            <span class="ed-cat-badge">{{ strtoupper($event['category']) }}</span>
+            <div class="ed-rating">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                4.9 Rating
+            </div>
+        </div>
+
+        {{-- Title --}}
+        @php
+            $words = explode(' ', $event['name']);
+            $half  = ceil(count($words) / 2);
+            $line1 = implode(' ', array_slice($words, 0, $half));
+            $line2 = implode(' ', array_slice($words, $half));
+        @endphp
+        <h1 class="ed-title">
+            {{ $line1 }}<br>
+            <span>{{ $line2 }}</span>
+        </h1>
+
+        {{-- Info strip --}}
+        <div class="ed-info-strip">
+            <div class="ed-info-pill">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                {{ \Carbon\Carbon::parse($event['date'])->format('F d, Y') }}
+            </div>
+            <div class="ed-info-pill">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                {{ $event['venue'] }}
+                {{ $event['venue'] }}, Main Campus
+            </div>
+            <div class="ed-info-pill">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ $event['time_start'] ?? '08:00 PM' }} – {{ $event['time_end'] ?? 'Late' }}
             </div>
         </div>
-        
-        <div class="price-box">
-            <div class="price-label">Ticket Price</div>
-            @if(isset($event['price']) && $event['price'] == 0)
-                <div class="price-value free">FREE</div>
-            @else
-                <div class="price-value">${{ number_format($event['price'] ?? 0, 2) }}</div>
-            @endif
-            <button class="btn-buy">Book Ticket</button>
-        </div>
-    </div>
-</div>
 
-<div class="content-grid">
-    <div class="main-column">
-        <h2 class="section-title">About this Event</h2>
-        <div class="event-desc">
-            <p>Join us for an incredible experience at the {{ $event['name'] }}. This event brings together students, professionals, and enthusiasts to explore the amazing world of {{ strtolower($event['category']) }}. Prepare for an engaging session filled with insightful discussions, networking opportunities, and memorable moments.</p>
-            <br>
-            <p>Hosted at the prestigious {{ $event['venue'] }}, you'll enjoy state-of-the-art facilities and a welcoming atmosphere. Don't miss out on this opportunity to connect with like-minded individuals and expand your horizons.</p>
-        </div>
-    </div>
-    
-    <div class="side-column">
-        <div class="info-card">
-            <div class="info-item">
-                <div class="info-icon">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
+        {{-- Two-column --}}
+        <div class="ed-cols">
+
+            {{-- ── LEFT COLUMN ── --}}
+            <div>
+
+                {{-- About --}}
+                <div class="ed-section-label">About Event</div>
+                <div class="ed-about-text">
+                    <p>Experience an incredible journey at <strong style="color:#e0d8f8">{{ $event['name'] }}</strong>.
+                    This event brings together students, professionals, and enthusiasts to explore the amazing
+                    world of {{ strtolower($event['category']) }}. Prepare for an engaging session filled with
+                    insightful discussions, networking opportunities, and memorable moments.</p>
+                    <br>
+                    <p>Hosted at the prestigious <strong style="color:#e0d8f8">{{ $event['venue'] }}</strong>,
+                    you'll enjoy state-of-the-art facilities and a welcoming atmosphere.
+                    Don't miss out on this opportunity to connect with like-minded individuals and expand your horizons.</p>
                 </div>
-                <div class="info-text">
-                    <div class="label">Date & Time</div>
-                    <div class="val">{{ \Carbon\Carbon::parse($event['date'])->format('l, M d, Y') }}</div>
-                    <div class="sub-val">{{ $event['time_start'] ?? '09:00 AM' }} - {{ $event['time_end'] ?? '03:00 PM' }}</div>
+
+                {{-- Stats --}}
+                <div class="ed-stats">
+                    <div class="ed-stat">
+                        <div class="ed-stat-val">2.5h</div>
+                        <div class="ed-stat-key">Duration</div>
+                    </div>
+                    <div class="ed-stat">
+                        <div class="ed-stat-val">18+</div>
+                        <div class="ed-stat-key">Age Limit</div>
+                    </div>
+                    <div class="ed-stat">
+                        <div class="ed-stat-val">VIP</div>
+                        <div class="ed-stat-key">Available</div>
+                    </div>
+                    <div class="ed-stat">
+                        <div class="ed-stat-val">4k+</div>
+                        <div class="ed-stat-key">Capacity</div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
+
+                {{-- Featured Artists --}}
+                <div class="ed-section-label">Featured Artists</div>
+                <div class="ed-artists-row" style="margin-bottom:36px;">
+                    @php
+                        $artists = [
+                            ['name' => 'Luna X',     'role' => 'Lead Synthesist'],
+                            ['name' => 'Marcus Vane','role' => 'Electric Cello'],
+                            ['name' => 'The Echo',   'role' => 'Vocalist'],
+                        ];
+                    @endphp
+                    @foreach($artists as $artist)
+                    <div class="ed-artist">
+                        <div class="ed-artist-avatar">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="ed-artist-name">{{ $artist['name'] }}</div>
+                            <div class="ed-artist-role">{{ $artist['role'] }}</div>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
-                <div class="info-text">
-                    <div class="label">Location</div>
-                    <div class="val">{{ $event['venue'] }}</div>
-                    <div class="sub-val">Main Campus Area</div>
+
+                {{-- Event Schedule --}}
+                <div class="ed-section-label">Event Schedule</div>
+                <div class="ed-schedule">
+                    @php
+                        $schedule = [
+                            ['time' => '07:00 PM', 'title' => 'Doors Open & Lounge Set',    'desc' => 'Welcome drinks and ambient atmospheric soundscapes by DJ Void.', 'active' => true],
+                            ['time' => '08:30 PM', 'title' => 'Part I: The Awakening',       'desc' => 'A high-energy opening featuring visual mapping and the core ensemble.', 'active' => false],
+                            ['time' => '10:00 PM', 'title' => 'Part II: Echoes of Eternity','desc' => 'The grand finale with full orchestral integration and laser light show.', 'active' => false],
+                        ];
+                    @endphp
+                    @foreach($schedule as $item)
+                    <div class="ed-sched-item">
+                        <div style="position:relative;">
+                            <div class="ed-sched-dot {{ $item['active'] ? 'active' : '' }} ed-sched-line"></div>
+                        </div>
+                        <div class="ed-sched-content">
+                            <div class="ed-sched-time">{{ $item['time'] }}</div>
+                            <div class="ed-sched-title">{{ $item['title'] }}</div>
+                            <div class="ed-sched-desc">{{ $item['desc'] }}</div>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
-                    </svg>
+
+            </div>{{-- /left --}}
+
+            {{-- ── RIGHT SIDEBAR ── --}}
+            <div class="ed-sidebar">
+
+                {{-- Select Tickets Card --}}
+                <div class="ed-ticket-card">
+                    <div class="ed-ticket-card-title">Select Tickets</div>
+
+                    @if(isset($event['price']) && $event['price'] == 0)
+                        {{-- Free event --}}
+                        <div class="ed-ticket-opt selected" onclick="selectTicket(this)">
+                            <div>
+                                <div class="ed-ticket-opt-name">General Admission</div>
+                                <div class="ed-ticket-opt-desc">Free Entry</div>
+                            </div>
+                            <div class="ed-ticket-opt-price free-price">FREE</div>
+                        </div>
+                    @else
+                        {{-- Paid event – three tiers --}}
+                        @php $basePrice = $event['price'] ?? 25; @endphp
+                        <div class="ed-ticket-opt selected" onclick="selectTicket(this)">
+                            <div>
+                                <div class="ed-ticket-opt-name">Standard Entry</div>
+                                <div class="ed-ticket-opt-desc">General Admission Zone</div>
+                            </div>
+                            <div class="ed-ticket-opt-price">${{ number_format($basePrice, 0) }}</div>
+                        </div>
+                        <div class="ed-ticket-opt" onclick="selectTicket(this)">
+                            <div>
+                                <div class="ed-ticket-opt-name">VIP Premium</div>
+                                <div class="ed-ticket-opt-desc">Front Row + Backstage Access</div>
+                            </div>
+                            <div class="ed-ticket-opt-price">${{ number_format($basePrice * 9.8, 0) }}</div>
+                        </div>
+                        <div class="ed-ticket-opt" onclick="selectTicket(this)">
+                            <div>
+                                <div class="ed-ticket-opt-name">Auditorium Box</div>
+                                <div class="ed-ticket-opt-desc">Private Cabin (4 Persons)</div>
+                            </div>
+                            <div class="ed-ticket-opt-price">${{ number_format($basePrice * 30, 0) }}</div>
+                        </div>
+                    @endif
+
+                    <a href="#" class="btn-complete">Complete Booking</a>
+                    <div class="ed-secure-note">Secure Payment via Auditor-Pay</div>
                 </div>
-                <div class="info-text">
-                    <div class="label">Availability</div>
-                    <div class="val" style="color: #22c55e;">Available</div>
-                    <div class="sub-val">Open for booking</div>
+
+                {{-- Location Card --}}
+                <div class="ed-location-card">
+                    <div class="ed-map-area">
+                        <div class="ed-map-pin"></div>
+                    </div>
+                    <div class="ed-location-info">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <div>
+                            <div class="ed-location-name">{{ $event['venue'] }}</div>
+                            <div class="ed-location-addr">Main Campus Area, University</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+            </div>{{-- /sidebar --}}
+
+        </div>{{-- /ed-cols --}}
+    </div>{{-- /ed-body --}}
+</div>{{-- /event-detail-wrap --}}
+
+@push('scripts')
+<script>
+function selectTicket(el) {
+    document.querySelectorAll('.ed-ticket-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+}
+</script>
+@endpush
 
 @endsection

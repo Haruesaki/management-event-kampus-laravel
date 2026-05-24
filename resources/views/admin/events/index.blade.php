@@ -8,100 +8,30 @@ $active_page = "event-management";
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CampusAdmin - Event Management</title>
+<link rel="stylesheet" href="{{ asset('css/shared/layout.css') }}">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* CONTENT OVERRIDES */
   :root {
-    --bg-base: #0a0a0c;
-    --bg-sidebar: #0e0e11;
-    --bg-card: #141418;
-    --bg-card2: #1a1a1f;
-    --bg-hover: #1e1e25;
-    --border: #2a2a35;
-    --border-light: #32323f;
-    --text-primary: #f0f0f5;
-    --text-secondary: #8a8a9a;
-    --text-muted: #555566;
-    --accent-purple: #7c5cfc;
-    --accent-purple-light: #a07fff;
-    --accent-pink: #e040a0;
-    --accent-green: #22c55e;
-    --accent-red: #ef4444;
-    --accent-yellow: #f59e0b;
+    --bg-card: #141418; --bg-card2: #1a1a1f; --bg-hover: rgba(124,92,252,0.08);
+    --border: rgba(255,255,255,0.08); --accent: #7c5cfc; --accent-2: #a07fff;
+    --text-1: #f0f0f5; --text-2: #c0c0cc; --text-3: #8a8a9a;
+    --accent-green: #22c55e; --accent-red: #ef4444; --accent-yellow: #f59e0b; --accent-pink: #e040a0;
+    /* Legacy aliases */
+    --bg-base: #0c0a14; --bg-sidebar: #13101e; --border-light: rgba(255,255,255,0.12);
+    --text-primary: #f0f0f5; --text-secondary: #8a8a9a; --text-muted: #555566;
+    --accent-purple: #7c5cfc; --accent-purple-light: #a07fff;
   }
-  html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg-base); color: var(--text-primary); }
-  .layout { display: flex; height: 100vh; overflow: hidden; }
-
-  .sidebar {
-    width: 260px; min-width: 260px; background: var(--bg-sidebar);
-    border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 28px 0;
-  }
-  .sidebar-brand { padding: 0 24px 28px; border-bottom: 1px solid var(--border); }
-  .sidebar-brand .brand-name {
-    font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800;
-    color: var(--text-primary); letter-spacing: -0.5px;
-  }
-  .sidebar-brand .brand-sub { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
-  .sidebar-nav { flex: 1; padding: 20px 0; }
-  .nav-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 11px 24px; cursor: pointer; font-size: 14px; font-weight: 500;
-    color: var(--text-secondary); transition: all 0.2s; position: relative; text-decoration: none;
-  }
-  .nav-item:hover { color: var(--text-primary); background: var(--bg-hover); }
-  .nav-item.active { color: var(--text-primary); background: rgba(124,92,252,0.08); }
-  .nav-item.active::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-    background: var(--accent-purple); border-radius: 0 2px 2px 0;
-  }
-  .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-  .sidebar-footer { padding: 16px 16px 0; border-top: 1px solid var(--border); margin-top: auto; }
-  .admin-card {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px; border-radius: 12px; background: var(--bg-card2);
-  }
-  .admin-avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    background: linear-gradient(135deg, #1a4060, #2563eb);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; flex-shrink: 0;
-  }
-  .admin-info .name { font-size: 13px; font-weight: 600; }
-  .admin-info .role { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-
+  .layout { display: flex; height: 100vh; width: 100%; overflow: hidden; }
   .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .topbar {
-    height: 60px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; padding: 0 28px;
-    background: var(--bg-base); gap: 16px; flex-shrink: 0;
-  }
-  .topbar-brand { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-  .search-box {
-    flex: 1; max-width: 420px; background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 14px; height: 38px;
-  }
-  .search-box input {
-    background: none; border: none; outline: none; color: var(--text-primary);
-    font-size: 13px; font-family: 'DM Sans', sans-serif; width: 100%;
-  }
-  .search-box input::placeholder { color: var(--text-muted); }
-  .search-box svg { color: var(--text-muted); width: 15px; height: 15px; flex-shrink: 0; }
-  .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
-  .icon-btn {
-    width: 36px; height: 36px; border-radius: 9px; background: var(--bg-card);
-    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--text-secondary); transition: all 0.2s;
-  }
-  .icon-btn svg { width: 16px; height: 16px; }
-
-  .content { flex: 1; overflow-y: auto; padding: 28px; display: flex; flex-direction: column; }
+  .content { flex: 1; overflow-y: auto; padding: 32px 28px; }
 
   /* HEADER */
+
   .page-header {
     display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
   }
   .page-header-left .breadcrumb { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-purple-light); margin-bottom: 6px; }
-  .page-header-left h1 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+  .page-header-left h1 { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; }
   .btn-create {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 12px 22px; border-radius: 12px;
@@ -151,12 +81,12 @@ $active_page = "event-management";
   .tag-finished { background: rgba(0,0,0,0.7); color: var(--text-secondary); border: 1px solid var(--border); }
 
   .event-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
-  .event-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .event-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
   .event-meta { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
   .event-meta-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
   .event-meta-item svg { width: 13px; height: 13px; flex-shrink: 0; }
   .event-footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
-  .event-price { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+  .event-price { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; }
   .event-price.free { color: var(--text-secondary); font-size: 16px; font-weight: 600; }
   .price-badge {
     font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
@@ -187,7 +117,7 @@ $active_page = "event-management";
   }
   .bottom-stat-icon svg { width: 18px; height: 18px; }
   .bottom-stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
-  .bottom-stat-value { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+  .bottom-stat-value { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; }
   .bottom-stat-value span { font-size: 12px; color: var(--text-muted); font-weight: 400; }
 
   /* RIGHT: CREATE FORM */
@@ -196,7 +126,7 @@ $active_page = "event-management";
     border-radius: 16px; padding: 22px; height: fit-content; position: sticky; top: 0;
   }
   .panel-title {
-    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+    font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700;
     display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
   }
   .panel-title-icon {
@@ -258,56 +188,51 @@ $active_page = "event-management";
 </head>
 <body>
 <div class="layout">
-  <!-- SIDEBAR -->
+
+  <!-- SIDEBAR (shared design) -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <div class="brand-name">Nocturnal Curator</div>
-      <div class="brand-sub">System Administrator</div>
+      <div class="brand-name">CampusAdmin</div>
+      <div class="brand-sub">Admin Panel</div>
     </div>
     <nav class="sidebar-nav">
-      <a href="{{ route('admin.dashboard') }}" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
           <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
           <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-        </svg>
-        Dashboard
+        </svg>Dashboard
       </a>
-      <a href="{{ route('admin.users') }}" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <a href="{{ route('admin.users') }}" class="nav-item {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
           <circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
           <path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.87"/>
-        </svg>
-        User Management
+        </svg>User Management
       </a>
-      <a href="{{ route('admin.events') }}" class="nav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <a href="{{ route('admin.events') }}" class="nav-item {{ request()->routeIs('admin.events*') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
           <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
           <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
-        Event Management
+        </svg>Event Management
       </a>
-      <a href="{{ route('admin.users.bulk') }}" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <a href="{{ route('admin.users.bulk') }}" class="nav-item {{ request()->routeIs('admin.users.bulk') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
           <polygon points="12 2 2 7 12 12 22 7 12 2"/>
           <polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
-        </svg>
-        Bulk Operations
+        </svg>Bulk Operations
       </a>
     </nav>
     <div class="sidebar-footer">
-      <div class="admin-card">
-        <div class="admin-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 2)) }}</div>
-        <div class="admin-info" style="flex: 1;">
-          <div class="name">{{ Auth::user()->name ?? 'Administrator' }}</div>
-          <div class="role">Admin</div>
+      <div class="role-card">
+        <div class="role-card-avatar avatar-admin">{{ strtoupper(substr(Auth::user()->name ?? 'AD', 0, 2)) }}</div>
+        <div class="role-card-info">
+          <div class="role-card-name">{{ Auth::user()->name ?? 'Administrator' }}</div>
+          <div class="role-card-label">Administrator</div>
         </div>
-        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
           @csrf
-          <button type="submit" title="Logout" style="width:32px;height:32px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);display:flex;align-items:center;justify-content:center;color:#ef4444;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.2)'" onmouseout="this.style.background='rgba(239,68,68,0.1)'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-left:2px;">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
+          <button type="submit" class="role-card-logout" title="Logout">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
             </svg>
           </button>
         </form>
@@ -319,24 +244,19 @@ $active_page = "event-management";
   <div class="main">
     <header class="topbar">
       <span class="topbar-brand">CampusAdmin</span>
-      <div class="search-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="topbar-search">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
         </svg>
-        <input type="text" placeholder="Search events or curators...">
+        <input type="text" placeholder="Search events...">
       </div>
       <div class="topbar-actions">
-        <div class="icon-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+        <div class="topbar-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
           </svg>
         </div>
-        <div class="icon-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
-          </svg>
-        </div>
+        <div class="topbar-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}</div>
       </div>
     </header>
 

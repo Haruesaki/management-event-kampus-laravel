@@ -1,290 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <title>Event Central</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Panitia') — Event Central</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ asset('css/shared/layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/panitia/style.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        body {
-            background: #0B0B0F;
-            color: white;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0c0a14',
+                    }
+                }
+            }
         }
-
-        /* SIDEBAR */
-        .sidebar {
-            background: linear-gradient(180deg, #0f0f14, #0a0a10);
-            border-right: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            color: #9ca3af;
-            transition: all 0.25s ease;
-        }
-
-        .menu-item:hover {
-            background: rgba(168,85,247,0.1);
-            color: white;
-        }
-
-        .active-menu {
-            background: linear-gradient(90deg, rgba(168,85,247,0.25), transparent);
-            color: #c084fc;
-        }
-
-        .icon {
-            width: 18px;
-            height: 18px;
-            stroke-width: 1.5;
-        }
-
-        .create-btn {
-            display: block;
-            text-align: center;
-            padding: 12px;
-            border-radius: 14px;
-            background: linear-gradient(90deg, #9333ea, #ec4899);
-            font-weight: 500;
-            color: white;
-            box-shadow: 0 0 25px rgba(168,85,247,0.5);
-            transition: 0.3s;
-        }
-
-        .create-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 35px rgba(168,85,247,0.8);
-        }
-
-        /* NAVBAR */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 256px;
-            right: 0;
-            height: 70px;
-            background: rgba(11,11,15,0.7);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-        }
-
-        .nav-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: #15151D;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-
-        .nav-icon:hover {
-            background: rgba(168,85,247,0.2);
-        }
-
-        .nav-icon svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        /* CARD */
-        .glow-card {
-            background: #15151D;
-            border-radius: 16px;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.03),
-                        0 10px 30px rgba(124,58,237,0.15);
-            transition: 0.3s;
-        }
-
-        .glow-card:hover {
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.05),
-                        0 15px 40px rgba(168,85,247,0.25);
-            transform: translateY(-3px);
-        }
-
-        .input-dark {
-            background: #15151D;
-            border: 1px solid #1c1c24;
-            border-radius: 10px;
-            padding: 10px 14px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .input-dark:focus {
-            border-color: #9333ea;
-            box-shadow: 0 0 0 2px rgba(147,51,234,0.3);
-        }
-    </style>
+    </script>
+    @stack('styles')
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
-<aside class="w-64 h-screen fixed top-0 left-0 flex flex-col justify-between px-6 py-8 sidebar">
+    {{-- ── SIDEBAR ── --}}
+    <aside class="sidebar">
 
-    <div>
-        <h1 class="text-lg font-semibold mb-1">Event Central</h1>
-        <p class="text-xs text-gray-500 mb-10 tracking-widest">MANAGEMENT SUITE</p>
+        {{-- Brand --}}
+        <div class="sidebar-brand">
+            <div class="brand-name">Event Central</div>
+            <div class="brand-sub">Management Suite</div>
+        </div>
 
-        <nav class="space-y-3">
+        {{-- Navigation --}}
+        <nav class="sidebar-nav">
 
             <a href="{{ route('panitia.dashboard') }}"
-               class="menu-item {{ request()->routeIs('panitia.dashboard') ? 'active-menu' : '' }}">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+               class="nav-item {{ request()->routeIs('panitia.dashboard') ? 'active' : '' }}">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <rect x="3" y="3" width="7" height="7" rx="1"/>
                     <rect x="14" y="3" width="7" height="7" rx="1"/>
                     <rect x="14" y="14" width="7" height="7" rx="1"/>
                     <rect x="3" y="14" width="7" height="7" rx="1"/>
                 </svg>
-                <span>Dashboard</span>
+                Dashboard
             </a>
 
             <a href="{{ route('panitia.events') }}"
-               class="menu-item {{ request()->routeIs('panitia.events') ? 'active-menu' : '' }}">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+               class="nav-item {{ request()->routeIs('panitia.events') ? 'active' : '' }}">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <rect x="3" y="5" width="18" height="16" rx="2"/>
                     <line x1="8" y1="3" x2="8" y2="7"/>
                     <line x1="16" y1="3" x2="16" y2="7"/>
                     <line x1="3" y1="11" x2="21" y2="11"/>
                 </svg>
-                <span>Ongoing Events</span>
+                Ongoing Events
             </a>
 
             <a href="{{ route('panitia.attendees') }}"
-               class="menu-item {{ request()->routeIs('panitia.attendees') ? 'active-menu' : '' }}">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+               class="nav-item {{ request()->routeIs('panitia.attendees') ? 'active' : '' }}">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <circle cx="9" cy="7" r="4"/>
                     <path d="M17 11c2.2 0 4 1.8 4 4v2"/>
                     <path d="M3 21v-2c0-2.2 1.8-4 4-4h4c2.2 0 4 1.8 4 4v2"/>
                 </svg>
-                <span>Attendees</span>
+                Attendees
+            </a>
+
+            {{-- Tombol Create Event — Khusus Panitia --}}
+            <div class="nav-section-label">Quick Actions</div>
+            <a href="{{ route('panitia.event.create') }}" class="nav-item" style="
+                background: linear-gradient(90deg, rgba(147,51,234,0.25), rgba(236,72,153,0.15));
+                border: 1px solid rgba(147,51,234,0.35);
+                color: #d8b4fe;
+                margin-top: 4px;
+            ">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="16"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                Create Event
             </a>
 
         </nav>
-    </div>
 
-    <div class="space-y-4">
-        <a href="{{ route('panitia.event.create') }}" class="create-btn">
-            + Create Event
-        </a>
-
-        <div class="text-sm text-gray-400 hover:text-purple-400 cursor-pointer">
-            Help Center
+        {{-- User Card --}}
+        @auth
+        <div class="sidebar-footer">
+            <div class="role-card">
+                <div class="role-card-avatar avatar-panitia">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                </div>
+                <div class="role-card-info">
+                    <div class="role-card-name">{{ auth()->user()->name }}</div>
+                    <div class="role-card-label">Panitia</div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                    @csrf
+                    <button type="submit" class="role-card-logout" title="Logout">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </div>
+        @endauth
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="text-sm text-gray-500 hover:text-red-400 cursor-pointer w-full text-left">
-                Logout
-            </button>
-        </form>
-    </div>
+    </aside>
 
-</aside>
+    {{-- ── LAYOUT WRAPPER ── --}}
+    <div class="layout-wrapper">
 
-<!-- NAVBAR -->
-<div class="navbar">
+        {{-- Topbar --}}
+        <header class="topbar">
+            <span class="topbar-brand">Event Central</span>
 
-    <div class="text-sm text-gray-300">
-        Nocturnal Curator
-    </div>
+            <div class="topbar-search">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
+                </svg>
+                <input type="text" placeholder="Search events...">
+            </div>
 
-    <div class="flex items-center gap-4">
+            <div class="topbar-actions">
+                {{-- Notif icon --}}
+                <div class="topbar-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </div>
 
-        <!-- NOTIF -->
-<div class="nav-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"/>
-        <path d="M13.73 21a2 2 0 01-3.46 0"/>
-    </svg>
-</div>
+                {{-- Settings icon --}}
+                <div class="topbar-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+                    </svg>
+                </div>
 
-<!-- SETTINGS -->
-<div class="nav-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06
-                 a2 2 0 01-2.83 2.83l-.06-.06
-                 a1.65 1.65 0 00-1.82-.33
-                 a1.65 1.65 0 00-1 1.51V21
-                 a2 2 0 01-2 2h-1
-                 a2 2 0 01-2-2v-.09
-                 a1.65 1.65 0 00-1-1.51
-                 a1.65 1.65 0 00-1.82.33l-.06.06
-                 a2 2 0 01-2.83-2.83l.06-.06
-                 a1.65 1.65 0 00.33-1.82
-                 a1.65 1.65 0 00-1.51-1H3
-                 a2 2 0 01-2-2v-1
-                 a2 2 0 012-2h.09
-                 a1.65 1.65 0 001.51-1
-                 a1.65 1.65 0 00-.33-1.82l-.06-.06
-                 a2 2 0 012.83-2.83l.06.06
-                 a1.65 1.65 0 001.82.33h0
-                 a1.65 1.65 0 001-1.51V3
-                 a2 2 0 012-2h1
-                 a2 2 0 012 2v.09
-                 a1.65 1.65 0 001 1.51
-                 a1.65 1.65 0 001.82-.33l.06-.06
-                 a2 2 0 012.83 2.83l-.06.06
-                 a1.65 1.65 0 00-.33 1.82v0
-                 a1.65 1.65 0 001.51 1H21
-                 a2 2 0 012 2v1
-                 a2 2 0 01-2 2h-.09
-                 a1.65 1.65 0 00-1.51 1z"/>
-    </svg>
-</div>
+                @auth
+                    <div class="topbar-avatar">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                @endauth
+            </div>
+        </header>
 
-<!-- USER AVATAR -->
-<div class="relative group cursor-pointer">
-
-    <div class="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-sm font-semibold shadow-lg shadow-purple-500/30 group-hover:scale-105 transition">
-        NC
-    </div>
-
-    <!-- DROPDOWN -->
-    <div class="absolute right-0 mt-3 w-44 bg-[#15151D] border border-[#1c1c24] rounded-xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 shadow-xl">
-
-        <a href="#" class="block px-4 py-2 text-sm hover:bg-[#1c1c24] rounded-t-xl">
-            Profile
-        </a>
-
-        <a href="#" class="block px-4 py-2 text-sm hover:bg-[#1c1c24]">
-            Settings
-        </a>
-
-        <div class="border-t border-[#1c1c24] my-1"></div>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#1c1c24] rounded-b-xl">
-                Logout
-            </button>
-        </form>
+        {{-- Page Content --}}
+        <main class="main-content">
+            @yield('content')
+        </main>
 
     </div>
 
-</div>
-
-    </div>
-
-</div>
-
-<!-- CONTENT -->
-<div class="ml-64 pt-[90px] p-6">
-    @yield('content')
-</div>
-
+    @stack('scripts')
 </body>
 </html>
