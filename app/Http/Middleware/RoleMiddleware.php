@@ -11,15 +11,18 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  int|string  $role
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, $role): Response
     {
+        if (!auth()->check() || auth()->user()->role_id != $role) {
+            // Jika tidak login atau role tidak sesuai, tampilkan 403 Forbidden
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        }
+
         return $next($request);
     }
 }
-
-if(auth()->user()->role != $role){
-    abort(403);
-}
-

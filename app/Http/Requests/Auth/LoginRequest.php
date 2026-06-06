@@ -62,6 +62,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+
+        if (!$user->is_active) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Akun anda sudah telah di banned karena melakukan sebuah pelanggaran',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

@@ -18,28 +18,22 @@ Route::get('/', function () {
 require __DIR__.'/auth.php';
 
 // ─── ADMIN ROUTES ────────────────────────────────────────────────────────────
-Route::prefix('admin')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-    Route::get('/events', function () {
-        return view('admin.events.index');
-    })->name('admin.events');
-
-    Route::get('/users', function () {
-        return view('admin.users.index');
-    })->name('admin.users');
-
-    Route::get('/users/bulk', function () {
-        return view('admin.users.bulk');
-    })->name('admin.users.bulk');
+    Route::get('/users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('admin.users');
+    Route::get('/users/create', [App\Http\Controllers\UserManagementController::class, 'create'])->name('admin.users.create');
+    Route::post('/users', [App\Http\Controllers\UserManagementController::class, 'store'])->name('admin.users.store');
+    Route::post('/users/{user}/toggle-status', [App\Http\Controllers\UserManagementController::class, 'toggleStatus'])->name('admin.users.toggle_status');
+    Route::delete('/users/{user}', [App\Http\Controllers\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
 
 });
 
 // ─── PANITIA ROUTES ───────────────────────────────────────────────────────────
-Route::prefix('panitia')->middleware(['auth'])->group(function () {
+Route::prefix('panitia')->middleware(['auth', 'role:2'])->group(function () {
 
     Route::get('/dashboard', function () {
         $user = Auth::user();
@@ -144,7 +138,7 @@ Route::prefix('user')->group(function () {
 });
 
 // ─── PROTECTED USER / PESERTA ROUTES (Harus login) ───────────────────────────
-Route::prefix('user')->middleware(['auth'])->group(function () {
+Route::prefix('user')->middleware(['auth', 'role:3'])->group(function () {
 
     // Booking Ticket
     Route::post('/booking', [\App\Http\Controllers\BookingController::class, 'store'])->name('events.booking');
