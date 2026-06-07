@@ -173,8 +173,8 @@
 }">
     <div class="page-top">
         <div class="page-top-left">
-            <div class="page-title">Identity <span>Matrix</span></div>
-            <p class="page-desc">Orchestrate campus roles and permissions from a single atmospheric nexus. Managing <span x-text="users.length"></span> active digital entities across the network.</p>
+            <div class="page-title">User <span>Management</span></div>
+            <p class="page-desc">Orchestrate roles and permissions from a single atmospheric nexus. Managing <span x-text="users.length"></span> active digital entities across the network.</p>
         </div>
     </div>
 
