@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panitia;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventTicket;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +102,13 @@ class EventController extends Controller
                     ]);
                 }
             }
+
+            // 5. Catat Log Aktivitas
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'Tambah Event',
+                'description' => Auth::user()->name . ' menerbitkan event baru: "' . $event->title . '".',
+            ]);
 
             DB::commit();
 
@@ -219,6 +227,14 @@ public function update(Request $request, $id)
         }
 
         DB::commit();
+
+        // Catat Log Aktivitas
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Update Event',
+            'description' => Auth::user()->name . ' memperbarui informasi event: "' . $event->title . '".',
+        ]);
+
         return redirect()->route('panitia.manage_event')->with('success', 'Event berhasil diperbarui!');
 
     } catch (\Exception $e) {
@@ -239,6 +255,41 @@ public function update(Request $request, $id)
             
         $event->update(['is_closed' => true]);
 
+        // Catat Log Aktivitas
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Tutup Event',
+            'description' => Auth::user()->name . ' menutup pendaftaran event: "' . $event->title . '".',
+        ]);
+
         return back()->with('success', 'Event telah berhasil ditutup.');
+    }
+
+    /**
+     * Hapus event secara permanen.
+     */
+    public function destroy($id)
+    {
+        $event = Event::where('id', $id)
+            ->where('created_by', Auth::id())
+            ->firstOrFail();
+
+        $title = $event->title;
+
+        // Hapus poster jika ada
+        if ($event->poster_url && file_exists(public_path($event->poster_url))) {
+            @unlink(public_path($event->poster_url));
+        }
+
+        $event->delete();
+
+        // Catat Log Aktivitas
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Hapus Event',
+            'description' => Auth::user()->name . ' menghapus event: "' . $title . '" secara permanen.',
+        ]);
+
+        return redirect()->route('panitia.manage_event')->with('success', 'Event berhasil dihapus.');
     }
 }

@@ -21,10 +21,20 @@ require __DIR__.'/auth.php';
 Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
+        $totalUserAktif = \App\Models\User::where('is_active', true)->count();
+        $totalEventAktif = \App\Models\Event::where('is_closed', false)->count();
+        $pendingPayments = \App\Models\Payment::where('payment_status', 'Pending')->count();
+        
+        $recentRegistrations = \App\Models\Registration::with(['user', 'event'])
+            ->latest()
+            ->take(9)
+            ->get();
+
+        return view('admin.dashboard', compact('totalUserAktif', 'totalEventAktif', 'pendingPayments', 'recentRegistrations'));
     })->name('admin.dashboard');
 
     Route::get('/users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('admin.users');
+    Route::get('/user-review', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('admin.user_review');
     Route::get('/users/create', [App\Http\Controllers\UserManagementController::class, 'create'])->name('admin.users.create');
     Route::post('/users', [App\Http\Controllers\UserManagementController::class, 'store'])->name('admin.users.store');
     Route::post('/users/{user}/toggle-status', [App\Http\Controllers\UserManagementController::class, 'toggleStatus'])->name('admin.users.toggle_status');
@@ -60,6 +70,7 @@ Route::prefix('panitia')->middleware(['auth', 'role:2'])->group(function () {
     Route::get('/events/{id}/edit', [\App\Http\Controllers\Panitia\EventController::class, 'edit'])->name('panitia.event.edit');
     Route::post('/events/{id}/update', [\App\Http\Controllers\Panitia\EventController::class, 'update'])->name('panitia.event.update');
     Route::post('/events/{id}/close', [\App\Http\Controllers\Panitia\EventController::class, 'close'])->name('panitia.event.close');
+    Route::delete('/events/{id}', [\App\Http\Controllers\Panitia\EventController::class, 'destroy'])->name('panitia.event.destroy');
 
     Route::get('/archived-events', function () {
         return view('panitia.events.archived');

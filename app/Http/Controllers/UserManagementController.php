@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -70,7 +71,15 @@ class UserManagementController extends Controller
         $user->is_active = !$user->is_active;
         $user->save();
 
-        $status = $user->is_active ? 'diaktifkan' : 'di-banned';
+        $status = $user->is_active ? 'mengaktifkan' : 'membanned';
+
+        // Catat Log Aktivitas
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => $user->is_active ? 'Aktivasi Akun' : 'Ban Akun',
+            'description' => auth()->user()->name . ' ' . $status . ' akun user ' . $user->name . '.',
+        ]);
+
         return back()->with('success', "Akun user berhasil {$status}.");
     }
 
@@ -82,6 +91,13 @@ class UserManagementController extends Controller
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }
+
+        // Catat Log Aktivitas sebelum dihapus
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'Hapus Akun',
+            'description' => auth()->user()->name . ' menghapus akun user ' . $user->name . ' secara permanen.',
+        ]);
 
         // Menggunakan forceDelete untuk menghapus permanen sesuai permintaan "sudah tidak ada di dalam database"
         $user->forceDelete();

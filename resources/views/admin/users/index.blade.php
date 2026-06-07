@@ -112,10 +112,10 @@
     display: flex; align-items: center; justify-content: center;
     padding: 20px;
   }
-  .insight-popup { 
-    position: relative; width: 100%; max-width: 440px; 
-    background: #15151e; border: 1px solid rgba(255,255,255,0.08); 
-    border-radius: 28px; padding: 40px; 
+  .insight-popup {
+    position: relative; width: 100%; max-width: 440px;
+    background: #15151e; border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 28px; padding: 40px;
     box-shadow: 0 40px 100px -20px rgba(0,0,0,0.7);
     z-index: 9999;
   }
@@ -127,7 +127,7 @@
   .popup-avatar { width: 90px; height: 90px; border-radius: 28px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; margin-bottom: 20px; color: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
   .popup-name { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.5px; }
   .popup-role { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px; }
-  
+
   .popup-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .popup-row:last-of-type { border-bottom: none; }
   .popup-row .label { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; }
@@ -140,8 +140,8 @@
 @endpush
 
 @section('content')
-<div x-data="{ 
-    search: '', 
+<div x-data="{
+    search: '',
     roleFilter: 'all',
     showModal: false,
     showBanModal: false,
@@ -165,7 +165,7 @@
     get filteredUsers() {
         return this.users.filter(user => {
             const matchesRole = this.roleFilter === 'all' || user.role.toLowerCase() === this.roleFilter.toLowerCase();
-            const matchesSearch = user.name.toLowerCase().includes(this.search.toLowerCase()) || 
+            const matchesSearch = user.name.toLowerCase().includes(this.search.toLowerCase()) ||
                                 user.email.toLowerCase().includes(this.search.toLowerCase());
             return matchesRole && matchesSearch;
         });
@@ -188,23 +188,6 @@
           <div class="page-title">Identity <span>Matrix</span></div>
           <p class="page-desc">Orchestrate campus roles and permissions from a single atmospheric nexus. Managing <span x-text="users.length"></span> active digital entities across the network.</p>
         </div>
-        <div class="metric-cards">
-          <div class="metric-card">
-            <div class="metric-label">Network Health</div>
-            <div class="metric-value">99.2<span style="font-size:18px;color:var(--text-secondary);">%</span></div>
-            <div class="metric-sub">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2.5">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-              </svg>
-              All systems up
-            </div>
-          </div>
-          <div class="metric-card purple-bg">
-            <div class="metric-label">Growth Metric</div>
-            <div class="metric-value">+{{ $users->where('created_at', '>=', now()->startOfWeek())->count() }}</div>
-            <div class="metric-sub">Active this week</div>
-          </div>
-        </div>
       </div>
 
   @if(session('success'))
@@ -221,7 +204,7 @@
 
   <div style="margin-bottom: 24px;">
     <div style="position: relative; max-width: 400px; margin-bottom: 20px;">
-        <input type="text" x-model="search" placeholder="Cari user berdasarkan nama atau email..." 
+        <input type="text" x-model="search" placeholder="Cari user berdasarkan nama atau email..."
             style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px 12px 44px; color: #fff; outline: none; transition: all 0.2s;"
             @focus="$el.style.borderColor = 'var(--accent)'" @blur="$el.style.borderColor = 'var(--border)'">
         <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-3);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -310,7 +293,7 @@
                   <div class="popup-name" x-text="selectedUser.name"></div>
                   <span class="popup-role" :class="selectedUser.roleClass" x-text="selectedUser.role"></span>
               </div>
-              
+
               <div class="popup-row">
                   <span class="label">Email Identity</span>
                   <span class="val" x-text="selectedUser.email"></span>
@@ -336,26 +319,38 @@
   <!-- BAN CONFIRMATION MODAL -->
   <div x-show="showBanModal" class="modal-overlay" style="display: none;" x-transition:enter="transition opacity duration-300" x-transition:leave="transition opacity duration-200">
     <div class="insight-popup" @click.away="showBanModal = false" x-transition:enter="transition transform duration-300" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100">
-        <div class="popup-header">
-            <span class="popup-title" x-text="selectedUser?.isActive ? 'Confirm Ban' : 'Confirm Activation'"></span>
+        <div class="popup-header" style="justify-content: flex-end; margin-bottom: 24px;">
             <div class="popup-close" @click="showBanModal = false">×</div>
         </div>
         <template x-if="selectedUser">
             <div style="text-align: center;">
-                <div style="margin-bottom: 24px; color: var(--text-1); font-size: 16px; line-height: 1.6;">
-                    Apakah Anda yakin ingin <span x-text="selectedUser.isActive ? 'membanned' : 'mengaktifkan kembali'"></span> akun 
-                    <strong x-text="selectedUser.name"></strong>?
+                <div style="margin-bottom: 28px; color: #fff; font-size: 18px; line-height: 1.5; font-weight: 700; letter-spacing: -0.2px;">
+                    <span x-text="selectedUser.isActive ? 'Konfirmasi Banned Akun' : 'Konfirmasi Aktivasi Akun'"></span><br>
+                    <span style="color: var(--accent-2); font-size: 16px; font-weight: 500;" x-text="selectedUser.name"></span>
                 </div>
-                <div x-show="selectedUser.isActive" style="background: rgba(239,68,68,0.1); border-radius: 12px; padding: 12px; margin-bottom: 24px; color: #ef4444; font-size: 13px;">
-                    Pengguna tidak akan bisa masuk ke sistem setelah dibanned.
+
+                <div :style="selectedUser.isActive ? 'background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #ef4444;' : 'background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); color: #22c55e;'" 
+                     style="border-radius: 12px; padding: 16px; margin-bottom: 32px; font-size: 13px; text-align: left;">
+                    <p style="font-weight: 700; margin-bottom: 8px;">Peringatan Keamanan:</p>
+                    <ul style="list-style: disc; margin-left: 18px;">
+                        <li x-text="selectedUser.isActive ? 'Pengguna tidak akan bisa login ke sistem' : 'Pengguna akan mendapatkan kembali akses sistem'"></li>
+                        <li x-text="selectedUser.isActive ? 'Seluruh sesi aktif user akan segera berakhir' : 'User dapat kembali mengikuti event yang tersedia'"></li>
+                        <li>Tindakan ini dapat dirubah kembali sewaktu-waktu</li>
+                    </ul>
                 </div>
+
                 <form :action="'/admin/users/' + selectedUser.id + '/toggle-status'" method="POST">
                     @csrf
-                    <div style="display: flex; gap: 12px;">
-                        <button type="button" @click="showBanModal = false" style="flex: 1; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-weight: 600; cursor: pointer;">Batal</button>
-                        <button type="submit" style="flex: 1; padding: 12px; border-radius: 12px; border: none; color: #fff; font-weight: 700; cursor: pointer;"
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button type="button" @click="showBanModal = false" 
+                            style="flex: 1; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                            Batal
+                        </button>
+                        <button type="submit" 
+                            style="flex: 1; padding: 14px; border-radius: 12px; border: none; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;"
                             :style="selectedUser.isActive ? 'background: #ef4444' : 'background: #22c55e'"
-                            x-text="selectedUser.isActive ? 'Ya, Banned Akun' : 'Ya, Aktifkan Akun'"></button>
+                            x-text="selectedUser.isActive ? 'Ya, Banned' : 'Ya, Aktifkan'">
+                        </button>
                     </div>
                 </form>
             </div>
@@ -366,29 +361,37 @@
   <!-- DELETE CONFIRMATION MODAL -->
   <div x-show="showDeleteModal" class="modal-overlay" style="display: none;" x-transition:enter="transition opacity duration-300" x-transition:leave="transition opacity duration-200">
     <div class="insight-popup" @click.away="showDeleteModal = false" x-transition:enter="transition transform duration-300" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100">
-        <div class="popup-header">
-            <span class="popup-title" style="color: #ef4444;">Permanent Deletion</span>
+        <div class="popup-header" style="justify-content: flex-end; margin-bottom: 24px;">
             <div class="popup-close" @click="showDeleteModal = false">×</div>
         </div>
         <template x-if="selectedUser">
             <div style="text-align: center;">
-                <div style="margin-bottom: 24px; color: var(--text-1); font-size: 16px; line-height: 1.6;">
-                    Anda akan menghapus akun <strong x-text="selectedUser.name"></strong> secara <span style="color: #ef4444; font-weight: 800;">PERMANEN</span>.
+                <div style="margin-bottom: 28px; color: #fff; font-size: 18px; line-height: 1.5; font-weight: 700; letter-spacing: -0.2px;">
+                    Hapus Akun Permanen<br>
+                    <span style="color: var(--accent-2); font-size: 16px; font-weight: 500;" x-text="selectedUser.name"></span>
                 </div>
-                <div style="background: rgba(239,68,68,0.1); border-radius: 12px; padding: 16px; margin-bottom: 24px; color: #ef4444; font-size: 13px; text-align: left;">
+
+                <div style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 16px; margin-bottom: 32px; color: #ef4444; font-size: 13px; text-align: left;">
                     <p style="font-weight: 700; margin-bottom: 8px;">Peringatan Keamanan:</p>
-                    <ul style="list-style: disc; margin-left: 20px;">
-                        <li>Data akun akan dihapus dari database.</li>
-                        <li>Tindakan ini tidak dapat dibatalkan.</li>
-                        <li>Seluruh riwayat user akan ikut terhapus.</li>
+                    <ul style="list-style: disc; margin-left: 18px;">
+                        <li>Seluruh data akan dihapus dari database</li>
+                        <li>Tindakan ini bersifat final (Irreversible)</li>
+                        <li>Semua riwayat user akan ikut terhapus</li>
                     </ul>
                 </div>
+
                 <form :action="'/admin/users/' + selectedUser.id" method="POST">
                     @csrf
                     @method('DELETE')
-                    <div style="display: flex; gap: 12px;">
-                        <button type="button" @click="showDeleteModal = false" style="flex: 1; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-weight: 600; cursor: pointer;">Batalkan</button>
-                        <button type="submit" style="flex: 1; padding: 12px; border-radius: 12px; background: #ef4444; border: none; color: #fff; font-weight: 700; cursor: pointer;">Ya, Hapus Permanen</button>
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button type="button" @click="showDeleteModal = false" 
+                            style="flex: 1; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                            Batal
+                        </button>
+                        <button type="submit" 
+                            style="flex: 1; padding: 14px; border-radius: 12px; background: #ef4444; border: none; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+                            Ya, Hapus
+                        </button>
                     </div>
                 </form>
             </div>

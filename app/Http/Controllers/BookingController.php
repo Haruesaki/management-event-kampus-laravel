@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\EventTicket;
 use App\Models\Registration;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,13 @@ class BookingController extends Controller
 
             // 3. Kurangi Kuota Tiket
             $ticket->decrement('quota');
+
+            // 4. Catat Log Aktivitas
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'Pemesanan Tiket',
+                'description' => Auth::user()->name . ' melakukan pemesanan tiket "' . $ticket->name . '" untuk event "' . $ticket->event->title . '".',
+            ]);
 
             DB::commit();
 

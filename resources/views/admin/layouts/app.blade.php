@@ -36,6 +36,12 @@
         </svg>
         User Management
       </a>
+      <a href="{{ route('admin.user_review') }}" class="nav-item {{ request()->routeIs('admin.user_review') ? 'active' : '' }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        User Review
+      </a>
     </nav>
     <div class="sidebar-footer">
       <div class="role-card">
@@ -59,27 +65,7 @@
   {{-- MAIN --}}
   <div class="main">
     <header class="topbar">
-      <span class="topbar-brand">CampusAdmin</span>
-      <div class="topbar-search">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-        </svg>
-        <input type="text" placeholder="Search system...">
-      </div>
-      <div class="topbar-actions">
-        <div class="topbar-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-          </svg>
-        </div>
-        <div class="topbar-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
-          </svg>
-        </div>
-        <div class="topbar-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}</div>
-      </div>
+      <a href="{{ route('admin.dashboard') }}" class="topbar-brand" style="text-decoration: none; color: inherit;">CampusAdmin</a>
     </header>
     <div class="content">
       @yield('content')

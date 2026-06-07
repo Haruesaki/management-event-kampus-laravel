@@ -111,6 +111,13 @@
                     </button>
                 </form>
             @endif
+            <form action="{{ route('panitia.event.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus event ini secara permanen?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full py-2 rounded-lg text-sm bg-red-600/10 text-red-500 border border-red-600/20 hover:bg-red-600/20 transition">
+                    Hapus Event
+                </button>
+            </form>
         </div>
 
     </div>
