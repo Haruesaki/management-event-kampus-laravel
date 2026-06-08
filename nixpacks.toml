@@ -25,4 +25,4 @@ cmds = [
 ]
 
 [start]
-cmd = "mkdir -p /app/database && touch /app/database/database.sqlite && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "mkdir -p /app/storage/db && touch /app/storage/db/database.sqlite && chmod -R 775 storage bootstrap/cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
