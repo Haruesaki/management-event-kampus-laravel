@@ -14,10 +14,42 @@
     }
     .badge-paid { background: rgba(168,85,247,0.2); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3); }
     .badge-free { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    .status-pending { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .status-success { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .status-rejected { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
 </style>
 @endpush
 
 @section('content')
+
+{{-- Alert Status --}}
+@if(session('success'))
+    <div style="background: rgba(34,197,94,0.1); border: 1px solid #22c55e; color: #4ade80; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div style="background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #f87171; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(request()->status == 'success')
+    <div style="background: rgba(34,197,94,0.1); border: 1px solid #22c55e; color: #4ade80; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+        Pembayaran berhasil! Tiket Anda sedang diproses.
+    </div>
+@elseif(request()->status == 'pending')
+    <div style="background: rgba(245,158,11,0.1); border: 1px solid #f59e0b; color: #fbbf24; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+        Pembayaran sedang menunggu konfirmasi.
+    </div>
+@endif
 
 {{-- Header --}}
 <div class="bookings-header">
@@ -57,6 +89,11 @@
                 <span class="ticket-type-badge {{ $reg->ticket->type === 'Gratis' ? 'badge-free' : 'badge-paid' }}">
                     {{ $reg->ticket->type }}
                 </span>
+                @if($reg->ticket->type === 'Berbayar' && $reg->payment)
+                    <span class="status-badge status-{{ strtolower($reg->payment->payment_status) }}">
+                        {{ $reg->payment->payment_status }}
+                    </span>
+                @endif
                 <div class="ticket-id">ORDER ID: #{{ str_pad($reg->id, 5, '0', STR_PAD_LEFT) }}</div>
             </div>
             <div class="ticket-event-name">{{ $reg->event->title }}</div>
@@ -69,12 +106,27 @@
                 <div style="font-size: 14px; font-weight: 700; color: #fff;">{{ $reg->ticket->name }}</div>
             </div>
 
-            <a href="#" class="download-btn" style="margin-top: 20px;">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
-                Download E-Ticket
-            </a>
+            @if($reg->ticket->type === 'Gratis' || ($reg->payment && $reg->payment->payment_status === 'Success'))
+                <a href="#" class="download-btn" style="margin-top: 20px;">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Download E-Ticket
+                </a>
+            @elseif($reg->payment && $reg->payment->payment_status === 'Pending')
+                <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="text-align: center; color: #fbbf24; font-size: 14px; font-weight: 600;">
+                        Menunggu Pembayaran
+                    </div>
+                    <button onclick="payPending('{{ $reg->payment->snap_token }}')" class="download-btn" style="background: #fbbf24; color: #000; border: none;">
+                        Bayar Sekarang
+                    </button>
+                </div>
+            @else
+                <div style="margin-top: 20px; text-align: center; color: #f87171; font-size: 14px; font-weight: 600;">
+                    Pembayaran Gagal/Expired
+                </div>
+            @endif
         </div>
     </div>
     @empty
@@ -101,3 +153,16 @@
 @endif
 
 @endsection
+
+@push('scripts')
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+<script>
+    function payPending(snapToken) {
+        snap.pay(snapToken, {
+            onSuccess: function(result){ window.location.reload(); },
+            onPending: function(result){ window.location.reload(); },
+            onError: function(result){ window.location.reload(); }
+        });
+    }
+</script>
+@endpush

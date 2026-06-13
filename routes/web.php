@@ -164,6 +164,9 @@ Route::prefix('user')->middleware(['auth', 'role:3'])->group(function () {
 
 });
 
+// ─── MIDTRANS CALLBACK (Excluded from CSRF) ──────────────────────────────────
+Route::post('/midtrans/callback', [\App\Http\Controllers\PaymentCallbackController::class, 'handle'])->name('midtrans.callback');
+
 // ─── LEGACY / DASHBOARD UMUM (fallback untuk route('dashboard')) ─────────────
 Route::get('/dashboard', function () {
     if (Auth::check()) {

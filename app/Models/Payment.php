@@ -11,9 +11,11 @@ class Payment extends Model
 
     protected $fillable = [
         'registration_id',
+        'order_id',
         'amount',
         'payment_status',
         'payment_method',
+        'snap_token',
         'expired_at',
     ];
 

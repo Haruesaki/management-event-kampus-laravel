@@ -20,6 +20,16 @@
 
     {{-- Hero Image --}}
     <div class="ed-hero">
+        @if(session('error'))
+            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100; background: rgba(239,68,68,0.9); color: #fff; padding: 12px 24px; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if(session('success'))
+            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100; background: rgba(34,197,94,0.9); color: #fff; padding: 12px 24px; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                {{ session('success') }}
+            </div>
+        @endif
         @if($event->poster_url)
             <img src="{{ asset($event->poster_url) }}" alt="{{ $event->title }}">
         @else
