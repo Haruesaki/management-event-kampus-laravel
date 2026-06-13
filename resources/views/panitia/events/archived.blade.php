@@ -40,82 +40,12 @@
     <!-- GRID -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <!-- CARD 1 (Arsip) -->
-        <div class="glow-card glow-hover p-6 opacity-75 hover:opacity-100 transition" x-show="search === '' || 'Art Expo 2025'.toLowerCase().includes(search.toLowerCase())">
-
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">Art Expo 2025</h2>
-                <span class="px-3 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400">
-                    ● Selesai
-                </span>
-            </div>
-
-            <p class="text-gray-400 text-sm mb-5">
-                Pameran seni digital modern tahun lalu.
-            </p>
-
-            <!-- STATS -->
-            <div class="grid grid-cols-2 gap-4 mb-5">
-                <div>
-                    <p class="text-gray-400 text-xs">Peserta</p>
-                    <p class="text-xl font-bold">500</p>
-                </div>
-                <div>
-                    <p class="text-gray-400 text-xs">Pendapatan</p>
-                    <p class="text-xl font-bold">$18,000</p>
-                </div>
-            </div>
-
-            <!-- ACTION -->
-            <div class="space-y-2">
-                <a href="#" class="block w-full text-center py-2 rounded-lg text-sm btn-glow">
-                    Detail Event
-                </a>
-
-                <button class="w-full py-2 rounded-lg text-sm bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition">
-                    Kembalikan dari Arsip
-                </button>
-            </div>
-
-        </div>
-
-        <!-- CARD 2 (Arsip) -->
-        <div class="glow-card glow-hover p-6 opacity-75 hover:opacity-100 transition" x-show="search === '' || 'Workshop UI/UX'.toLowerCase().includes(search.toLowerCase())">
-
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">Workshop UI/UX</h2>
-                <span class="px-3 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400">
-                    ● Selesai
-                </span>
-            </div>
-
-            <p class="text-gray-400 text-sm mb-5">
-                Pelatihan intensif desain antarmuka pengguna.
-            </p>
-
-            <!-- STATS -->
-            <div class="grid grid-cols-2 gap-4 mb-5">
-                <div>
-                    <p class="text-gray-400 text-xs">Peserta</p>
-                    <p class="text-xl font-bold">45</p>
-                </div>
-                <div>
-                    <p class="text-gray-400 text-xs">Pendapatan</p>
-                    <p class="text-xl font-bold">$1,200</p>
-                </div>
-            </div>
-
-            <!-- ACTION -->
-            <div class="space-y-2">
-                <a href="#" class="block w-full text-center py-2 rounded-lg text-sm btn-glow">
-                    Detail Event
-                </a>
-
-                <button class="w-full py-2 rounded-lg text-sm bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition">
-                    Kembalikan dari Arsip
-                </button>
-            </div>
-
+        <div class="col-span-full py-20 text-center" style="background: var(--bg-card); border-radius: 24px; border: 1px dashed var(--border);">
+            <svg style="width:48px; height:48px; color: var(--text-3); margin: 0 auto 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+            </svg>
+            <h3 style="color: #fff; font-size: 18px; font-weight: 700;">Belum Ada Arsip Event</h3>
+            <p style="color: var(--text-3); font-size: 14px; margin-top: 8px;">Event yang telah selesai atau Anda tutup akan muncul di sini.</p>
         </div>
 
     </div>

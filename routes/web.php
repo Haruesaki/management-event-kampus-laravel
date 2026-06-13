@@ -156,6 +156,7 @@ Route::prefix('user')->middleware(['auth', 'role:3'])->group(function () {
 
     // My Tickets
     Route::get('/tickets', [\App\Http\Controllers\BookingController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/{id}/download', [\App\Http\Controllers\BookingController::class, 'download'])->name('tickets.download');
 
     // Profile (placeholder)
     Route::get('/profile', function () {

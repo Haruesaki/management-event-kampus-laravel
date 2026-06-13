@@ -26,16 +26,27 @@ class PaymentCallbackController extends Controller
 
             $transaction = $notif->transaction_status;
             $type = $notif->payment_type;
-            $orderId = $notif->order_id; // Ini adalah order_id unik kita
+            $orderId = $notif->order_id;
             $fraud = $notif->fraud_status;
+            $signatureKey = $notif->signature_key;
+            $statusCode = $notif->status_code;
+            $grossAmount = $notif->gross_amount;
 
-            // Cari data payment berdasarkan order_id unik
+            // 1. Validasi Signature Key (Keamanan)
+            $localSignature = hash('sha512', $orderId . $statusCode . $grossAmount . Config::$serverKey);
+            if ($signatureKey !== $localSignature) {
+                return response()->json(['message' => 'Invalid signature'], 403);
+            }
+
+            // 2. Cari data payment
             $payment = Payment::with('registration.event', 'registration.user')->where('order_id', $orderId)->first();
 
             if (!$payment) {
                 return response()->json(['message' => 'Payment not found'], 404);
             }
 
+            // 3. Mapping Status Midtrans ke Database Lokal
+            // Midtrans status: capture, settlement, pending, deny, expire, cancel
             if ($transaction == 'capture') {
                 if ($type == 'credit_card') {
                     if ($fraud == 'challenge') {
@@ -51,23 +62,20 @@ class PaymentCallbackController extends Controller
                 ActivityLog::create([
                     'user_id' => $payment->registration->user_id,
                     'action' => 'Pembayaran Tiket',
-                    'description' => 'Pembayaran untuk tiket di event "' . $payment->registration->event->title . '" berhasil dikonfirmasi via Midtrans.',
+                    'description' => 'Pembayaran untuk tiket di event "' . $payment->registration->event->title . '" berhasil dikonfirmasi via Midtrans (Settlement).',
                 ]);
 
             } elseif ($transaction == 'pending') {
                 $payment->update(['payment_status' => 'Pending']);
-            } elseif ($transaction == 'deny') {
-                $payment->update(['payment_status' => 'Rejected']);
-            } elseif ($transaction == 'expire') {
-                $payment->update(['payment_status' => 'Rejected']);
-            } elseif ($transaction == 'cancel') {
+            } elseif (in_array($transaction, ['deny', 'expire', 'cancel'])) {
                 $payment->update(['payment_status' => 'Rejected']);
             }
 
             return response()->json(['message' => 'Callback handled successfully']);
 
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error handling callback: ' . $e->getMessage()], 500);
+            \Log::error('Midtrans Callback Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Error handling callback'], 500);
         }
     }
 }

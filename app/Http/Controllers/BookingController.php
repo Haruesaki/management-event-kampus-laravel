@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Midtrans\Config;
 use Midtrans\Snap;
 
+use Midtrans\Transaction;
+
 class BookingController extends Controller
 {
     /**
@@ -142,11 +144,78 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $registrations = Registration::with(['event', 'ticket', 'payment'])
+        // Konfigurasi Midtrans untuk sinkronisasi status
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+
+        // 1. Ambil semua registrasi user ini
+        $allRegistrations = Registration::with(['event', 'ticket', 'payment'])
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
 
-        return view('user.tickets.index', compact('registrations'));
+        // 2. Sinkronisasi status dari API Midtrans (Solusi jika callback gagal/tidak sampai ke localhost)
+        foreach ($allRegistrations as $reg) {
+            if ($reg->payment && $reg->payment->payment_status === 'Pending') {
+                try {
+                    // Tarik status terbaru langsung dari Midtrans
+                    $status = Transaction::status($reg->payment->order_id);
+                    $transactionStatus = $status->transaction_status;
+
+                    if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
+                        $reg->payment->update(['payment_status' => 'Success']);
+                        $reg->payment->payment_status = 'Success'; // Update objek di memori untuk tampilan
+                        
+                        ActivityLog::create([
+                            'user_id' => Auth::id(),
+                            'action' => 'Pembayaran Tiket (Sync)',
+                            'description' => 'Status pembayaran disinkronkan secara otomatis untuk event "' . $reg->event->title . '".',
+                        ]);
+                    } elseif (in_array($transactionStatus, ['expire', 'cancel', 'deny'])) {
+                        $reg->payment->update(['payment_status' => 'Rejected']);
+                        $reg->payment->payment_status = 'Rejected';
+                    }
+                } catch (\Exception $e) {
+                    // Jika data tidak ditemukan di Midtrans (belum mulai bayar), abaikan
+                }
+
+                // Cek kadaluarsa berdasarkan sistem lokal jika masih pending
+                if ($reg->payment->payment_status === 'Pending' && now()->greaterThan($reg->payment->expired_at)) {
+                    $reg->payment->update(['payment_status' => 'Rejected']);
+                    $reg->payment->payment_status = 'Rejected';
+                }
+            }
+        }
+
+        // 3. Klasifikasi: Tiket Aktif (Berhasil atau Gratis)
+        $activeTickets = $allRegistrations->filter(function ($reg) {
+            return $reg->ticket->type === 'Gratis' || 
+                   ($reg->payment && $reg->payment->payment_status === 'Success');
+        });
+
+        // 4. Klasifikasi: Semua Transaksi
+        $transactions = $allRegistrations;
+
+        return view('user.tickets.index', compact('activeTickets', 'transactions'));
+    }
+
+    /**
+     * Mengunduh e-ticket dalam format PDF.
+     */
+    public function download($id)
+    {
+        $registration = Registration::with(['event', 'ticket', 'user', 'payment'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        // Pastikan tiket sudah lunas atau gratis
+        if ($registration->ticket->type === 'Berbayar' && (!$registration->payment || $registration->payment->payment_status !== 'Success')) {
+            return back()->with('error', 'Pembayaran belum diselesaikan.');
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('user.tickets.pdf', compact('registration'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('E-Ticket-' . $registration->id . '.pdf');
     }
 }

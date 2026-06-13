@@ -106,5 +106,4 @@
 
 </div>
 
-<div class="fab">+</div>
 @endsection
